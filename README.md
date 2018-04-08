@@ -25,7 +25,7 @@ Example usage
 #include <vector>
 #include <iostream>
 
-std::ptrdiff_t size( nonstd::span<int> spn )
+std::ptrdiff_t size( nonstd::span<const int> spn )
 {
     return spn.size();
 }
@@ -94,7 +94,9 @@ To construct a span from a container with compilers that cannot constrain such a
 
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
-| **Methods**        |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
+| **Methods**        |&nbsp;| **with_container_t** type to disambiguate below constructors |
+| &nbsp;             |&nbsp;| **with_container** value to disambiguate below constructors |
+| &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN`** |

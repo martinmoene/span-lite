@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 
-std::ptrdiff_t size( nonstd::span<int> spn )
+std::ptrdiff_t size( nonstd::span<const int> spn )
 {
     return spn.size();
 }
