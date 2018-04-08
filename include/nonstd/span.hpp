@@ -67,7 +67,7 @@
 #endif
 
 #define span_CPP11_OR_GREATER ( __cplusplus >= 201103L || span_MSVC_LANG >= 201103L )
-#define span_CPP14_OR_GREATER ( __cplusplus >= 201402L || span_MSVC_LANG >= 201402L /*201703L*/ )
+#define span_CPP14_OR_GREATER ( __cplusplus >= 201402L || span_MSVC_LANG >= 201703L /*201402L*/ )
 #define span_CPP17_OR_GREATER ( __cplusplus >= 201703L || span_MSVC_LANG >= 201703L )
 #define span_CPP20_OR_GREATER ( __cplusplus >= 202000L || span_MSVC_LANG >= 202000L )
 
