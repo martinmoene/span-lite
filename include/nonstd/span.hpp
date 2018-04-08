@@ -688,7 +688,7 @@ public:
         return size() * to_size( sizeof( element_type ) );
     }
 
-    span_constexpr bool empty() const span_noexcept
+    span_nodiscard span_constexpr bool empty() const span_noexcept
     {
         return size() == 0;
     }
