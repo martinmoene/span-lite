@@ -509,8 +509,13 @@ public:
 
     template< size_t N >
     span_constexpr span( 
-        typename std::enable_if< std::is_const<element_type>::value, 
-            typename std::array< typename details::remove_const< element_type >::type, N>::type > const & arr )
+#if span_BETWEEN( span_COMPILER_MSVC_VERSION, 110, 140 )
+        std::array< typename details::remove_const< element_type >::type, N> const & arr )
+#else
+        typename std::enable_if< 
+            std::is_const<element_type>::value
+            , typename std::array< typename details::remove_const< element_type >::type, N>::type > const & arr )
+#endif
         : data_( arr.data() )
         , size_( to_size( arr.size() ) )
     {}
