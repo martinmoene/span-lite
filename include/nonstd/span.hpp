@@ -25,12 +25,12 @@
 
 #ifdef   span_CONFIG_SELECT_STD_SPAN
 # define span_USES_STD_SPAN  span_CONFIG_SELECT_STD_SPAN
-#else 
+#else
 # define span_USES_STD_SPAN  0
 #endif
 
 #if    defined( span_CONFIG_SELECT_STD_SPAN    ) && span_CONFIG_SELECT_STD_SPAN && \
-       defined( span_CONFIG_SELECT_NONSTD_SPAN ) && span_CONFIG_SELECT_NONSTD_SPAN 
+       defined( span_CONFIG_SELECT_NONSTD_SPAN ) && span_CONFIG_SELECT_NONSTD_SPAN
 #error Please define none or one of span_CONFIG_SELECT_STD_SPAN, span_CONFIG_SELECT_NONSTD_SPAN to 1, but not both.
 #endif
 
@@ -48,7 +48,7 @@
 # define        span_CONFIG_CONTRACT_LEVEL_MASK  0x11
 #endif
 
-#if    defined( span_CONFIG_CONTRACT_VIOLATION_THROWS ) 
+#if    defined( span_CONFIG_CONTRACT_VIOLATION_THROWS )
 # define        span_CONFIG_CONTRACT_VIOLATION_THROWS_V  span_CONFIG_CONTRACT_VIOLATION_THROWS
 #endif
 
@@ -58,7 +58,7 @@
 #endif
 
 // Compiler detection (C++20 is speculative):
-// Note: MSVC supports C++14 since it supports C++17.
+// Note: MSVC supports C++14 in full since it supports C++17.
 
 #ifdef _MSVC_LANG
 # define span_MSVC_LANG _MSVC_LANG
@@ -67,7 +67,7 @@
 #endif
 
 #define span_CPP11_OR_GREATER ( __cplusplus >= 201103L || span_MSVC_LANG >= 201103L )
-#define span_CPP14_OR_GREATER ( __cplusplus >= 201402L || span_MSVC_LANG >= 201703L )
+#define span_CPP14_OR_GREATER ( __cplusplus >= 201402L || span_MSVC_LANG >= 201402L /*201703L*/ )
 #define span_CPP17_OR_GREATER ( __cplusplus >= 201703L || span_MSVC_LANG >= 201703L )
 #define span_CPP20_OR_GREATER ( __cplusplus >= 202000L || span_MSVC_LANG >= 202000L )
 
@@ -169,7 +169,7 @@ using std::operator>=;
 // - C26439, gsl::f.6 : special function 'function' can be declared 'noexcept'
 // - C26440, gsl::f.6 : function 'function' can be declared 'noexcept'
 // - C26472, gsl::t.1 : don't use a static_cast for arithmetic conversions;
-//                      use brace initialization, gsl::narrow_cast or gsl::narow
+//                      use brace initialization, gsl::narrow_cast or gsl::narrow
 // - C26473: gsl::t.1 : don't cast between pointer types where the source type and the target type are the same
 // - C26481: gsl::b.1 : don't use pointer arithmetic. Use span instead
 // - C26490: gsl::t.1 : don't use reinterpret_cast
@@ -507,10 +507,11 @@ public:
         , size_( to_size( arr.size() ) )
     {}
 
-    // typename std::enable_if< std::is_const<element_type>::value >::type
     template< size_t N >
-    span_constexpr span( std::array< typename details::remove_const< element_type >::type, N > const & arr )
-        : data_( const_cast<pointer>( arr.data() ) )
+    span_constexpr span( 
+        typename std::enable_if< std::is_const<element_type>::value, 
+            typename std::array< typename details::remove_const< element_type >::type, N>::type > const & arr )
+        : data_( arr.data() )
         , size_( to_size( arr.size() ) )
     {}
 #endif
@@ -530,16 +531,28 @@ public:
     // Postconditions: size() == cont.size() && data() == addressof(cont[0])
     // Throws: Nothing
 
-    // SFINAE enable only if Cont has a data() member function
-    template< class Container, class = decltype(std::declval<Container>().data()) >
+    template< class Container
+        , class = decltype(std::declval<Container>().operator[](0))
+        , class = typename std::enable_if<
+//           !std::is_same<Container, span<T,index_t> >::value &&
+//           !std::is_same<Container, std::array<T,???> >::value &&
+            std::is_same<typename Container::value_type, value_type>::value>::type
+    >
     span_constexpr span( Container & cont )
         : data_( cont.data() )
         , size_( to_size( cont.size() ) )
     {}
 
-    template< class Container, class = decltype(std::declval<Container>().data()) >
+    template< class Container
+        , class = decltype(std::declval<Container>().operator[](0))
+        , class = typename std::enable_if<
+            std::is_const<element_type>::value &&
+//           !std::is_same<Container, span<T,index_t>>::value &&
+//           !std::is_same<Container, std::array<T,???> >::value &&
+            std::is_same<typename Container::value_type, value_type>::value>::type
+    >
     span_constexpr span( Container const & cont )
-        : data_( const_cast<pointer>( cont.data() ) )
+        : data_( cont.data() )
         , size_( to_size( cont.size() ) )
     {}
 
@@ -630,7 +643,8 @@ public:
     {
         span_EXPECTS(
             ( Offset == 0 || Offset > 0 && Offset < size()) &&
-            ( Count == dynamic_extent || Count >= 0 && Offset + Count <= size()) );
+            ( Count == dynamic_extent || Count >= 0 && Offset + Count <= size())
+        );
 
         return span( data() + Offset, Count == dynamic_extent ? size() - Offset : Count );
     }
