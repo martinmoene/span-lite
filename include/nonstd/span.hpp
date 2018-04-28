@@ -329,10 +329,8 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // Additional includes:
 
-#include <ostream>
-
 #if span_HAVE( TYPE_TRAITS )
-# include <type_traits>  // std::is_nothrow_move_constructible<>
+# include <type_traits>
 #endif
 
 #if span_HAVE( ADDRESSOF )
@@ -966,7 +964,7 @@ inline span_constexpr14 span<T,N> make_span( std::array< T, N > & arr ) span_noe
 template< class T, size_t N >
 inline span_constexpr14 span< const T, N > make_span( std::array< T, N > const & arr ) span_noexcept
 {
-    return span<const T, N>( arr );
+    return span<const T,N>( arr );
 }
 
 #endif // span_HAVE( ARRAY )
