@@ -518,7 +518,7 @@ public:
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
     
 //    static constexpr index_type extent = Extent;
-    enum : index_type { extent = Extent };
+    enum { extent = Extent };
 
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
