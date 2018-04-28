@@ -111,17 +111,17 @@ CASE( "presence of C++ language features" "[.stdlanguage]" )
     span_ABSENT(  span_HAVE_CONSTEXPR_14 );
 #endif
 
-#if span_HAVE( ENUM_CLASS )
-    span_PRESENT( span_HAVE_ENUM_CLASS );
-#else
-    span_ABSENT(  span_HAVE_ENUM_CLASS );
-#endif
-
-#if span_HAVE( ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE )
-    span_PRESENT( span_HAVE_ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE );
-#else
-    span_ABSENT(  span_HAVE_ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE );
-#endif
+//#if span_HAVE( ENUM_CLASS )
+//    span_PRESENT( span_HAVE_ENUM_CLASS );
+//#else
+//    span_ABSENT(  span_HAVE_ENUM_CLASS );
+//#endif
+//
+//#if span_HAVE( ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE )
+//    span_PRESENT( span_HAVE_ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE );
+//#else
+//    span_ABSENT(  span_HAVE_ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE );
+//#endif
 
 #if span_HAVE( EXPLICIT_CONVERSION )
     span_PRESENT( span_HAVE_EXPLICIT_CONVERSION );
@@ -129,11 +129,11 @@ CASE( "presence of C++ language features" "[.stdlanguage]" )
     span_ABSENT(  span_HAVE_EXPLICIT_CONVERSION );
 #endif
 
-#if span_HAVE( INITIALIZER_LIST )
-    span_PRESENT( span_HAVE_INITIALIZER_LIST );
-#else
-    span_ABSENT(  span_HAVE_INITIALIZER_LIST );
-#endif
+//#if span_HAVE( INITIALIZER_LIST )
+//    span_PRESENT( span_HAVE_INITIALIZER_LIST );
+//#else
+//    span_ABSENT(  span_HAVE_INITIALIZER_LIST );
+//#endif
 
 #if span_HAVE( IS_DEFAULT )
     span_PRESENT( span_HAVE_IS_DEFAULT );
@@ -153,11 +153,11 @@ CASE( "presence of C++ language features" "[.stdlanguage]" )
     span_ABSENT(  span_HAVE_NOEXCEPT );
 #endif
 
-#if span_HAVE( REF_QUALIFIER )
-    span_PRESENT( span_HAVE_REF_QUALIFIER );
-#else
-    span_ABSENT(  span_HAVE_REF_QUALIFIER );
-#endif
+//#if span_HAVE( REF_QUALIFIER )
+//    span_PRESENT( span_HAVE_REF_QUALIFIER );
+//#else
+//    span_ABSENT(  span_HAVE_REF_QUALIFIER );
+//#endif
 }
 
 CASE( "presence of C++ library features" "[.stdlibrary]" )
@@ -180,17 +180,29 @@ CASE( "presence of C++ library features" "[.stdlibrary]" )
     span_ABSENT(  span_HAVE_CONTAINER_DATA_METHOD );
 #endif
 
-#if span_HAVE( REMOVE_CV )
-    span_PRESENT( span_HAVE_REMOVE_CV );
+#if span_HAVE( DATA )
+    span_PRESENT( span_HAVE_DATA );
 #else
-    span_ABSENT(  span_HAVE_REMOVE_CV );
+    span_ABSENT(  span_HAVE_DATA );
 #endif
 
-#if span_HAVE( SIZED_TYPES )
-    span_PRESENT( span_HAVE_SIZED_TYPES );
+#if span_HAVE( REMOVE_CONST )
+    span_PRESENT( span_HAVE_REMOVE_CONST );
 #else
-    span_ABSENT(  span_HAVE_SIZED_TYPES );
+    span_ABSENT(  span_HAVE_REMOVE_CONST );
 #endif
+
+//#if span_HAVE( REMOVE_CV )
+//    span_PRESENT( span_HAVE_REMOVE_CV );
+//#else
+//    span_ABSENT(  span_HAVE_REMOVE_CV );
+//#endif
+
+//#if span_HAVE( SIZED_TYPES )
+//    span_PRESENT( span_HAVE_SIZED_TYPES );
+//#else
+//    span_ABSENT(  span_HAVE_SIZED_TYPES );
+//#endif
 
 #if span_HAVE( TYPE_TRAITS )
     span_PRESENT( span_HAVE_TYPE_TRAITS );
