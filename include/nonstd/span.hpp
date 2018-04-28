@@ -570,12 +570,12 @@ public:
     template< size_t N 
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == N) 
-//            && std::is_convertible<value_type(*)[], element_type(*)[] >::value
+            (Extent == dynamic_extent || Extent == N) &&
+            std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >
 # endif
     >
-    span_constexpr span( std::array< element_type, N > & arr )
+    span_constexpr span( std::array< element_type, N > & arr ) span_noexcept
         : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
@@ -588,7 +588,7 @@ public:
         >
 # endif
     >
-    span_constexpr span( std::array< value_type, N> const & arr )
+    span_constexpr span( std::array< value_type, N> const & arr ) span_noexcept
         : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
@@ -673,7 +673,7 @@ public:
         >
 #endif
     >
-    span_constexpr14 span( span<OtherElementType, OtherExtent> const & other )
+    span_constexpr14 span( span<OtherElementType, OtherExtent> const & other ) span_noexcept
         : data_( reinterpret_cast<pointer>( other.data() ) )
         , size_( other.size() )
     {
