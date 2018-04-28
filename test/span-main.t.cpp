@@ -16,12 +16,12 @@
 #define span_ABSENT( x ) \
     std::cout << #x << ": (undefined)\n"
 
+// Suppress:
+// - unused parameter, for cases without assertions such as [.std...]
 #if defined __clang__
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wundef"
+# pragma clang diagnostic ignored "-Wunused-parameter"
 #elif defined __GNUC__
-# pragma GCC   diagnostic push
-# pragma GCC   diagnostic ignored "-Wundef"
+# pragma GCC   diagnostic ignored "-Wunused-parameter"
 #endif
 
 lest::tests & specification()
