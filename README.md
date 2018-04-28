@@ -1,3 +1,4 @@
+<a id="top"></a>
 span lite - A single-file header-only version of a C++20-like span for C++98, C++11 and later
 ====================================================
 [![Standard](https://img.shields.io/badge/c%2B%2B-98/11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/martinmoene/span-lite.svg?branch=master)](https://travis-ci.org/martinmoene/span-lite) [![Build status](https://ci.appveyor.com/api/projects/status/1ha3wnxtam547m8p?svg=true)](https://ci.appveyor.com/project/martinmoene/span-lite) [![Version](https://badge.fury.io/gh/martinmoene%2Fspan-lite.svg)](https://github.com/martinmoene/span-lite/releases) [![download](https://img.shields.io/badge/latest-download-blue.svg)](https://github.com/martinmoene/span-lite/blob/master/include/nonstd/span.hpp) [![Try it on wandbox](https://img.shields.io/badge/on-wandbox-blue.svg)](https://wandbox.org/) [![Try it on godbolt online](https://img.shields.io/badge/on-godbolt-blue.svg)](http://bit.ly/mm-span-lite-godbolt)
@@ -94,9 +95,9 @@ To construct a span from a container with compilers that cannot constrain such a
 
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
-| **Methods**        |&nbsp;| **with_container_t** type to disambiguate below constructors |
-| &nbsp;             |&nbsp;| **with_container** value to disambiguate below constructors |
-| &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
+| **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
+| **Objects**        |&nbsp;| **with_container** value to disambiguate below constructors |
+| **Methods**        |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN`** |
@@ -154,14 +155,15 @@ Reported to work with
 ---------------------
 The table below mentions the compiler versions *span lite* is reported to work with.
 
-OS        | Compiler   | Versions |
----------:|:-----------|:---------|
-Windows   | Clang/LLVM | ?        |
-&nbsp;    | GCC        | 7.2.0    |
-&nbsp;    | Visual C++<br>(Visual Studio)| 8 (2005)?, 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
-GNU/Linux | Clang/LLVM | 3.5.0, 5.0, ...    |
-&nbsp;    | GCC        | 5.4.1, 6.3.0, 7.2.0 |
-OS X      | ?          | ?        |
+OS           | Compiler   | Where   | Versions |
+------------:|:-----------|:--------|:---------|
+**GNU/Linux**| Clang/LLVM | Travis  | 3.5.0, 3.6.2, 3.7.1, 3.8.0, 3.9.1, 4.0.1  |
+ &nbsp;      | GCC        | Travis  | 5.5.0, 6.4.0, 7.3.0 |
+**OS X**     | ?          | Local   | ?        |
+**Windows**  | Clang/LLVM | Local   | 6.0.0    |
+&nbsp;       | GCC        | Local   | 7.2.0    |
+&nbsp;       | Visual C++<br>(Visual Studio)| Local | 8 (2005)?, 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
+&nbsp;       | Visual C++<br>(Visual Studio)| AppVeyor | 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 
 
 Building the tests
@@ -184,11 +186,16 @@ The following steps assume that the [*span lite* source code](https://github.com
 
         cmake -G "Unix Makefiles" ..
 
-3. Build the test suite.    
+3. Optional. You can control above configuration through the following options:
+
+    `-DSPAN_LITE_OPT_BUILD_TESTS=ON`: build the tests for span, default on
+    `-DSPAN_LITE_OPT_BUILD_EXAMPLES=OFF`: build the examples, default off
+
+4. Build the test suite.    
 
         cmake --build .
 
-4. Run the test suite.    
+5. Run the test suite.    
 
         ctest -V
 
@@ -197,6 +204,8 @@ All tests should pass, indicating your platform is supported and you are ready t
 
 Other implementations of span
 ------------------------------------
+- *gsl-lite* [span](https://github.com/martinmoene/gsl-lite/blob/73c4f16f2b35fc174fc2f09d44d5ab13e5c638c3/include/gsl/gsl-lite.hpp#L1221).
+- Microsoft GSL [span](https://github.com/Microsoft/GSL/blob/master/include/gsl/span).
 - Google Abseil [span](https://github.com/abseil/abseil-cpp/blob/master/absl/types/span.h).
 - [Search _span c++_ on GitHub](https://github.com/search?l=C%2B%2B&q=span+c%2B%2B&type=Repositories&utf8=%E2%9C%93).
 
@@ -206,7 +215,7 @@ Notes and references
 *Interface and specification*
 - [span on cppreference](http://en.cppreference.com/w/cpp/string/span).
 - [p0122 - C++20 Proposal](http://wg21.link/p0122).
-- [span in C++20 Working Draft](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/n4727.pdf) (to come).
+- [span in C++20 Working Draft](http://eel.is/c++draft/views).
 
 *Presentations*
 - TBD
