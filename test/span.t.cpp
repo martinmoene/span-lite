@@ -279,8 +279,10 @@ CASE( "span<>: Allows to construct from a std::array<> with const data (C++11)" 
     std::array<const int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<const int> v( arr );
+    span<const int> const w( arr );
 
     EXPECT( std::equal( v.begin(), v.end(), arr.begin() ) );
+    EXPECT( std::equal( w.begin(), w.end(), arr.begin() ) );
 #else
     EXPECT( !!"std::array<> is not available (no C++11)" );
 #endif
