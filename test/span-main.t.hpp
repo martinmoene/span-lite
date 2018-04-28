@@ -38,7 +38,7 @@ namespace nonstd { namespace span_lite {
 #if span_HAVE( BYTE )
 inline std::ostream & operator<<( std::ostream & os, std::byte b )
 {
-    return os << "[byte:??]";
+    return os << "[byte:" << std::hex << std::showbase << std::to_integer<int>(b) << "]";
 }
 #endif
 
