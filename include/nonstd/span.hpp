@@ -522,7 +522,7 @@ public:
 
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
-#if span_CPP11_OR_GREATER
+#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
     template< bool Dependent = false
         , class = typename std::enable_if< (Dependent || Extent <= 0) >::type >
 #endif
@@ -566,11 +566,14 @@ public:
     {}
 
 #if span_HAVE( ARRAY )
+
     template< size_t N 
+# if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N) 
 //            && std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >
+# endif
     >
     span_constexpr span( std::array< element_type, N > & arr )
         : data_( span_ADDRESSOF( arr[0] ) )
@@ -578,15 +581,18 @@ public:
     {}
 
     template< size_t N 
+# if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N) &&
             std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >
+# endif
     >
     span_constexpr span( std::array< value_type, N> const & arr )
         : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
+
 #endif // span_HAVE( ARRAY )
 
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
