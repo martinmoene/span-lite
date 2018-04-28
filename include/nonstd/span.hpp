@@ -1,5 +1,6 @@
 //
 // span for C++98 and later.
+// Based on http://wg21.link/p0122r7
 // For more information see https://github.com/martinmoene/span-lite
 //
 // Copyright (c) 2018 Martin Moene
@@ -241,7 +242,9 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #endif
 
 #if span_CPP17_OR_GREATER
+# define span_HAVE_ADDRESSOF  1
 # define span_HAVE_BYTE  1
+# define span_HAVE_DATA  1
 #endif
 
 // For the rest, consider VC14 as C++11 for optional-lite:
@@ -252,6 +255,12 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #endif
 
 // C++ feature usage:
+
+#if span_HAVE_ADDRESSOF
+# define span_ADDRESSOF(x)  std::addressof(x)
+#else
+# define span_ADDRESSOF(x)  (&x)
+#endif
 
 #if span_HAVE_CONSTEXPR_11
 # define span_constexpr constexpr
@@ -322,8 +331,12 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #include <ostream>
 
-#if span_CPP11_OR_GREATER
+#if span_HAVE( TYPE_TRAITS )
 # include <type_traits>  // std::is_nothrow_move_constructible<>
+#endif
+
+#if span_HAVE( ADDRESSOF )
+# include <memory>
 #endif
 
 #if span_HAVE( ARRAY )
@@ -373,12 +386,34 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 namespace nonstd {
 namespace span_lite {
+
+// [views.constants], constants
+
+typedef std::ptrdiff_t index_t;
+
+span_constexpr const index_t dynamic_extent = -1;
+
+template< class T, index_t Extent = dynamic_extent >
+class span;
+
+// Tag to select span constructor taking a container (prevent ms-gsl warning C26426):
+
+#if span_CPP14_OR_GREATER
+struct with_container_t { span_constexpr with_container_t() noexcept {} };
+const  with_container_t   with_container;
+#else
+struct with_container_t { with_container_t() {} };
+const  with_container_t   with_container;
+#endif
+
+// Implementation details:
+
 namespace details {
 
 #if span_HAVE( REMOVE_CONST )
 
-using std::remove_const;
 using std::remove_cv;
+using std::remove_const;
 using std::remove_volatile;
 
 #else
@@ -396,6 +431,37 @@ struct remove_cv
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
+
+#if span_CPP11_OR_GREATER // HAVE_TRUE_TYPE
+
+template< class Q >
+struct is_span_oracle : std::false_type{};
+
+template< class T, std::ptrdiff_t Extent >
+struct is_span_oracle< ::nonstd::span_lite::span<T, Extent> > : std::true_type{};
+
+template< class Q >
+struct is_span : public is_span_oracle< typename std::remove_cv<Q>::type >{};
+
+template< class Q >
+struct is_std_array_oracle : std::false_type{};
+
+template< class T, std::size_t Extent >
+struct is_std_array_oracle< std::array<T, Extent> > : std::true_type{};
+
+template< class Q >
+struct is_std_array : public is_std_array_oracle< typename std::remove_cv<Q>::type >{};
+
+template< class Q >
+struct is_array : std::false_type {};
+ 
+template< class T >
+struct is_array<T[]> : std::true_type {};
+ 
+template< class T, std::size_t N >
+struct is_array<T[N]> : std::true_type {};
+
+#endif // span_CPP11_OR_GREATER
 
 struct fail_fast : public std::logic_error
 {
@@ -417,22 +483,6 @@ span_noreturn void throw_exception( E const & e )
 
 }  // namespace details
 
-// Tag to select span constructor taking a container (prevent ms-gsl warning C26426):
-
-#if span_CPP14_OR_GREATER
-struct with_container_t { span_constexpr with_container_t() noexcept {} };
-const  with_container_t   with_container;
-#else
-struct with_container_t { with_container_t() {} };
-const  with_container_t   with_container;
-#endif
-
-// [views.constants], constants
-
-typedef std::ptrdiff_t index_t;
-
-const index_t dynamic_extent = -1;
-
 // Prevent signed-unsigned mismatch:
 
 template< class T >
@@ -444,10 +494,12 @@ inline span_constexpr index_t to_size( T size )
 //
 // [views.span] - A view over a contiguous, single-dimension sequence of objects
 //
-template< class T, index_t Extent = dynamic_extent >
+template< class T, index_t Extent /*= dynamic_extent*/ >
 class span
 {
 public:
+    // constants and types
+    
     typedef T element_type;
     typedef typename details::remove_cv< T >::type value_type;
 
@@ -464,9 +516,16 @@ public:
 
     typedef std::reverse_iterator< iterator >       reverse_iterator;
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
+    
+//    static constexpr index_type extent = Extent;
+    enum : index_type { extent = Extent };
 
-    // [span.cons], span constructors, copy, assignment, and destructor
+    // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
+#if span_CPP11_OR_GREATER
+    template< bool Dependent = false
+        , class = typename std::enable_if< (Dependent || Extent <= 0) >::type >
+#endif
     span_constexpr span() span_noexcept
         : data_( span_nullptr )
         , size_( 0 )
@@ -494,54 +553,52 @@ public:
         );
     }
 
-    template< size_t N >
-    span_constexpr span( element_type ( &arr )[ N ] )
-        : data_( arr )
-        , size_( N   )
+    template< size_t N 
+#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
+        , class = typename std::enable_if<
+            (Extent == dynamic_extent || Extent == N)
+        >
+#endif
+    >
+    span_constexpr span( element_type ( &arr )[ N ] ) span_noexcept
+        : data_( span_ADDRESSOF( arr[0] ) )
+        , size_( N  )
     {}
 
 #if span_HAVE( ARRAY )
-    template< size_t N >
+    template< size_t N 
+        , class = typename std::enable_if<
+            (Extent == dynamic_extent || Extent == N) 
+//            && std::is_convertible<value_type(*)[], element_type(*)[] >::value
+        >
+    >
     span_constexpr span( std::array< element_type, N > & arr )
-        : data_( arr.data() )
+        : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
 
-    template< size_t N >
-    span_constexpr span( 
-#if span_BETWEEN( span_COMPILER_MSVC_VERSION, 110, 140 )
-        std::array< typename details::remove_const< element_type >::type, N> const & arr )
-#else
-        typename std::enable_if< 
-            std::is_const<element_type>::value
-            , typename std::array< typename details::remove_const< element_type >::type, N>::type > const & arr )
-#endif
-        : data_( arr.data() )
+    template< size_t N 
+        , class = typename std::enable_if<
+            (Extent == dynamic_extent || Extent == N) &&
+            std::is_convertible<value_type(*)[], element_type(*)[] >::value
+        >
+    >
+    span_constexpr span( std::array< value_type, N> const & arr )
+        : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
-#endif
+#endif // span_HAVE( ARRAY )
 
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
-    // The constructor shall not participate in overload resolution unless:
-    // - Container meets the requirements of both a contiguous container (defined in [container.requirements.general]/13) and a sequence container (defined in [sequence.reqmts]).
-    // - The Container implements the optional sequence container requirement of operator[].
-    // - Container::value_type is the same as remove_const_t<element_type>.
-    // The constructor shall not participate in overload resolution if Container is a span or array.
-    // The second constructor shall not participate in overload resolution unless is_const<element_type> == true.
-    //
-    // Requires: If extent is not equal to dynamic_extent, then cont.size() shall be equal to extent.
-    //
-    // Effects: Constructs a span that is a view over the sequence owned by cont.
-    //
-    // Postconditions: size() == cont.size() && data() == addressof(cont[0])
-    // Throws: Nothing
-
     template< class Container
-        , class = decltype(std::declval<Container>().operator[](0))
         , class = typename std::enable_if<
-//           !std::is_same<Container, span<T,index_t> >::value &&
-//           !std::is_same<Container, std::array<T,???> >::value &&
-            std::is_same<typename Container::value_type, value_type>::value>::type
+            ! details::is_span< Container >::value && 
+            ! details::is_array< Container >::value &&
+            ! details::is_std_array< Container >::value &&
+            // data(cont) well-formed &&
+            // size(cont) well-formed &&
+              std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], element_type(*)[] >::value
+        >::type 
     >
     span_constexpr span( Container & cont )
         : data_( cont.data() )
@@ -549,29 +606,32 @@ public:
     {}
 
     template< class Container
-        , class = decltype(std::declval<Container>().operator[](0))
         , class = typename std::enable_if<
-            std::is_const<element_type>::value &&
-//           !std::is_same<Container, span<T,index_t>>::value &&
-//           !std::is_same<Container, std::array<T,???> >::value &&
-            std::is_same<typename Container::value_type, value_type>::value>::type
+              std::is_const< element_type >::value &&
+            ! details::is_span< Container >::value && 
+            ! details::is_array< Container >::value &&
+            ! details::is_std_array< Container >::value &&
+            // data(cont) well-formed &&
+            // size(cont) well-formed &&
+              std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], element_type(*)[] >::value
+        >::type 
     >
     span_constexpr span( Container const & cont )
         : data_( cont.data() )
         , size_( to_size( cont.size() ) )
     {}
 
-#endif
+#endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
     template< class Container >
     span_constexpr14 span( with_container_t, Container & cont )
-        : data_( cont.size() == 0 ? span_nullptr : &cont[0] )
+        : data_( cont.size() == 0 ? span_nullptr : span_ADDRESSOF( cont[0] ) )
         , size_( to_size( cont.size() ) )
     {}
 
     template< class Container >
     span_constexpr14 span( with_container_t, Container const & cont )
-        : data_( cont.size() == 0 ? span_nullptr : const_cast<pointer>( &cont[0] ) )
+        : data_( cont.size() == 0 ? span_nullptr : const_cast<pointer>( span_ADDRESSOF( cont[0] ) ) )
         , size_( to_size( cont.size() ) )
     {}
 
@@ -599,18 +659,14 @@ public:
     }
 #endif
 
-    // Remarks: This constructor shall not participate in overload resolution unless
-    // trying to access OtherElementType through an ElementType* would meet the rules
-    // for well-defined object access defined in [basic.lval]/8.
-    //
-    // Requires: If extent is not equal to dynamic_extent, then other.size() shall be equal to extent.
-    //
-    // Effects: Constructs a span by copying the implementation data members of another span,
-    // performing suitable conversions.
-    //
-    // Postconditions: size() == other.size() && data() == reinterpret_cast<pointer>(other.data())
-
-    template< class OtherElementType, index_type OtherExtent >
+    template< class OtherElementType, index_type OtherExtent
+#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
+        , class = typename std::enable_if<
+            (Extent == dynamic_extent || Extent == OtherExtent) &&
+            std::is_convertible<OtherElementType(*)[], element_type(*)[]>::value
+        >
+#endif
+    >
     span_constexpr14 span( span<OtherElementType, OtherExtent> const & other )
         : data_( reinterpret_cast<pointer>( other.data() ) )
         , size_( other.size() )
@@ -618,13 +674,13 @@ public:
         span_EXPECTS( OtherExtent == dynamic_extent || other.size() == OtherExtent );
     }
 
-    // [span.sub], span subviews
+    // 26.7.3.3 Subviews [span.sub]
 
     template< index_type Count >
     span_constexpr14 span< element_type, Count >
     first() const
     {
-        span_EXPECTS( Count >= 0 && Count <= size() );
+        span_EXPECTS( 0 <= Count && Count <= size() );
 
         return span( data(), Count );
     }
@@ -633,7 +689,7 @@ public:
     span_constexpr14 span< element_type, Count >
     last() const
     {
-        span_EXPECTS( Count >= 0 && Count <= size() );
+        span_EXPECTS( 0 <= Count && Count <= size() );
 
         return span( data() + (size() - Count), Count );
     }
@@ -647,11 +703,11 @@ public:
     subspan() const
     {
         span_EXPECTS(
-            ( Offset == 0 || Offset > 0 && Offset < size()) &&
-            ( Count == dynamic_extent || Count >= 0 && Offset + Count <= size())
+            ( 0 <= Offset && Offset < size()) &&
+            ( Count == dynamic_extent || 0 <= Count && Count + Offset <= size())
         );
 
-        return span( data() + Offset, Count == dynamic_extent ? size() - Offset : Count );
+        return span( data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
     }
 
     span_constexpr14 span< element_type, dynamic_extent >
@@ -674,14 +730,14 @@ public:
     subspan( index_type offset, index_type count = dynamic_extent ) const
     {
         span_EXPECTS(
-            ( offset == 0 || ( 0 < offset  && offset < size() ) ) &&
+            ( ( 0 <= offset  && offset < size() ) ) &&
             ( count  == dynamic_extent || ( 0 <= count && offset + count <= size() ) )
         );
 
         return span( data() + offset, count == dynamic_extent ? size() - offset : count );
     }
 
-    // [span.obs], span observers
+    // 26.7.3.4 Observers [span.obs]
 
     span_constexpr index_type size() const span_noexcept
     {
@@ -698,7 +754,7 @@ public:
         return size() == 0;
     }
 
-    // [span.elem], span element access
+    // 26.7.3.5 Element access [span.elem]
 
     span_constexpr14 reference operator[]( index_type idx ) const
     {
@@ -719,7 +775,7 @@ public:
         return data_;
     }
 
-    // [span.iter], span iterator support
+    // 26.7.3.6 Iterator support [span.iterators]
 
     span_constexpr iterator begin() const span_noexcept
     {
@@ -782,7 +838,28 @@ private:
     index_type size_;
 };
 
-// [span.comparison], span comparison operators
+// class template argument deduction guides:
+
+#if span_HAVE_DEDUCTION_GUIDES // span_CPP17_OR_GREATER
+
+template< class T, size_t N >
+span( T (&)[N] ) -> span<T, N>;
+
+template< class T, size_t N >
+span( std::array<T, N> & ) -> span<T, N>;
+
+template< class T, size_t N >
+span( std::array<T, N> const & ) -> span<const T, N>;
+
+template< class Container >
+span( Container& ) -> span<typename Container::value_type>;
+
+template< class Container >
+span( Container const & ) -> span<const typename Container::value_type>;
+
+#endif // span_CPP17_OR_GREATER
+
+// 26.7.3.7 Comparison operators [span.comparison]
 
 template< class T, index_t Extent >
 inline span_constexpr14 bool operator==( span<T,Extent> const & l, span<T,Extent> const & r )
@@ -820,7 +897,7 @@ inline span_constexpr14 bool operator>=( span<T,Extent> const & l, span<T,Extent
     return !( l < r );
 }
 
-// [span.objectrep], views of object representation
+// 26.7.2.6 views of object representation [span.objectrep]
 
 #if span_HAVE( BYTE )
 
@@ -850,7 +927,7 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 
 #endif  // span_HAVE( BYTE )
 
-// [extension] make_span():
+// make_span() [span-lite extension] :
 
 #if span_CONFIG_PROVIDE_MAKE_SPAN
 
@@ -886,7 +963,7 @@ inline span_constexpr14 span< const T, N > make_span( std::array< T, N > const &
     return span<const T, N>( arr );
 }
 
-#endif
+#endif // span_HAVE( ARRAY )
 
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
 
@@ -915,7 +992,7 @@ inline span<const T> make_span( std::vector<T> const & cont ) span_noexcept
 {
     return span<const T>( with_container, cont );
 }
-#endif
+#endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
