@@ -147,10 +147,10 @@ Define this macro to include `span_EXPECTS` in the code and exclude `span_ENSURE
 Define this macro to exclude `span_EXPECTS` from the code and include `span_ENSURES` in the code.
 
 \-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_TERMINATES</b>  
-Define this macro to call `std::terminate()` on a GSL contract violation in `span_EXPECTS`, `span_ENSURES`. This is the default case.
+Define this macro to call `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES`. This is the default case.
 
 \-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_THROWS</b>  
-Define this macro to throw a std::runtime_exception-derived exception `gsl::fail_fast` instead of calling `std::terminate()` on a GSL contract violation in `span_EXPECTS`, `span_ENSURES` and throw a std::exception-derived exception `narrowing_error` on discarding  information in `narrow`.
+Define this macro to throw a std::runtime_exception-derived exception `nonstd::span_lite::details::fail_fast` instead of calling `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES` and throw a std::exception-derived exception `narrowing_error` on discarding  information in `narrow`.
 
 
 Reported to work with
