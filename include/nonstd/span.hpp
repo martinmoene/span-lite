@@ -213,6 +213,10 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_HAVE_NORETURN  1
 #endif
 
+#if span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 )
+# define span_HAVE_DEDUCTION_GUIDES  1
+#endif
+
 // Presence of C++ library features:
 
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 90
