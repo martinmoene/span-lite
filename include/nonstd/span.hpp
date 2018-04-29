@@ -94,15 +94,6 @@
 
 #include <span>
 
-// Extension: provide make_span():
-
-#if span_CONFIG_PROVIDE_MAKE_SPAN
-
-namespace nonstd {
-}
-
-#endif // span_CONFIG_PROVIDE_MAKE_SPAN
-
 namespace nonstd {
 
 using std::span;
@@ -931,9 +922,35 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 
 #endif  // span_HAVE( BYTE )
 
-// make_span() [span-lite extension] :
+}  // namespace span_lite
+}  // namespace nonstd
+
+namespace nonstd {
+
+using nonstd::span_lite::dynamic_extent;
+
+using nonstd::span_lite::span;
+using nonstd::span_lite::with_container;
+
+using nonstd::span_lite::operator==;
+using nonstd::span_lite::operator!=;
+using nonstd::span_lite::operator<;
+using nonstd::span_lite::operator<=;
+using nonstd::span_lite::operator>;
+using nonstd::span_lite::operator>=;
+
+}  // namespace nonstd
+
+span_RESTORE_WARNINGS()
+
+#endif  // span_USES_STD_SPAN
+
+// make_span() [span-lite extension]:
 
 #if span_CONFIG_PROVIDE_MAKE_SPAN
+
+namespace nonstd {
+namespace span_lite {
 
 template< class T >
 inline span_constexpr14 span<T> make_span( T * first, T * last ) span_noexcept
@@ -1010,35 +1027,13 @@ inline span<const typename Container::value_type> make_span( with_container_t, C
     return span< const typename Container::value_type >( with_container, cont );
 }
 
-#endif // span_CONFIG_PROVIDE_MAKE_SPAN
-
 }  // namespace span_lite
 }  // namespace nonstd
 
 namespace nonstd {
-
-using nonstd::span_lite::dynamic_extent;
-
-using nonstd::span_lite::span;
-using nonstd::span_lite::with_container;
-
-using nonstd::span_lite::operator==;
-using nonstd::span_lite::operator!=;
-using nonstd::span_lite::operator<;
-using nonstd::span_lite::operator<=;
-using nonstd::span_lite::operator>;
-using nonstd::span_lite::operator>=;
-
-#if span_CONFIG_PROVIDE_MAKE_SPAN
-
 using nonstd::span_lite::make_span;
-
-#endif // span_CONFIG_PROVIDE_MAKE_SPAN
-
 }  // namespace nonstd
 
-span_RESTORE_WARNINGS()
-
-#endif  // span_USES_STD_SPAN
+#endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
 #endif  // NONSTD_SPAN_HPP_INCLUDED
