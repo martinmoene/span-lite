@@ -985,14 +985,14 @@ inline span_constexpr14 auto make_span( Container const & cont ) span_noexcept -
 
 #else
 
-template< class T >
-inline span<T> make_span( std::vector<T> & cont ) span_noexcept
+template< class T, class Allocator >
+inline span<T> make_span( std::vector<T, Allocator> & cont ) span_noexcept
 {
     return span<T>( with_container, cont );
 }
 
-template< class T >
-inline span<const T> make_span( std::vector<T> const & cont ) span_noexcept
+template< class T, class Allocator >
+inline span<const T> make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 {
     return span<const T>( with_container, cont );
 }
