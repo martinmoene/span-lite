@@ -431,10 +431,10 @@ template< class Q >
 struct is_span_oracle : std::false_type{};
 
 template< class T, std::ptrdiff_t Extent >
-struct is_span_oracle< ::nonstd::span_lite::span<T, Extent> > : std::true_type{};
+struct is_span_oracle< span<T, Extent> > : std::true_type{};
 
 template< class Q >
-struct is_span : public is_span_oracle< typename std::remove_cv<Q>::type >{};
+struct is_span : is_span_oracle< typename std::remove_cv<Q>::type >{};
 
 template< class Q >
 struct is_std_array_oracle : std::false_type{};
@@ -443,7 +443,7 @@ template< class T, std::size_t Extent >
 struct is_std_array_oracle< std::array<T, Extent> > : std::true_type{};
 
 template< class Q >
-struct is_std_array : public is_std_array_oracle< typename std::remove_cv<Q>::type >{};
+struct is_std_array : is_std_array_oracle< typename std::remove_cv<Q>::type >{};
 
 template< class Q >
 struct is_array : std::false_type {};
@@ -456,7 +456,7 @@ struct is_array<T[N]> : std::true_type {};
 
 #endif // span_CPP11_OR_GREATER
 
-struct fail_fast : public std::logic_error
+struct fail_fast : std::logic_error
 {
     explicit fail_fast( char const * const message )
         : std::logic_error( message )
@@ -931,17 +931,17 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 
 namespace nonstd {
 
-using nonstd::span_lite::dynamic_extent;
+using span_lite::dynamic_extent;
 
-using nonstd::span_lite::span;
-using nonstd::span_lite::with_container;
+using span_lite::span;
+using span_lite::with_container;
 
-using nonstd::span_lite::operator==;
-using nonstd::span_lite::operator!=;
-using nonstd::span_lite::operator<;
-using nonstd::span_lite::operator<=;
-using nonstd::span_lite::operator>;
-using nonstd::span_lite::operator>=;
+using span_lite::operator==;
+using span_lite::operator!=;
+using span_lite::operator<;
+using span_lite::operator<=;
+using span_lite::operator>;
+using span_lite::operator>=;
 
 }  // namespace nonstd
 
