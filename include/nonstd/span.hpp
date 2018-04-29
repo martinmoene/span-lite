@@ -998,6 +998,18 @@ inline span<const T> make_span( std::vector<T, Allocator> const & cont ) span_no
 }
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
 
+template< class Container >
+inline span<typename Container::value_type> make_span( with_container_t, Container & cont ) span_noexcept
+{
+    return span< typename Container::value_type >( with_container, cont );
+}
+
+template< class Container >
+inline span<const typename Container::value_type> make_span( with_container_t, Container const & cont ) span_noexcept
+{
+    return span< const typename Container::value_type >( with_container, cont );
+}
+
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
 }  // namespace span_lite

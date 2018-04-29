@@ -108,8 +108,10 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | >= C++11 | template&lt;class T, size_t N><br>constexpr span&lt;const T,N><br>**make_span**(std::array&lt;T,N > const & arr) noexcept |
 | &nbsp; | >= C++11 | template&lt;class Container><br>constexpr auto<br>**make_span**(Container & cont) -><br>&emsp;span&lt;typename Container::value_type> noexcept |
 | &nbsp; | >= C++11 | template&lt;class Container><br>constexpr auto<br>**make_span**(Container const & cont) -><br>&emsp;span&lt;const typename Container::value_type> noexcept |
-| &nbsp; | < C++11  | template&lt;class T><br>span&lt;T><br>**make_span**(std::vector&lt;T> & cont) noexcept |
-| &nbsp; | < C++11  | template&lt;class T><br>span&lt;const T><br>**make_span**(std::vector&lt;T> const & cont) noexcept |
+| &nbsp; | < C++11  | template&lt;class Container><br>span&lt;typename Container::value_type><br>**make_span**( with_container_t, Container & cont ) |
+| &nbsp; | < C++11  | template&lt;class Container><br>span&lt;const typename Container::value_type><br>**make_span**( with_container_t, Container const & cont ) |
+| &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;T><br>**make_span**(std::vector&lt;T, Allocator> & cont) |
+| &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;const T><br>**make_span**(std::vector&lt;T, Allocator> const & cont) |
 
 
 Configuration
@@ -298,4 +300,6 @@ make_span(): Allows building from a std::array<> (C++11)
 make_span(): Allows building from a const std::array<> (C++11)
 make_span(): Allows building from a container (std::vector<>)
 make_span(): Allows building from a const container (std::vector<>)
+make_span(): Allows building from a container (with_container_t, std::vector<>)
+make_span(): Allows building from a const container (with_container_t, std::vector<>)
 ```

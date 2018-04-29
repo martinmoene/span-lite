@@ -1028,6 +1028,30 @@ CASE( "make_span(): Allows building from a const container (std::vector<>)" )
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
 }
 
+CASE( "make_span(): Allows building from a container (with_container_t, std::vector<>)" )
+{
+# if span_HAVE( INITIALIZER_LIST )
+    std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+#else
+    std::vector<int> vec; {for ( int i = 1; i < 10; ++i ) vec.push_back(i); }
+#endif
+    span<int> v = make_span( with_container, vec );
+
+    EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
+}
+
+CASE( "make_span(): Allows building from a const container (with_container_t, std::vector<>)" )
+{
+# if span_HAVE( INITIALIZER_LIST )
+    const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+#else
+    const std::vector<int> vec( 10, 42 );
+#endif
+    span<const int> v = make_span( with_container, vec );
+
+    EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
+}
+
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
 // end of file
