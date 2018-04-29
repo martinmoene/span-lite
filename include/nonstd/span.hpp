@@ -550,7 +550,7 @@ public:
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N)
-        >
+        >::type
 #endif
     >
     span_constexpr span( element_type ( &arr )[ N ] ) span_noexcept
@@ -565,10 +565,10 @@ public:
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N) &&
             std::is_convertible<value_type(*)[], element_type(*)[] >::value
-        >
+        >::type
 # endif
     >
-    span_constexpr span( std::array< element_type, N > & arr ) span_noexcept
+        span_constexpr span( std::array< element_type, N > & arr ) span_noexcept
         : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
@@ -578,7 +578,7 @@ public:
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N) &&
             std::is_convertible<value_type(*)[], element_type(*)[] >::value
-        >
+        >::type
 # endif
     >
     span_constexpr span( std::array< value_type, N> const & arr ) span_noexcept
@@ -663,7 +663,7 @@ public:
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == OtherExtent) &&
             std::is_convertible<OtherElementType(*)[], element_type(*)[]>::value
-        >
+        >::type
 #endif
     >
     span_constexpr14 span( span<OtherElementType, OtherExtent> const & other ) span_noexcept
