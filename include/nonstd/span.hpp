@@ -127,7 +127,7 @@ using std::operator>=;
 # define span_COMPILER_MSVC_VERSION 0
 #endif
 
-#define span_COMPILER_VERSION( major, minor, patch ) ( 10 * ( 10 * major + minor ) + patch )
+#define span_COMPILER_VERSION( major, minor, patch ) ( 10 * ( 10 * (major) + (minor) ) + (patch) )
 
 #if defined __clang__
 # define span_COMPILER_CLANG_VERSION span_COMPILER_VERSION( __clang_major__, __clang_minor__, __clang_patchlevel__ )
@@ -173,7 +173,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #endif
 
 // half-open range [lo..hi):
-#define span_BETWEEN( v, lo, hi ) ( lo <= v && v < hi )
+#define span_BETWEEN( v, lo, hi ) ( (lo) <= (v) && (v) < (hi) )
 
 // Presence of language and library features:
 
@@ -702,8 +702,8 @@ public:
     subspan() const
     {
         span_EXPECTS(
-            ( 0 <= Offset && Offset < size()) &&
-            ( Count == dynamic_extent || 0 <= Count && Count + Offset <= size())
+            ( 0 <= Offset && Offset < size() ) &&
+            ( Count == dynamic_extent || (0 <= Count && Count + Offset <= size()) )
         );
 
         return span( data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
