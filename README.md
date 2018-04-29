@@ -120,10 +120,10 @@ Configuration
 ### Select `std::span` or `nonstd::span`
 At default, *span lite* uses `std::span` if it is available and lets you use it via namespace `nonstd`. You can however override this default and explicitly request to use `std::span` as `nonstd::span` or use span lite's `nonstd::span` via the following macros.
 
--D<b>nssv_CONFIG_SELECT_STD_SPAN</b>=1  
+-D<b>span_CONFIG_SELECT_STD_SPAN</b>=1  
 Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
 
--D<b>nssv_CONFIG_SELECT_NONSTD_SPAN</b>=1  
+-D<b>span_CONFIG_SELECT_NONSTD_SPAN</b>=1  
 Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 
 ### Provide `make_span` functions
