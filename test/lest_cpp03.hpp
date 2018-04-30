@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#define  lest_VERSION "1.33.0"
+#define  lest_VERSION "1.33.1"
 
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
@@ -585,11 +585,13 @@ inline void inform( location where, text expr )
 
 // Expression decomposition:
 
+inline bool unprintable( char c ) { return 0 <= c && c < ' '; }
+
 template< typename T >
 inline std::string to_string( T const & value );
 
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
-inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
+inline std::string to_string( std::nullptr_t const &     ) { return "nullptr"; }
 #endif
 inline std::string to_string( std::string    const & txt ) { return "\"" + txt + "\"" ; }
 inline std::string to_string( char const *   const & txt ) { return "\"" + std::string( txt ) + "\"" ; }
@@ -607,8 +609,6 @@ inline std::string to_string(          char  const & chr )
         if ( chr == pos->chr )
             return pos->str;
     }
-
-    struct { bool operator()( char c ) const { return 0 <= c && c < ' '; } } unprintable;
 
     return unprintable( chr )
         ? to_string<unsigned int>( static_cast<unsigned int>( chr ) )

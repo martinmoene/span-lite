@@ -164,7 +164,7 @@ OS           | Compiler   | Where   | Versions |
 **OS X**     | ?          | Local   | ?        |
 **Windows**  | Clang/LLVM | Local   | 6.0.0    |
 &nbsp;       | GCC        | Local   | 7.2.0    |
-&nbsp;       | Visual C++<br>(Visual Studio)| Local | 8 (2005)?, 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
+&nbsp;       | Visual C++<br>(Visual Studio)| Local | 8 (2005), 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 &nbsp;       | Visual C++<br>(Visual Studio)| AppVeyor | 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 
 
