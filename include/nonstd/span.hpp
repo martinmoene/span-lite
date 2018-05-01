@@ -447,10 +447,10 @@ struct is_std_array : is_std_array_oracle< typename std::remove_cv<Q>::type >{};
 
 template< class Q >
 struct is_array : std::false_type {};
- 
+
 template< class T >
 struct is_array<T[]> : std::true_type {};
- 
+
 template< class T, std::size_t N >
 struct is_array<T[N]> : std::true_type {};
 
@@ -492,7 +492,7 @@ class span
 {
 public:
     // constants and types
-    
+
     typedef T element_type;
     typedef typename details::remove_cv< T >::type value_type;
 
@@ -509,7 +509,7 @@ public:
 
     typedef std::reverse_iterator< iterator >       reverse_iterator;
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
-    
+
 //    static constexpr index_type extent = Extent;
     enum { extent = Extent };
 
@@ -546,7 +546,7 @@ public:
         );
     }
 
-    template< size_t N 
+    template< size_t N
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N)
@@ -560,7 +560,7 @@ public:
 
 #if span_HAVE( ARRAY )
 
-    template< size_t N 
+    template< size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N) &&
@@ -573,7 +573,7 @@ public:
         , size_( to_size( arr.size() ) )
     {}
 
-    template< size_t N 
+    template< size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == N) &&
@@ -591,13 +591,13 @@ public:
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     template< class Container
         , class = typename std::enable_if<
-            ! details::is_span< Container >::value && 
+            ! details::is_span< Container >::value &&
             ! details::is_array< Container >::value &&
             ! details::is_std_array< Container >::value &&
             // data(cont) well-formed &&
             // size(cont) well-formed &&
               std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], element_type(*)[] >::value
-        >::type 
+        >::type
     >
     span_constexpr span( Container & cont )
         : data_( cont.data() )
@@ -607,13 +607,13 @@ public:
     template< class Container
         , class = typename std::enable_if<
               std::is_const< element_type >::value &&
-            ! details::is_span< Container >::value && 
+            ! details::is_span< Container >::value &&
             ! details::is_array< Container >::value &&
             ! details::is_std_array< Container >::value &&
             // data(cont) well-formed &&
             // size(cont) well-formed &&
               std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], element_type(*)[] >::value
-        >::type 
+        >::type
     >
     span_constexpr span( Container const & cont )
         : data_( cont.data() )
