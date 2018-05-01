@@ -460,7 +460,7 @@ struct is_array<T[]> : std::true_type {};
 template< class T, std::size_t N >
 struct is_array<T[N]> : std::true_type {};
 
-#endif // span_HAVE_TYPE_TRAITS
+#endif // span_HAVE( TYPE_TRAITS )
 
 struct fail_fast : std::logic_error
 {
@@ -845,7 +845,7 @@ private:
 
 // class template argument deduction guides:
 
-#if span_HAVE_DEDUCTION_GUIDES // span_CPP17_OR_GREATER
+#if span_HAVE( DEDUCTION_GUIDES )   // span_CPP17_OR_GREATER
 
 template< class T, size_t N >
 span( T (&)[N] ) -> span<T, N>;
@@ -862,7 +862,7 @@ span( Container& ) -> span<typename Container::value_type>;
 template< class Container >
 span( Container const & ) -> span<const typename Container::value_type>;
 
-#endif // span_CPP17_OR_GREATER
+#endif // span_HAVE( DEDUCTION_GUIDES )
 
 // 26.7.3.7 Comparison operators [span.comparison]
 
