@@ -907,7 +907,7 @@ inline span< const std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (t
 as_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
-    return { reinterpret_cast< std::byte const * >( spn.data(), spn.size_bytes() ) };
+    return { reinterpret_cast< std::byte const * >( spn.data() ), spn.size_bytes() };
 #else
     return span< const std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size(sizeof(T)) * Extent) ) >(
         reinterpret_cast< std::byte const * >( spn.data() ), spn.size_bytes() );  // NOLINT
@@ -919,7 +919,7 @@ inline span< std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size
 as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
-    return { reinterpret_cast< std::byte * >( spn.data(), spn.size_bytes() ) };
+    return { reinterpret_cast< std::byte * >( spn.data() ), spn.size_bytes() };
 #else
     return span< std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size(sizeof(T)) * Extent) ) >(
         reinterpret_cast< std::byte * >( spn.data() ), spn.size_bytes() );  // NOLINT
