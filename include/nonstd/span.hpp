@@ -935,6 +935,8 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 }  // namespace span_lite
 }  // namespace nonstd
 
+// make available in nonstd:
+
 namespace nonstd {
 
 using span_lite::dynamic_extent;
@@ -1056,10 +1058,42 @@ make_span( with_container_t, Container const & cont ) span_noexcept
 }  // namespace span_lite
 }  // namespace nonstd
 
+// make available in nonstd:
+
 namespace nonstd {
 using span_lite::make_span;
 }  // namespace nonstd
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
+
+#if span_CONFIG_PROVIDE_BYTE_SPAN && span_HAVE( BYTE )
+
+namespace nonstd {
+namespace span_lite {
+
+template< class T >
+inline span_constexpr auto
+byte_span( T & t ) span_noexcept -> span< std::byte, sizeof(t) >
+{
+    return span< std::byte, sizeof(t) >( reinterpret_cast< std::byte * >( &t ), sizeof(t) );
+}
+
+template< class T >
+inline span_constexpr auto
+byte_span( T const & t ) span_noexcept -> span< const std::byte, sizeof(t) >
+{
+    return span< const std::byte, sizeof(t) >( reinterpret_cast< std::byte const * >( &t ), sizeof(t) );
+}
+
+}  // namespace span_lite
+}  // namespace nonstd
+
+// make available in nonstd:
+
+namespace nonstd {
+using span_lite::byte_span;
+}  // namespace nonstd
+
+#endif // span_CONFIG_PROVIDE_BYTE_SPAN
 
 #endif  // NONSTD_SPAN_HPP_INCLUDED

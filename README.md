@@ -93,6 +93,11 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide `make_span` creator functions to compensate for the class template argument deduction that is missing from pre-C++17 compilers. See the table below and section [configuration](#configuration).
 
+### `byte_span`
+
+*span lite* can provide `byte_span` creator functions to represent an object as a span of bytes. This requires the C++17 type `std::byte` to be available. See the table below and section [configuration](#configuration).
+
+
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
@@ -108,10 +113,14 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | >= C++11 | template&lt;class T, size_t N><br>constexpr span&lt;const T,N><br>**make_span**(std::array&lt;T,N > const & arr) noexcept |
 | &nbsp; | >= C++11 | template&lt;class Container><br>constexpr auto<br>**make_span**(Container & cont) -><br>&emsp;span&lt;typename Container::value_type> noexcept |
 | &nbsp; | >= C++11 | template&lt;class Container><br>constexpr auto<br>**make_span**(Container const & cont) -><br>&emsp;span&lt;const typename Container::value_type> noexcept |
-| &nbsp; | < C++11  | template&lt;class Container><br>span&lt;typename Container::value_type><br>**make_span**( with_container_t, Container & cont ) |
-| &nbsp; | < C++11  | template&lt;class Container><br>span&lt;const typename Container::value_type><br>**make_span**( with_container_t, Container const & cont ) |
+| &nbsp; | &nbsp;   | template&lt;class Container><br>span&lt;typename Container::value_type><br>**make_span**( with_container_t, Container & cont ) |
+| &nbsp; | &nbsp;   | template&lt;class Container><br>span&lt;const typename Container::value_type><br>**make_span**( with_container_t, Container const & cont ) |
 | &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;T><br>**make_span**(std::vector&lt;T, Allocator> & cont) |
 | &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;const T><br>**make_span**(std::vector&lt;T, Allocator> const & cont) |
+| &nbsp; | &nbsp;   | &nbsp; |                                       
+| **Free functions**|&nbsp;| macro **`span_CONFIG_PROVIDE_BYTE_SPAN`** |
+| &nbsp; | &nbsp;   | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
+| &nbsp; | &nbsp;   | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
 
 
 Configuration
@@ -129,6 +138,10 @@ Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 ### Provide `make_span` functions
 -D<b>span_CONFIG_PROVIDE_MAKE_SPAN</b>=1  
 Define this to 1 to provide creator functions `nonstd::make_span`. Default is undefined.
+
+### Provide `byte_span` functions
+-D<b>span_CONFIG_PROVIDE_BYTE_SPAN</b>=1  
+Define this to 1 to provide creator functions `nonstd::byte_span`. Default is undefined.
 
 ### Contract violation response macros
 

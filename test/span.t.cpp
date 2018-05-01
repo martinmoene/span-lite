@@ -1050,6 +1050,38 @@ CASE( "make_span(): Allows building from a const container (with_container_t, st
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
+#if span_CONFIG_PROVIDE_BYTE_SPAN
+
+CASE( "byte_span(): Allows building a span of std::byte from a single object (C++17)" )
+{
+# if span_HAVE( BYTE )
+    int x = std::numeric_limits<int>::max();
+    
+    span<std::byte> spn = byte_span( x );
+
+    EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
+    EXPECT( spn[0]     == std::byte( 0xff ) );
+#else
+    EXPECT( !!"std::byte is not available (no C++17)" );
+#endif
+}
+
+CASE( "byte_span(): Allows building a span of const std::byte from a single const object (C++17)" )
+{
+# if span_HAVE( BYTE )
+    const int x = std::numeric_limits<int>::max();
+    
+    span<const std::byte> spn = byte_span( x );
+
+    EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
+    EXPECT( spn[0]     == std::byte( 0xff ) );
+#else
+    EXPECT( !!"std::byte is not available (no C++17)" );
+#endif
+}
+
+#endif // span_CONFIG_PROVIDE_BYTE_SPAN
+
 // Issues
 
 #include <cassert>
