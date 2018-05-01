@@ -968,19 +968,22 @@ namespace nonstd {
 namespace span_lite {
 
 template< class T >
-inline span_constexpr14 span<T> make_span( T * first, T * last ) span_noexcept
+inline span_constexpr14 span<T> 
+make_span( T * first, T * last ) span_noexcept
 {
     return span<T>( first, last );
 }
 
 template< class T >
-inline span_constexpr14 span<T> make_span( T * ptr, index_t count ) span_noexcept
+inline span_constexpr14 span<T> 
+make_span( T * ptr, index_t count ) span_noexcept
 {
     return span<T>( ptr, count );
 }
 
 template< class T, size_t N >
-inline span_constexpr14 span<T,N> make_span( T ( &arr )[ N ] ) span_noexcept
+inline span_constexpr14 span<T,N> 
+make_span( T ( &arr )[ N ] ) span_noexcept
 {
     return span<T,N>( &arr[ 0 ], N );
 }
@@ -988,13 +991,15 @@ inline span_constexpr14 span<T,N> make_span( T ( &arr )[ N ] ) span_noexcept
 #if span_HAVE( ARRAY )
 
 template< class T, size_t N >
-inline span_constexpr14 span<T,N> make_span( std::array< T, N > & arr ) span_noexcept
+inline span_constexpr14 span<T,N> 
+make_span( std::array< T, N > & arr ) span_noexcept
 {
     return span<T,N>( arr );
 }
 
 template< class T, size_t N >
-inline span_constexpr14 span< const T, N > make_span( std::array< T, N > const & arr ) span_noexcept
+inline span_constexpr14 span< const T, N > 
+make_span( std::array< T, N > const & arr ) span_noexcept
 {
     return span<const T,N>( arr );
 }
@@ -1004,13 +1009,15 @@ inline span_constexpr14 span< const T, N > make_span( std::array< T, N > const &
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
 
 template< class Container, class = decltype(std::declval<Container>().data()) >
-inline span_constexpr14 auto make_span( Container & cont ) span_noexcept -> span< typename Container::value_type >
+inline span_constexpr14 auto 
+make_span( Container & cont ) span_noexcept -> span< typename Container::value_type >
 {
     return span< typename Container::value_type >( cont );
 }
 
 template< class Container, class = decltype(std::declval<Container>().data()) >
-inline span_constexpr14 auto make_span( Container const & cont ) span_noexcept -> span< const typename Container::value_type >
+inline span_constexpr14 auto 
+make_span( Container const & cont ) span_noexcept -> span< const typename Container::value_type >
 {
     return span< const typename Container::value_type >( cont );
 }
@@ -1018,26 +1025,30 @@ inline span_constexpr14 auto make_span( Container const & cont ) span_noexcept -
 #else
 
 template< class T, class Allocator >
-inline span_constexpr14 span<T> make_span( std::vector<T, Allocator> & cont ) span_noexcept
+inline span_constexpr14 span<T> 
+make_span( std::vector<T, Allocator> & cont ) span_noexcept
 {
     return span<T>( with_container, cont );
 }
 
 template< class T, class Allocator >
-inline span_constexpr14 span<const T> make_span( std::vector<T, Allocator> const & cont ) span_noexcept
+inline span_constexpr14 span<const T> 
+make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 {
     return span<const T>( with_container, cont );
 }
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
 
 template< class Container >
-inline span_constexpr14 span<typename Container::value_type> make_span( with_container_t, Container & cont ) span_noexcept
+inline span_constexpr14 span<typename Container::value_type> 
+make_span( with_container_t, Container & cont ) span_noexcept
 {
     return span< typename Container::value_type >( with_container, cont );
 }
 
 template< class Container >
-inline span_constexpr14 span<const typename Container::value_type> make_span( with_container_t, Container const & cont ) span_noexcept
+inline span_constexpr14 span<const typename Container::value_type> 
+make_span( with_container_t, Container const & cont ) span_noexcept
 {
     return span< const typename Container::value_type >( with_container, cont );
 }
