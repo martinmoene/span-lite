@@ -862,38 +862,38 @@ span( Container const & ) -> span<const typename Container::value_type>;
 
 // 26.7.3.7 Comparison operators [span.comparison]
 
-template< class T, index_t Extent >
-inline span_constexpr14 bool operator==( span<T,Extent> const & l, span<T,Extent> const & r )
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr14 bool operator==( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return l.size() == r.size() && ( l.begin() == r.begin() || std::equal( l.begin(), l.end(), r.begin() ) );
 }
 
-template< class T, index_t Extent >
-inline span_constexpr14 bool operator<( span<T,Extent> const & l, span<T,Extent> const & r )
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr14 bool operator<( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return std::lexicographical_compare( l.begin(), l.end(), r.begin(), r.end() );
 }
 
-template< class T, index_t Extent >
-inline span_constexpr14 bool operator!=( span<T,Extent> const & l, span<T,Extent> const & r )
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr14 bool operator!=( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return !( l == r );
 }
 
-template< class T, index_t Extent >
-inline span_constexpr14 bool operator<=( span<T,Extent> const & l, span<T,Extent> const & r )
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr14 bool operator<=( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return !( r < l );
 }
 
-template< class T, index_t Extent >
-inline span_constexpr14 bool operator>( span<T,Extent> const & l, span<T,Extent> const & r )
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr14 bool operator>( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return ( r < l );
 }
 
-template< class T, index_t Extent >
-inline span_constexpr14 bool operator>=( span<T,Extent> const & l, span<T,Extent> const & r )
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr14 bool operator>=( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return !( l < r );
 }
