@@ -945,6 +945,11 @@ using span_lite::operator<=;
 using span_lite::operator>;
 using span_lite::operator>=;
 
+#if span_HAVE( BYTE )
+using span_lite::as_bytes;
+using span_lite::as_writeable_bytes;
+#endif
+
 }  // namespace nonstd
 
 span_RESTORE_WARNINGS()
