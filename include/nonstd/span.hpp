@@ -1035,7 +1035,7 @@ inline span<const typename Container::value_type> make_span( with_container_t, C
 }  // namespace nonstd
 
 namespace nonstd {
-using nonstd::span_lite::make_span;
+using span_lite::make_span;
 }  // namespace nonstd
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
