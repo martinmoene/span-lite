@@ -851,7 +851,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
     span<type> va( a );
     span<byte> vb( as_writeable_bytes(va) );
 
-    for ( size_t i = 0; i < sizeof(type); ++i )
+    for ( std::ptrdiff_t i = 0; i < std::ptrdiff_t( sizeof(type) ); ++i )
     {
         EXPECT( vb[i] == byte{0} );
     }
@@ -859,7 +859,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
     vb[0] = byte{0x42};
 
     EXPECT( vb[0] == byte{0x42} );
-    for ( size_t i = 1; i < sizeof(type); ++i )
+    for ( std::ptrdiff_t i = 1; i < std::ptrdiff_t( sizeof(type) ); ++i )
     {
         EXPECT( vb[i] == byte{0} );
     }
