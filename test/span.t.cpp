@@ -1054,4 +1054,20 @@ CASE( "make_span(): Allows building from a const container (with_container_t, st
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
+// Issues
+
+#include <cassert>
+
+CASE( "[.issue 3]" )
+{
+    static const uint8_t data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+
+    span< const uint8_t > spn( data );
+
+    EXPECT( spn[0] == 0 );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
+
+    assert( make_span( data ) == make_span(data) ); // Ok, non-heterogeneous comparison
+    assert( make_span( data ) == spn             ); // Compile error: comparing fixed with dynamic extension
+}
+
 // end of file
