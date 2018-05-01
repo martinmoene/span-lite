@@ -108,6 +108,8 @@ using std::operator>=;
 
 #else  // span_USES_STD_SPAN
 
+#include <algorithm>
+
 // Compiler versions:
 //
 // MSVC++ 6.0  _MSC_VER == 1200 (Visual Studio 6.0)
