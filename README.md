@@ -295,7 +295,7 @@ span<>: Allows to compare less than another span of the same type
 span<>: Allows to compare less than or equal to another span of the same type
 span<>: Allows to compare greater than another span of the same type
 span<>: Allows to compare greater than or equal to another span of the same type
-span<>: Allows to compare to another span of the same type and different cv-ness (non-standard)
+span<>: Allows to compare to another span of the same type and different cv-ness
 span<>: Allows to compare empty spans as equal
 span<>: Allows to test for empty span via empty(), empty case
 span<>: Allows to test for empty span via empty(), non-empty case
@@ -315,4 +315,6 @@ make_span(): Allows building from a container (std::vector<>)
 make_span(): Allows building from a const container (std::vector<>)
 make_span(): Allows building from a container (with_container_t, std::vector<>)
 make_span(): Allows building from a const container (with_container_t, std::vector<>)
+byte_span(): Allows building a span of std::byte from a single object (C++17)
+byte_span(): Allows building a span of const std::byte from a single const object (C++17)
 ```
