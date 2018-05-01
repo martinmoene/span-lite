@@ -427,7 +427,7 @@ struct remove_cv
 
 #endif  // span_HAVE( REMOVE_CONST )
 
-#if span_CPP11_OR_GREATER // HAVE_TRUE_TYPE
+#if span_HAVE( TYPE_TRAITS )
 
 template< class Q >
 struct is_span_oracle : std::false_type{};
@@ -441,8 +441,12 @@ struct is_span : is_span_oracle< typename std::remove_cv<Q>::type >{};
 template< class Q >
 struct is_std_array_oracle : std::false_type{};
 
+#if span_HAVE( ARRAY )
+
 template< class T, std::size_t Extent >
 struct is_std_array_oracle< std::array<T, Extent> > : std::true_type{};
+
+#endif
 
 template< class Q >
 struct is_std_array : is_std_array_oracle< typename std::remove_cv<Q>::type >{};
@@ -456,7 +460,7 @@ struct is_array<T[]> : std::true_type {};
 template< class T, std::size_t N >
 struct is_array<T[N]> : std::true_type {};
 
-#endif // span_CPP11_OR_GREATER
+#endif // span_HAVE_TYPE_TRAITS
 
 struct fail_fast : std::logic_error
 {
