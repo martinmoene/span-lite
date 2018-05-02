@@ -583,7 +583,7 @@ CASE( "span<>: Allows to observe an element via data()" )
     }
 }
 
-CASE( "span<>: Allows to observe the first element via front()" )
+CASE( "span<>: Allows to observe the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
 # if span_CONFIG_PROVIDE_BACK_FRONT
     int arr[] = { 1, 2, 3, };
@@ -591,11 +591,11 @@ CASE( "span<>: Allows to observe the first element via front()" )
 
     EXPECT( v.front() == 1 );
 #else
-    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to observe the last element via back()" )
+CASE( "span<>: Allows to observe the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
 # if span_CONFIG_PROVIDE_BACK_FRONT
     int arr[] = { 1, 2, 3, };
@@ -603,7 +603,7 @@ CASE( "span<>: Allows to observe the last element via back()" )
 
     EXPECT( v.back() == 3 );
 #else
-    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
@@ -647,7 +647,7 @@ CASE( "span<>: Allows to change an element via data()" )
     EXPECT( 33 == *w.data() );
 }
 
-CASE( "span<>: Allows to change the first element via front()" )
+CASE( "span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
 # if span_CONFIG_PROVIDE_BACK_FRONT
     int arr[] = { 1, 2, 3, };
@@ -657,11 +657,11 @@ CASE( "span<>: Allows to change the first element via front()" )
 
     EXPECT( v.front() == 42 );
 #else
-    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to change the last element via back()" )
+CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
 # if span_CONFIG_PROVIDE_BACK_FRONT
     int arr[] = { 1, 2, 3, };
@@ -671,32 +671,60 @@ CASE( "span<>: Allows to change the last element via back()" )
 
     EXPECT( v.back() == 42 );
 #else
-    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
 #endif
+}
+
+CASE( "span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]" )
+{
+    int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };
+    char x[] = { '\x1' };
+
+    span<int > va( a );
+    span<int > vb( b );
+    span<int > vc( c );
+    span<char> vx( x );
+    span<unsigned char> vu = make_span( reinterpret_cast<unsigned char*>( &x[0] ), 1 );
+
+    EXPECT(     same( va, va ) );
+    EXPECT_NOT( same( vb, va ) );
+    EXPECT_NOT( same( vc, va ) );
+    EXPECT_NOT( same( vx, va ) );
+    EXPECT_NOT( same( vx, vu ) );
+
+    EXPECT(         va == va );
+    EXPECT(         vb == va );
+    EXPECT_NOT(     vc == va );
+//  EXPECT_NOT(     vx == va );
+//  EXPECT_NOT(     vx == vu );
 }
 
 CASE( "span<>: Allows to compare equal to another span of the same type" )
 {
-    int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
+    int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
     span<int> vc( c );
+    span<int> vd( d );
 
     EXPECT(     va == va );
-    EXPECT_NOT( vb == va );
+    EXPECT(     vb == va );
     EXPECT_NOT( vc == va );
+    EXPECT_NOT( vd == va );
 }
 
 CASE( "span<>: Allows to compare unequal to another span of the same type" )
 {
-    int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
+    int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
     span<int> vc( c );
+    span<int> vd( d );
 
     EXPECT_NOT( va != va );
-    EXPECT(     vb != va );
+    EXPECT_NOT( vb != va );
     EXPECT(     vc != va );
+    EXPECT(     vd != va );
 }
 
 CASE( "span<>: Allows to compare less than another span of the same type" )
@@ -747,8 +775,11 @@ CASE( "span<>: Allows to compare greater than or equal to another span of the sa
     EXPECT(     vc >= va );
 }
 
-CASE( "span<>: Allows to compare to another span of the same type and different cv-ness" )
+CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_CONFIG_PROVIDE_SAME=0]" )
 {
+#if span_CONFIG_PROVIDE_SAME
+    EXPECT( !!"same() is provided via span_CONFIG_PROVIDE_SAME=1" );
+#else
     int aa[] = { 1 }, bb[] = { 2 };
     span<         int>  a( aa );
     span<   const int> ca( aa );
@@ -765,6 +796,7 @@ CASE( "span<>: Allows to compare to another span of the same type and different 
     EXPECT(  a <  cb );
     EXPECT(  b >= ca );
     EXPECT(  b >  ca );
+#endif
 }
 
 CASE( "span<>: Allows to compare empty spans as equal" )
@@ -972,6 +1004,11 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 
 #if span_CONFIG_PROVIDE_MAKE_SPAN
 
+CASE( "make_span() [span_CONFIG_PROVIDE_MAKE_SPAN=1]" )
+{
+    EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
+}
+
 CASE( "make_span(): Allows building from two pointers" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
@@ -1104,6 +1141,11 @@ CASE( "make_span(): Allows building from a const container (with_container_t, st
 
 #if span_CONFIG_PROVIDE_BYTE_SPAN
 
+CASE( "byte_span() [span_CONFIG_PROVIDE_BYTE_SPAN=1]" )
+{
+    EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
+}
+
 CASE( "byte_span(): Allows building a span of std::byte from a single object (C++17)" )
 {
 # if span_HAVE( BYTE )
@@ -1138,7 +1180,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
 #include <cassert>
 
-CASE( "[.issue 3]" )
+CASE( "[.issue 3: heterogeneous comparison]" )
 {
 #if span_CONFIG_PROVIDE_MAKE_SPAN
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
@@ -1150,8 +1192,76 @@ CASE( "[.issue 3]" )
     assert( make_span( data ) == make_span(data) ); // Ok, non-heterogeneous comparison
     assert( make_span( data ) == spn             ); // Compile error: comparing fixed with dynamic extension
 #else
-    EXPECT( !!"make_span() is not provided via span_CONFIG_PROVIDE_MAKE_SPAN" );
+    EXPECT( !!"make_span() is not provided via span_CONFIG_PROVIDE_MAKE_SPAN=1" );
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
+}
+
+CASE( "[.issue 3: same()]" )
+{
+#if span_CONFIG_PROVIDE_SAME
+    EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
+
+    typedef unsigned char uint8_type;
+
+    static uint8_type const data[]    = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    static float      const farray[4] = { 0, 1, 2, 3 };
+
+    span<float const> fspan1 = make_span( farray );
+
+    assert( fspan1.data() == farray );
+    assert( fspan1.size() == DIMENSION_OF( farray ) );
+
+# if span_HAVE( BYTE )
+    span<std::byte const> fspan2 = byte_span( farray[0] );
+
+    assert( static_cast<void const *>( fspan1.data() ) == fspan2.data() );
+    assert(                            fspan1.size()   == fspan2.size() );
+    assert(                    ! same( fspan1          ,  fspan2 )      );
+# endif
+
+    span<uint8_type const> bspan4 = make_span( data, 4 );
+
+//  assert(        bspan4 == fspan1   ); // compile error: conversion requires reinterpret_cast
+//  assert(        fspan1 == bspan4   ); // compile error: conversion requires reinterpret_cast
+    assert( !same( fspan1 ,  bspan4 ) );
+
+# if span_HAVE( BYTE )
+    assert(        as_bytes( fspan1 ) != as_bytes( bspan4 )   );
+    assert( !same( as_bytes( fspan1 ) ,  as_bytes( bspan4 ) ) );
+#endif
+
+    union
+    {
+        int i;
+        float f;
+        char c;
+    } u = { 0x12345678 };
+
+    span<int  > uspan1 = make_span( &u.i, 1 );
+    span<float> uspan2 = make_span( &u.f, 1 );
+    span<char > uspan3 = make_span( &u.c, 1 );
+
+    assert( static_cast<void const *>( uspan1.data() ) == uspan2.data() );
+    assert(                            uspan1.size()   == uspan2.size() );
+    assert( static_cast<void const *>( uspan1.data() ) == uspan3.data() );
+    assert(                            uspan1.size()   == uspan3.size() );
+
+    assert( !same( uspan1, uspan2 ) );
+    assert( !same( uspan1, uspan3 ) );
+    assert( !same( uspan2, uspan3 ) );
+
+//  assert( uspan1 != uspan2 );  // compile error: conversion requires reinterpret_cast
+//  assert( uspan1 != uspan3 );  // compile error: conversion requires reinterpret_cast
+//  assert( uspan2 != uspan3 );  // compile error: conversion requires reinterpret_cast
+
+# if span_HAVE( BYTE )
+    assert(  same( as_bytes( uspan1 ), as_bytes( uspan2 ) ) );
+    assert( !same( as_bytes( uspan1 ), as_bytes( uspan3 ) ) );
+    assert( !same( as_bytes( uspan2 ), as_bytes( uspan3 ) ) );
+# endif
+#else
+    EXPECT( !!"same() is not provided via span_CONFIG_PROVIDE_SAME=1" );
+#endif // span_CONFIG_PROVIDE_SAME
 }
 
 // end of file

@@ -93,6 +93,10 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
+### `same()`
+
+*span lite* can provide function `same()` to determine if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. See the table below and section [configuration](#configuration).
+
 ### `make_span()`
 
 *span lite* can provide `make_span()` creator functions to compensate for the class template argument deduction that is missing from pre-C++17 compilers. See the table below and section [configuration](#configuration).
@@ -112,6 +116,9 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Methods**        |&nbsp;| macro **`span_CONFIG_PROVIDE_BACK_FRONT`** |
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
 | &nbsp;             |&nbsp;| constexpr reference **front()** const noexcept |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_SAME`** |
+| &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN`** |
 | &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
@@ -146,6 +153,10 @@ Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 ### Provide `back()` and `front()` member functions
 -D<b>span_CONFIG_PROVIDE_BACK_FRONT</b>=1  
 Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
+
+### Provide `same()` function
+-D<b>span_CONFIG_PROVIDE_SAME</b>=1  
+Define this to 1 to provide function `same()` to test if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. Default is undefined.
 
 ### Provide `make_span()` functions
 -D<b>span_CONFIG_PROVIDE_MAKE_SPAN</b>=1  
@@ -298,20 +309,21 @@ span<>: Allows const reverse iteration
 span<>: Allows to observe an element via array indexing
 span<>: Allows to observe an element via call indexing
 span<>: Allows to observe an element via data()
-span<>: Allows to observe the first element via front()
-span<>: Allows to observe the last element via back()
+span<>: Allows to observe the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]
+span<>: Allows to observe the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]
 span<>: Allows to change an element via array indexing
 span<>: Allows to change an element via call indexing
 span<>: Allows to change an element via data()
-span<>: Allows to change the first element via front()
-span<>: Allows to change the last element via back()
+span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]
+span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]
+span<>: Allows to identfy a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]
 span<>: Allows to compare equal to another span of the same type
 span<>: Allows to compare unequal to another span of the same type
 span<>: Allows to compare less than another span of the same type
 span<>: Allows to compare less than or equal to another span of the same type
 span<>: Allows to compare greater than another span of the same type
 span<>: Allows to compare greater than or equal to another span of the same type
-span<>: Allows to compare to another span of the same type and different cv-ness
+span<>: Allows to compare to another span of the same type and different cv-ness [span_CONFIG_PROVIDE_SAME=0]
 span<>: Allows to compare empty spans as equal
 span<>: Allows to test for empty span via empty(), empty case
 span<>: Allows to test for empty span via empty(), non-empty case
@@ -319,6 +331,7 @@ span<>: Allows to obtain the number of elements via size()
 span<>: Allows to obtain the number of bytes via size_bytes()
 span<>: Allows to view the elements as read-only bytes
 span<>: Allows to view and change the elements as writable bytes
+make_span() [span_CONFIG_PROVIDE_MAKE_SPAN=1]
 make_span(): Allows building from two pointers
 make_span(): Allows building from two const pointers
 make_span(): Allows building from a non-null pointer and a size
@@ -331,6 +344,7 @@ make_span(): Allows building from a container (std::vector<>)
 make_span(): Allows building from a const container (std::vector<>)
 make_span(): Allows building from a container (with_container_t, std::vector<>)
 make_span(): Allows building from a const container (with_container_t, std::vector<>)
+byte_span() [span_CONFIG_PROVIDE_BYTE_SPAN=1]
 byte_span(): Allows building a span of std::byte from a single object (C++17)
 byte_span(): Allows building a span of const std::byte from a single const object (C++17)
 ```

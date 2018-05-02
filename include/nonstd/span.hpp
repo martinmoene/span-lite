@@ -400,6 +400,10 @@ const span_constexpr with_container_t with_container;
 
 namespace details {
 
+#if span_HAVE( TYPE_TRAITS )
+using std::is_same;
+#endif
+
 #if span_HAVE( REMOVE_CONST )
 
 using std::remove_cv;
@@ -421,6 +425,16 @@ struct remove_cv
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
+
+#if ! span_HAVE( TYPE_TRAITS )
+
+struct true_type { enum { value = true }; };
+struct false_type{ enum { value = false }; };
+
+template< class T, class U > struct is_same : false_type{};
+template< class T          > struct is_same<T, T> : true_type{};
+
+#endif
 
 #if span_HAVE( TYPE_TRAITS )
 
@@ -875,10 +889,26 @@ span( Container const & ) -> span<const typename Container::value_type>;
 
 // 26.7.3.7 Comparison operators [span.comparison]
 
+#if span_CONFIG_PROVIDE_SAME
+
+template< class T1, index_t E1, class T2, index_t E2  >
+inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) span_noexcept
+{
+    return details::is_same<T1, T2>::value
+        && l.size() == r.size()
+        && static_cast<void const*>( l.data() ) == r.data();
+}
+
+#endif
+
 template< class T1, index_t E1, class T2, index_t E2  >
 inline span_constexpr bool operator==( span<T1,E1> const & l, span<T2,E2> const & r )
 {
-    return l.size() == r.size() && ( l.begin() == r.begin() || std::equal( l.begin(), l.end(), r.begin() ) );
+    return
+#if span_CONFIG_PROVIDE_SAME
+        same( l, r ) ||
+#endif
+        ( l.size() == r.size() && ( l.begin() == r.begin() || std::equal( l.begin(), l.end(), r.begin() ) ) );
 }
 
 template< class T1, index_t E1, class T2, index_t E2  >
@@ -965,6 +995,9 @@ using span_lite::as_bytes;
 using span_lite::as_writeable_bytes;
 #endif
 
+#if span_CONFIG_PROVIDE_SAME
+using span_lite::same;
+#endif
 }  // namespace nonstd
 
 #endif  // span_USES_STD_SPAN
