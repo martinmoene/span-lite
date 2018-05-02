@@ -88,22 +88,30 @@ Non-standard extensions
 ### Construct from container
 
 To construct a span from a container with compilers that cannot constrain such a single-parameter constructor to containers, *span lite* provides a constructor that takes an additional parameter of type `with_container_t`. Use `with_container` as value for this parameter.
- 
-### `make_span`
 
-*span lite* can provide `make_span` creator functions to compensate for the class template argument deduction that is missing from pre-C++17 compilers. See the table below and section [configuration](#configuration).
+### `back()` and `front()`
 
-### `byte_span`
+*span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
-*span lite* can provide `byte_span` creator functions to represent an object as a span of bytes. This requires the C++17 type `std::byte` to be available. See the table below and section [configuration](#configuration).
+### `make_span()`
+
+*span lite* can provide `make_span()` creator functions to compensate for the class template argument deduction that is missing from pre-C++17 compilers. See the table below and section [configuration](#configuration).
+
+### `byte_span()`
+
+*span lite* can provide `byte_span()` creator functions to represent an object as a span of bytes. This requires the C++17 type `std::byte` to be available. See the table below and section [configuration](#configuration).
 
 
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
 | **Objects**        |&nbsp;| **with_container** value to disambiguate below constructors |
-| **Methods**        |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
+| **Constructors**   |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Methods**        |&nbsp;| macro **`span_CONFIG_PROVIDE_BACK_FRONT`** |
+| &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
+| &nbsp;             |&nbsp;| constexpr reference **front()** const noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN`** |
 | &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
@@ -135,13 +143,17 @@ Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
 -D<b>span_CONFIG_SELECT_NONSTD_SPAN</b>=1  
 Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 
-### Provide `make_span` functions
--D<b>span_CONFIG_PROVIDE_MAKE_SPAN</b>=1  
-Define this to 1 to provide creator functions `nonstd::make_span`. Default is undefined.
+### Provide `back()` and `front()` member functions
+-D<b>span_CONFIG_PROVIDE_BACK_FRONT</b>=1  
+Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
 
-### Provide `byte_span` functions
+### Provide `make_span()` functions
+-D<b>span_CONFIG_PROVIDE_MAKE_SPAN</b>=1  
+Define this to 1 to provide creator functions `nonstd::make_span()`. Default is undefined.
+
+### Provide `byte_span()` functions
 -D<b>span_CONFIG_PROVIDE_BYTE_SPAN</b>=1  
-Define this to 1 to provide creator functions `nonstd::byte_span`. Default is undefined.
+Define this to 1 to provide creator functions `nonstd::byte_span()`. Default is undefined.
 
 ### Contract violation response macros
 
@@ -286,9 +298,13 @@ span<>: Allows const reverse iteration
 span<>: Allows to observe an element via array indexing
 span<>: Allows to observe an element via call indexing
 span<>: Allows to observe an element via data()
+span<>: Allows to observe the first element via front()
+span<>: Allows to observe the last element via back()
 span<>: Allows to change an element via array indexing
 span<>: Allows to change an element via call indexing
 span<>: Allows to change an element via data()
+span<>: Allows to change the first element via front()
+span<>: Allows to change the last element via back()
 span<>: Allows to compare equal to another span of the same type
 span<>: Allows to compare unequal to another span of the same type
 span<>: Allows to compare less than another span of the same type

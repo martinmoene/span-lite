@@ -583,6 +583,30 @@ CASE( "span<>: Allows to observe an element via data()" )
     }
 }
 
+CASE( "span<>: Allows to observe the first element via front()" )
+{
+# if span_CONFIG_PROVIDE_BACK_FRONT
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    EXPECT( v.front() == 1 );
+#else
+    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+#endif
+}
+
+CASE( "span<>: Allows to observe the last element via back()" )
+{
+# if span_CONFIG_PROVIDE_BACK_FRONT
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    EXPECT( v.back() == 3 );
+#else
+    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+#endif
+}
+
 CASE( "span<>: Allows to change an element via array indexing" )
 {
     int arr[] = { 1, 2, 3, };
@@ -621,6 +645,34 @@ CASE( "span<>: Allows to change an element via data()" )
 
     *w.data() = 33;
     EXPECT( 33 == *w.data() );
+}
+
+CASE( "span<>: Allows to change the first element via front()" )
+{
+# if span_CONFIG_PROVIDE_BACK_FRONT
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    v.front() = 42;
+
+    EXPECT( v.front() == 42 );
+#else
+    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+#endif
+}
+
+CASE( "span<>: Allows to change the last element via back()" )
+{
+# if span_CONFIG_PROVIDE_BACK_FRONT
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    v.back() = 42;
+
+    EXPECT( v.back() == 42 );
+#else
+    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT)" );
+#endif
 }
 
 CASE( "span<>: Allows to compare equal to another span of the same type" )
@@ -1056,7 +1108,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
 {
 # if span_HAVE( BYTE )
     int x = std::numeric_limits<int>::max();
-    
+
     span<std::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
@@ -1070,7 +1122,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 {
 # if span_HAVE( BYTE )
     const int x = std::numeric_limits<int>::max();
-    
+
     span<const std::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );

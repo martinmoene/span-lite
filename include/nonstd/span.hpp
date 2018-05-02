@@ -775,6 +775,20 @@ public:
         return data_;
     }
 
+#if span_CONFIG_PROVIDE_BACK_FRONT
+
+    span_constexpr reference front() const span_noexcept
+    {
+        return *data();
+    }
+
+    span_constexpr reference back() const span_noexcept
+    {
+        return *( data() + size() - 1 );
+    }
+
+#endif // span_CONFIG_PROVIDE_BACK_FRONT
+
     // 26.7.3.6 Iterator support [span.iterators]
 
     span_constexpr iterator begin() const span_noexcept
