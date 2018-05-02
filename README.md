@@ -303,7 +303,7 @@ span<>: Allows to construct from a const C-array
 span<>: Allows to construct from a C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a const C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a std::array<> (C++11)
-span<>: Allows to construct from a std::array<> with const data (C++11)
+span<>: Allows to construct from a std::array<> with const data (C++11, span_CONFIG_PROVIDE_CONSTR..._ELEMENT_TYPE=1)
 span<>: Allows to construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a const container (std::vector<>)
@@ -330,7 +330,7 @@ span<>: Allows to change an element via call indexing
 span<>: Allows to change an element via data()
 span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]
 span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]
-span<>: Allows to identfy a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]
+span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]
 span<>: Allows to compare equal to another span of the same type
 span<>: Allows to compare unequal to another span of the same type
 span<>: Allows to compare less than another span of the same type
@@ -345,7 +345,7 @@ span<>: Allows to obtain the number of elements via size()
 span<>: Allows to obtain the number of bytes via size_bytes()
 span<>: Allows to view the elements as read-only bytes
 span<>: Allows to view and change the elements as writable bytes
-make_span() [span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=1]
+make_span() [span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99]
 make_span(): Allows building from two pointers
 make_span(): Allows building from two const pointers
 make_span(): Allows building from a non-null pointer and a size
