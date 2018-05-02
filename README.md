@@ -259,6 +259,7 @@ Other implementations of span
 - *gsl-lite* [span](https://github.com/martinmoene/gsl-lite/blob/73c4f16f2b35fc174fc2f09d44d5ab13e5c638c3/include/gsl/gsl-lite.hpp#L1221).
 - Microsoft GSL [span](https://github.com/Microsoft/GSL/blob/master/include/gsl/span).
 - Google Abseil [span](https://github.com/abseil/abseil-cpp/blob/master/absl/types/span.h).
+- [libc++ span snippet](https://github.com/mclow/snippets/blob/master/span.cpp)
 - [Search _span c++_ on GitHub](https://github.com/search?l=C%2B%2B&q=span+c%2B%2B&type=Repositories&utf8=%E2%9C%93).
 
 
@@ -274,7 +275,8 @@ Notes and references
 
 *Proposals*
 - [p0122 - span: bounds-safe views for sequences of objects](http://wg21.link/p0122).
-- [p0091 - Template argument deduction for class templates](wg21.link/p0091)
+- [p0805 - Comparing Containers](http://wg21.link/p0805)
+- [p0091 - Template argument deduction for class templates](http://wg21.link/p0091)
 
 
 Appendix
