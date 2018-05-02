@@ -273,8 +273,9 @@ CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 #endif
 }
 
-CASE( "span<>: Allows to construct from a std::array<> with const data (C++11)" )
+CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, span_CONFIG_PROVIDE_CONSTR..._ELEMENT_TYPE=1)" )
 {
+#if span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE
 # if span_HAVE( ARRAY )
     std::array<const int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
@@ -283,8 +284,11 @@ CASE( "span<>: Allows to construct from a std::array<> with const data (C++11)" 
 
     EXPECT( std::equal( v.begin(), v.end(), arr.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), arr.begin() ) );
-#else
+# else
     EXPECT( !!"std::array<> is not available (no C++11)" );
+# endif
+#else
+    EXPECT( !!"construction is not available (span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=0)" );
 #endif
 }
 

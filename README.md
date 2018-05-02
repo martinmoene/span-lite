@@ -89,6 +89,10 @@ Non-standard extensions
 
 To construct a span from a container with compilers that cannot constrain such a single-parameter constructor to containers, *span lite* provides a constructor that takes an additional parameter of type `with_container_t`. Use `with_container` as value for this parameter.
 
+### Construct from `std::array` with const data
+
+*span lite* can provide construction of a span from a `std::array` with const data. See the table below and section [configuration](#configuration).
+
 ### `back()` and `front()`
 
 *span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
@@ -110,7 +114,8 @@ To construct a span from a container with compilers that cannot constrain such a
 |--------------------|------|--------------------|
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
 | **Objects**        |&nbsp;| **with_container** value to disambiguate below constructors |
-| **Constructors**   |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
+| **Constructors**   |&nbsp;| macro **`span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
+| &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_CONFIG_PROVIDE_BACK_FRONT`** |
@@ -149,6 +154,10 @@ Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
 
 -D<b>span_CONFIG_SELECT_NONSTD_SPAN</b>=1  
 Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
+
+### Provide construction from std::array with const data
+-D<b>span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
+Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
 -D<b>span_CONFIG_PROVIDE_BACK_FRONT</b>=1  

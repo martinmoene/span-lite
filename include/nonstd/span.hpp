@@ -583,7 +583,11 @@ public:
         >::type
 # endif
     >
+# if span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE
         span_constexpr span( std::array< element_type, N > & arr ) span_noexcept
+# else
+        span_constexpr span( std::array< value_type, N > & arr ) span_noexcept
+# endif
         : data_( span_ADDRESSOF( arr[0] ) )
         , size_( to_size( arr.size() ) )
     {}
