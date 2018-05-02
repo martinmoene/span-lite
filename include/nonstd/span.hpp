@@ -22,6 +22,10 @@
 
 // Configuration:
 
+#ifndef  span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD
+# define span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD  0
+#endif
+
 // Force use of std or nonstd span:
 
 #ifdef   span_CONFIG_SELECT_STD_SPAN
@@ -67,6 +71,7 @@
 # define span_MSVC_LANG 0
 #endif
 
+#define span_CPP98_OR_GREATER ( __cplusplus >= 199711L || span_MSVC_LANG >= 199711L )
 #define span_CPP11_OR_GREATER ( __cplusplus >= 201103L || span_MSVC_LANG >= 201103L )
 #define span_CPP14_OR_GREATER ( __cplusplus >= 201402L || span_MSVC_LANG >= 201703L /*201402L*/ )
 #define span_CPP17_OR_GREATER ( __cplusplus >= 201703L || span_MSVC_LANG >= 201703L )
@@ -109,6 +114,23 @@ using std::operator>=;
 #else  // span_USES_STD_SPAN
 
 #include <algorithm>
+
+// C++ language version:
+
+#if      span_CPP20_OR_GREATER
+# define span_CPLUSPLUS         20
+#elif    span_CPP17_OR_GREATER
+# define span_CPLUSPLUS         17
+#elif    span_CPP14_OR_GREATER
+# define span_CPLUSPLUS         14
+#elif    span_CPP11_OR_GREATER
+# define span_CPLUSPLUS         11
+#elif    span_CPP98_OR_GREATER
+# define span_CPLUSPLUS         03
+#endif
+
+#define span_HAVE_WITH_CONTAINER  \
+    ( span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD==98 || span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD >= span_CPLUSPLUS )
 
 // Compiler versions:
 //
@@ -391,10 +413,14 @@ span_constexpr const index_t dynamic_extent = -1;
 template< class T, index_t Extent = dynamic_extent >
 class span;
 
+#if span_HAVE( WITH_CONTAINER )
+
 // Tag to select span constructor taking a container (prevent ms-gsl warning C26426):
 
 struct with_container_t { span_constexpr with_container_t() span_noexcept {} };
-const span_constexpr with_container_t with_container;
+const  span_constexpr   with_container_t with_container;
+
+#endif
 
 // Implementation details:
 
@@ -641,6 +667,8 @@ public:
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
+#if span_HAVE( WITH_CONTAINER )
+
     template< class Container >
     span_constexpr span( with_container_t, Container & cont )
         : data_( cont.size() == 0 ? span_nullptr : span_ADDRESSOF( cont[0] ) )
@@ -652,6 +680,7 @@ public:
         : data_( cont.size() == 0 ? span_nullptr : const_cast<pointer>( span_ADDRESSOF( cont[0] ) ) )
         , size_( to_size( cont.size() ) )
     {}
+#endif
 
 #if span_HAVE( IS_DEFAULT )
     span_constexpr span( span const & other ) span_noexcept = default;
@@ -1086,6 +1115,8 @@ make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 
 #endif // span_USES_STD_SPAN || ( ... )
 
+#if ! span_USES_STD_SPAN && span_HAVE( WITH_CONTAINER )
+
 template< class Container >
 inline span_constexpr span<typename Container::value_type>
 make_span( with_container_t, Container & cont ) span_noexcept
@@ -1099,6 +1130,9 @@ make_span( with_container_t, Container const & cont ) span_noexcept
 {
     return span< const typename Container::value_type >( with_container, cont );
 }
+
+#endif // ! span_USES_STD_SPAN && span_HAVE( WITH_CONTAINER )
+
 
 }  // namespace span_lite
 }  // namespace nonstd

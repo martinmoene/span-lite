@@ -87,7 +87,7 @@ Non-standard extensions
 -----------------------
 ### Construct from container
 
-To construct a span from a container with compilers that cannot constrain such a single-parameter constructor to containers, *span lite* provides a constructor that takes an additional parameter of type `with_container_t`. Use `with_container` as value for this parameter.
+To construct a span from a container with compilers that cannot constrain such a single-parameter constructor to containers, *span lite* provides a constructor that takes an additional parameter of type `with_container_t`. Use `with_container` as value for this parameter. See the table below and section [configuration](#configuration).
 
 ### Construct from `std::array` with const data
 
@@ -112,6 +112,7 @@ To construct a span from a container with compilers that cannot constrain such a
 
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
+| **Macro**          |&nbsp;| macro **`span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD`**|
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
 | **Objects**        |&nbsp;| **with_container** value to disambiguate below constructors |
 | **Constructors**   |&nbsp;| macro **`span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
@@ -155,7 +156,11 @@ Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
 -D<b>span_CONFIG_SELECT_NONSTD_SPAN</b>=1  
 Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 
-### Provide construction from std::array with const data
+### Provide construction using `with_container_t`
+-D<b>span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD</b>=14  
+Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Default is undefined.
+
+### Provide construction from `std::array` with const data
 -D<b>span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
 Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
 

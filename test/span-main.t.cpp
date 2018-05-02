@@ -39,6 +39,8 @@ CASE( "__cplusplus" "[.stdc++]" )
 #else
     span_ABSENT(  _MSVC_LANG );
 #endif
+
+    span_PRESENT( span_CPLUSPLUS );
 }
 
 CASE( "span-lite version" "[.version]" )
@@ -215,6 +217,11 @@ CASE( "presence of C++ library features" "[.stdlibrary]" )
 #else
     span_ABSENT(  _HAS_CPP0X );
 #endif
+}
+
+CASE( "presence of span library features" "[.span]" )
+{
+    span_PRESENT( span_HAVE_WITH_CONTAINER );
 }
 
 int main( int argc, char * argv[] )
