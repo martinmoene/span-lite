@@ -782,7 +782,7 @@ CASE( "span<>: Allows to compare greater than or equal to another span of the sa
 CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_CONFIG_PROVIDE_SAME=0]" )
 {
 #if span_CONFIG_PROVIDE_SAME
-    EXPECT( !!"same() is provided via span_CONFIG_PROVIDE_SAME=1" );
+    EXPECT( !!"skipped as same() is provided via span_CONFIG_PROVIDE_SAME=1" );
 #else
     int aa[] = { 1 }, bb[] = { 2 };
     span<         int>  a( aa );
