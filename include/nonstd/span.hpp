@@ -26,6 +26,10 @@
 # define span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD  0
 #endif
 
+#ifndef  span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD
+# define span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD  0
+#endif
+
 // Force use of std or nonstd span:
 
 #ifdef   span_CONFIG_SELECT_STD_SPAN
@@ -77,6 +81,23 @@
 #define span_CPP17_OR_GREATER ( __cplusplus >= 201703L || span_MSVC_LANG >= 201703L )
 #define span_CPP20_OR_GREATER ( __cplusplus >= 202000L || span_MSVC_LANG >= 202000L )
 
+// C++ language version:
+
+#if      span_CPP20_OR_GREATER
+# define span_CPLUSPLUS         20
+#elif    span_CPP17_OR_GREATER
+# define span_CPLUSPLUS         17
+#elif    span_CPP14_OR_GREATER
+# define span_CPLUSPLUS         14
+#elif    span_CPP11_OR_GREATER
+# define span_CPLUSPLUS         11
+#elif    span_CPP98_OR_GREATER
+# define span_CPLUSPLUS          3
+#endif
+
+#define span_HAVE_MAKE_SPAN \
+    ( span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD==98 || span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD >= span_CPLUSPLUS )
+
 // use C++20 std::span if available:
 
 #ifdef __has_include
@@ -114,20 +135,6 @@ using std::operator>=;
 #else  // span_USES_STD_SPAN
 
 #include <algorithm>
-
-// C++ language version:
-
-#if      span_CPP20_OR_GREATER
-# define span_CPLUSPLUS         20
-#elif    span_CPP17_OR_GREATER
-# define span_CPLUSPLUS         17
-#elif    span_CPP14_OR_GREATER
-# define span_CPLUSPLUS         14
-#elif    span_CPP11_OR_GREATER
-# define span_CPLUSPLUS         11
-#elif    span_CPP98_OR_GREATER
-# define span_CPLUSPLUS         03
-#endif
 
 #define span_HAVE_WITH_CONTAINER  \
     ( span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD==98 || span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD >= span_CPLUSPLUS )
@@ -1037,7 +1044,7 @@ using span_lite::same;
 
 // make_span() [span-lite extension]:
 
-#if span_CONFIG_PROVIDE_MAKE_SPAN
+#if span_HAVE( MAKE_SPAN )
 
 namespace nonstd {
 namespace span_lite {
@@ -1143,7 +1150,7 @@ namespace nonstd {
 using span_lite::make_span;
 }  // namespace nonstd
 
-#endif // span_CONFIG_PROVIDE_MAKE_SPAN
+#endif // #if span_HAVE( MAKE_SPAN )
 
 #if span_CONFIG_PROVIDE_BYTE_SPAN && ( span_USES_STD_SPAN || span_HAVE( BYTE ) )
 

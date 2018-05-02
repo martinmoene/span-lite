@@ -4,7 +4,7 @@ if "%std%"=="" set std=c++14
 
 ::set    stdspn=-Dspan_CONFIG_SELECT_STD_SPAN=1 -Dspan_CONFIG_SELECT_NONSTD_SPAN=1
 set span_contract=-Dspan_CONFIG_CONTRACT_VIOLATION_TERMINATES=0 -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
-set  span_provide=-Dspan_CONFIG_PROVIDE_MAKE_SPAN=1 -Dspan_CONFIG_PROVIDE_BYTE_SPAN=1 -Dspan_CONFIG_PROVIDE_BACK_FRONT=1 -Dspan_CONFIG_PROVIDE_SAME=1 -Dspan_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 
+set  span_provide=-Dspan_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 -Dspan_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD=99 -Dspan_CONFIG_PROVIDE_BACK_FRONT=1 -Dspan_CONFIG_PROVIDE_SAME=1 -Dspan_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99 -Dspan_CONFIG_PROVIDE_BYTE_SPAN=1
 
 set     clang=C:\Program Files\LLVM\bin\clang
 set     flags=-Wpedantic -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-noreturn -Wno-documentation-unknown-command -Wno-documentation-deprecated-sync -Wno-documentation -Wno-weak-vtables -Wno-missing-prototypes -Wno-missing-variable-declarations -Wno-exit-time-destructors -Wno-global-constructors

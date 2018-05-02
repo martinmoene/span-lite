@@ -126,7 +126,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN`** |
+| **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD`** |
 | &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
 | &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* ptr, index_t count) noexcept |
 | &nbsp; | &nbsp;   | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(T (&arr)[N]) noexcept |
@@ -173,8 +173,8 @@ Define this to 1 to provide member functions `back()` and `front()`. Default is 
 Define this to 1 to provide function `same()` to test if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. Default is undefined.
 
 ### Provide `make_span()` functions
--D<b>span_CONFIG_PROVIDE_MAKE_SPAN</b>=1  
-Define this to 1 to provide creator functions `nonstd::make_span()`. Default is undefined.
+-D<b>span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD</b>=14  
+Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`. Default is undefined.
 
 ### Provide `byte_span()` functions
 -D<b>span_CONFIG_PROVIDE_BYTE_SPAN</b>=1  
@@ -345,7 +345,7 @@ span<>: Allows to obtain the number of elements via size()
 span<>: Allows to obtain the number of bytes via size_bytes()
 span<>: Allows to view the elements as read-only bytes
 span<>: Allows to view and change the elements as writable bytes
-make_span() [span_CONFIG_PROVIDE_MAKE_SPAN=1]
+make_span() [span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=1]
 make_span(): Allows building from two pointers
 make_span(): Allows building from two const pointers
 make_span(): Allows building from a non-null pointer and a size

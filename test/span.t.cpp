@@ -688,7 +688,7 @@ CASE( "span<>: Allows to identfy if a span is the same as another span [span_CON
     span<int > vb( b );
     span<int > vc( c );
     span<char> vx( x );
-    span<unsigned char> vu = make_span( reinterpret_cast<unsigned char*>( &x[0] ), 1 );
+    span<unsigned char> vu( reinterpret_cast<unsigned char*>( &x[0] ), 1 );
 
     EXPECT(     same( va, va ) );
     EXPECT_NOT( same( vb, va ) );
@@ -1006,9 +1006,9 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 //    {for ( size_t i = 1; i < sizeof(type2); ++i ) EXPECT( vb[i] == type2(0) ); }
 //}
 
-#if span_CONFIG_PROVIDE_MAKE_SPAN
+#if span_HAVE( MAKE_SPAN )
 
-CASE( "make_span() [span_CONFIG_PROVIDE_MAKE_SPAN=1]" )
+CASE( "make_span() [span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99]" )
 {
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 }
@@ -1186,7 +1186,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
 CASE( "[.issue 3: heterogeneous comparison]" )
 {
-#if span_CONFIG_PROVIDE_MAKE_SPAN
+#if span_HAVE( MAKE_SPAN )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span< const int > spn( data );
@@ -1196,12 +1196,13 @@ CASE( "[.issue 3: heterogeneous comparison]" )
     assert( make_span( data ) == make_span(data) ); // Ok, non-heterogeneous comparison
     assert( make_span( data ) == spn             ); // Compile error: comparing fixed with dynamic extension
 #else
-    EXPECT( !!"make_span() is not provided via span_CONFIG_PROVIDE_MAKE_SPAN=1" );
-#endif // span_CONFIG_PROVIDE_MAKE_SPAN
+    EXPECT( !!"test is unavailable as make_span() is not provided via span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99" );
+#endif // span_HAVE( MAKE_SPAN )
 }
 
 CASE( "[.issue 3: same()]" )
 {
+#if span_HAVE( MAKE_SPAN )
 #if span_CONFIG_PROVIDE_SAME
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 
@@ -1266,6 +1267,9 @@ CASE( "[.issue 3: same()]" )
 #else
     EXPECT( !!"same() is not provided via span_CONFIG_PROVIDE_SAME=1" );
 #endif // span_CONFIG_PROVIDE_SAME
+#else
+    EXPECT( !!"test is unavailable as make_span is not provided via span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99" );
+#endif // span_HAVE( MAKE_SPAN )
 }
 
 // end of file
