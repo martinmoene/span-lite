@@ -967,8 +967,6 @@ using span_lite::as_writeable_bytes;
 
 }  // namespace nonstd
 
-span_RESTORE_WARNINGS()
-
 #endif  // span_USES_STD_SPAN
 
 // make_span() [span-lite extension]:
@@ -999,7 +997,7 @@ make_span( T ( &arr )[ N ] ) span_noexcept
     return span<T,N>( &arr[ 0 ], N );
 }
 
-#if span_HAVE( ARRAY )
+#if span_USES_STD_SPAN || span_HAVE( ARRAY )
 
 template< class T, size_t N >
 inline span_constexpr span<T,N>
@@ -1017,7 +1015,7 @@ make_span( std::array< T, N > const & arr ) span_noexcept
 
 #endif // span_HAVE( ARRAY )
 
-#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
+#if span_USES_STD_SPAN || ( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO ) )
 
 template< class Container, class = decltype(std::declval<Container>().data()) >
 inline span_constexpr auto
@@ -1048,7 +1046,8 @@ make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 {
     return span<const T>( with_container, cont );
 }
-#endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
+
+#endif // span_USES_STD_SPAN || ( ... )
 
 template< class Container >
 inline span_constexpr span<typename Container::value_type>
@@ -1075,7 +1074,7 @@ using span_lite::make_span;
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
 
-#if span_CONFIG_PROVIDE_BYTE_SPAN && span_HAVE( BYTE )
+#if span_CONFIG_PROVIDE_BYTE_SPAN && ( span_USES_STD_SPAN || span_HAVE( BYTE ) )
 
 namespace nonstd {
 namespace span_lite {
@@ -1104,5 +1103,9 @@ using span_lite::byte_span;
 }  // namespace nonstd
 
 #endif // span_CONFIG_PROVIDE_BYTE_SPAN
+
+#if ! span_USES_STD_SPAN
+span_RESTORE_WARNINGS()
+#endif  // span_USES_STD_SPAN
 
 #endif  // NONSTD_SPAN_HPP_INCLUDED
