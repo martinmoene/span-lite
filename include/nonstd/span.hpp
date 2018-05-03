@@ -67,36 +67,27 @@
 #endif
 
 // Compiler detection (C++20 is speculative):
-// Note: MSVC supports C++14 in full since it supports C++17.
+// Note: MSVC supports C++14 in full since it supports C++17;
+//       VC14.0/1900 (VS2015) lacks too much from  C++14.
 
-#ifdef _MSVC_LANG
-# define span_MSVC_LANG _MSVC_LANG
-#else
-# define span_MSVC_LANG 0
+#if defined _MSVC_LANG
+# define span_CPLUSPLUS (_MSC_VER == 1900 ? 201103L : _MSVC_LANG )
+#else 
+# define span_CPLUSPLUS __cplusplus
 #endif
 
-#define span_CPP98_OR_GREATER ( __cplusplus >= 199711L || span_MSVC_LANG >= 199711L )
-#define span_CPP11_OR_GREATER ( __cplusplus >= 201103L || span_MSVC_LANG >= 201103L )
-#define span_CPP14_OR_GREATER ( __cplusplus >= 201402L || span_MSVC_LANG >= 201703L /*201402L*/ )
-#define span_CPP17_OR_GREATER ( __cplusplus >= 201703L || span_MSVC_LANG >= 201703L )
-#define span_CPP20_OR_GREATER ( __cplusplus >= 202000L || span_MSVC_LANG >= 202000L )
+#define span_CPP98_OR_GREATER ( span_CPLUSPLUS >= 199711L )
+#define span_CPP11_OR_GREATER ( span_CPLUSPLUS >= 201103L )
+#define span_CPP14_OR_GREATER ( span_CPLUSPLUS >= 201402L )
+#define span_CPP17_OR_GREATER ( span_CPLUSPLUS >= 201703L )
+#define span_CPP20_OR_GREATER ( span_CPLUSPLUS >= 202000L )
 
-// C++ language version:
+// C++ language version (represent 98 as 3):
 
-#if      span_CPP20_OR_GREATER
-# define span_CPLUSPLUS         20
-#elif    span_CPP17_OR_GREATER
-# define span_CPLUSPLUS         17
-#elif    span_CPP14_OR_GREATER
-# define span_CPLUSPLUS         14
-#elif    span_CPP11_OR_GREATER
-# define span_CPLUSPLUS         11
-#elif    span_CPP98_OR_GREATER
-# define span_CPLUSPLUS          3
-#endif
+#define span_CPLUSPLUS_V  ( span_CPLUSPLUS / 100 - (span_CPLUSPLUS > 200000 ? 2000 : 1994) )
 
 #define span_HAVE_MAKE_SPAN \
-    ( span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD==98 || span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD >= span_CPLUSPLUS )
+    ( span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD==98 || span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD >= span_CPLUSPLUS_V )
 
 // use C++20 std::span if available:
 
@@ -137,7 +128,7 @@ using std::operator>=;
 #include <algorithm>
 
 #define span_HAVE_WITH_CONTAINER  \
-    ( span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD==98 || span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD >= span_CPLUSPLUS )
+    ( span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD==98 || span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD >= span_CPLUSPLUS_V )
 
 // Compiler versions:
 //

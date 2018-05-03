@@ -41,6 +41,7 @@ CASE( "__cplusplus" "[.stdc++]" )
 #endif
 
     span_PRESENT( span_CPLUSPLUS );
+    span_PRESENT( span_CPLUSPLUS_V );
 }
 
 CASE( "span-lite version" "[.version]" )
