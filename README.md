@@ -97,6 +97,10 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
+### `swap()`
+
+*span lite* can provide a `swap()`member function. See the table below and section [configuration](#configuration).
+
 ### `same()`
 
 *span lite* can provide function `same()` to determine if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. See the table below and section [configuration](#configuration).
@@ -123,7 +127,10 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
 | &nbsp;             |&nbsp;| constexpr reference **front()** const noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_SAME`** |
+| **Method**         |&nbsp;| macro **`span_CONFIG_PROVIDE_SWAP`** |
+| &nbsp;             |&nbsp;| constexpr void **swap**(span & other) noexcept  |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Free function**  |&nbsp;| macro **`span_CONFIG_PROVIDE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD`** |
@@ -167,6 +174,10 @@ Define this to 1 to enable constructing a span from a std::array with const data
 ### Provide `back()` and `front()` member functions
 -D<b>span_CONFIG_PROVIDE_BACK_FRONT</b>=1  
 Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
+
+### Provide `swap()` member function
+-D<b>span_CONFIG_PROVIDE_SWAP</b>=1  
+Define this to 1 to provide member function `swap()`. Default is undefined.
 
 ### Provide `same()` function
 -D<b>span_CONFIG_PROVIDE_SAME</b>=1  
@@ -332,6 +343,7 @@ span<>: Allows to change an element via call indexing
 span<>: Allows to change an element via data()
 span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]
 span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]
+span<>: Allows to swap with another span [span_CONFIG_PROVIDE_SWAP=1]
 span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]
 span<>: Allows to compare equal to another span of the same type
 span<>: Allows to compare unequal to another span of the same type

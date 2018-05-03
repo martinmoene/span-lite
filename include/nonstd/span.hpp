@@ -848,6 +848,18 @@ public:
 
 #endif // span_CONFIG_PROVIDE_BACK_FRONT
 
+    // xx.x.x.x Modifiers [span.modifiers]
+
+#if span_CONFIG_PROVIDE_SWAP
+
+    span_constexpr14 void swap( span & other ) span_noexcept
+    {
+        using std::swap;
+        swap( data_, other.data_ );
+        swap( size_, other.size_ );
+    }
+#endif
+
     // 26.7.3.6 Iterator support [span.iterators]
 
     span_constexpr iterator begin() const span_noexcept

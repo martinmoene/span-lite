@@ -687,6 +687,24 @@ CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE
 #endif
 }
 
+CASE( "span<>: Allows to swap with another span [span_CONFIG_PROVIDE_SWAP=1]" )
+{
+# if span_CONFIG_PROVIDE_SWAP
+    int arr[] = { 1, 2, 3, };
+    span<int> a( arr );
+    span<int> b = a.subspan( 1 );
+
+    a.swap( b );
+
+    EXPECT( a.size() == 2 );
+    EXPECT( b.size() == 3 );
+    EXPECT( a[0]     == 2 );
+    EXPECT( b[0]     == 1 );
+#else
+    EXPECT( !!"swap()is not available (span_CONFIG_PROVIDE_SWAP undefined or 0)" );
+#endif
+}
+
 CASE( "span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]" )
 {
 #if span_CONFIG_PROVIDE_SAME
