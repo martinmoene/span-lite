@@ -1196,7 +1196,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
 #include <cassert>
 
-CASE( "[.issue 3: heterogeneous comparison]" )
+CASE( "[hide][issue 3: heterogeneous comparison]" )
 {
 #if span_HAVE( MAKE_SPAN )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
@@ -1212,7 +1212,7 @@ CASE( "[.issue 3: heterogeneous comparison]" )
 #endif // span_HAVE( MAKE_SPAN )
 }
 
-CASE( "[.issue 3: same()]" )
+CASE( "[hide][issue 3: same()]" )
 {
 #if span_HAVE( MAKE_SPAN )
 #if span_CONFIG_PROVIDE_SAME
