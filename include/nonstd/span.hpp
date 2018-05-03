@@ -864,36 +864,36 @@ public:
     span_constexpr iterator begin() const span_noexcept
     {
 #if span_CPP11_OR_GREATER
-        return { data_ };
+        return { data() };
 #else
-        return iterator( data_ );
+        return iterator( data() );
 #endif
     }
 
     span_constexpr iterator end() const span_noexcept
     {
 #if span_CPP11_OR_GREATER
-        return { begin() + size() };
+        return { data() + size() };
 #else
-        return iterator( begin() + size() );
+        return iterator( data() + size() );
 #endif
     }
 
     span_constexpr const_iterator cbegin() const span_noexcept
     {
 #if span_CPP11_OR_GREATER
-        return { data_ };
+        return { data() };
 #else
-        return const_iterator( data_ );
+        return const_iterator( data() );
 #endif
     }
 
     span_constexpr const_iterator cend() const span_noexcept
     {
 #if span_CPP11_OR_GREATER
-        return { begin() + size() };
+        return { data() + size() };
 #else
-        return const_iterator( begin() + size() );
+        return const_iterator( data() + size() );
 #endif
     }
 
