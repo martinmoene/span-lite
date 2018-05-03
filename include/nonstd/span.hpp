@@ -86,8 +86,10 @@
 
 #define span_CPLUSPLUS_V  ( span_CPLUSPLUS / 100 - (span_CPLUSPLUS > 200000 ? 2000 : 1994) )
 
-#define span_HAVE_MAKE_SPAN \
-    ( span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD==98 || span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD >= span_CPLUSPLUS_V )
+#define span_IN_STD( v )  ( (v) == 98 || (v) >= span_CPLUSPLUS_V )
+
+#define span_PROVIDE(        feature ) ( span_CONFIG_PROVIDE_##feature )
+#define span_PROVIDE_TO_STD( feature ) ( span_IN_STD( span_PROVIDE( feature##_TO_STD ) ) )
 
 // use C++20 std::span if available:
 
@@ -126,9 +128,6 @@ using std::operator>=;
 #else  // span_USES_STD_SPAN
 
 #include <algorithm>
-
-#define span_HAVE_WITH_CONTAINER  \
-    ( span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD==98 || span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD >= span_CPLUSPLUS_V )
 
 // Compiler versions:
 //
@@ -411,7 +410,7 @@ span_constexpr const index_t dynamic_extent = -1;
 template< class T, index_t Extent = dynamic_extent >
 class span;
 
-#if span_HAVE( WITH_CONTAINER )
+#if span_PROVIDE_TO_STD( WITH_CONTAINER )
 
 // Tag to select span constructor taking a container (prevent ms-gsl warning C26426):
 
@@ -631,7 +630,7 @@ public:
         >::type
 # endif
     >
-# if span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE
+# if span_PROVIDE( CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE )
         span_constexpr span( std::array< element_type, N > & arr ) span_noexcept
 # else
         span_constexpr span( std::array< value_type, N > & arr ) span_noexcept
@@ -679,7 +678,7 @@ public:
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
-#if span_HAVE( WITH_CONTAINER )
+#if span_PROVIDE_TO_STD( WITH_CONTAINER )
 
     template< class Container >
     span_constexpr span( with_container_t, Container & cont )
@@ -834,7 +833,7 @@ public:
         return data_;
     }
 
-#if span_CONFIG_PROVIDE_BACK_FRONT
+#if span_PROVIDE( BACK_FRONT )
 
     span_constexpr reference front() const span_noexcept
     {
@@ -846,11 +845,11 @@ public:
         return *( data() + size() - 1 );
     }
 
-#endif // span_CONFIG_PROVIDE_BACK_FRONT
+#endif
 
     // xx.x.x.x Modifiers [span.modifiers]
 
-#if span_CONFIG_PROVIDE_SWAP
+#if span_PROVIDE( SWAP )
 
     span_constexpr14 void swap( span & other ) span_noexcept
     {
@@ -946,7 +945,7 @@ span( Container const & ) -> span<const typename Container::value_type>;
 
 // 26.7.3.7 Comparison operators [span.comparison]
 
-#if span_CONFIG_PROVIDE_SAME
+#if span_PROVIDE( SAME )
 
 template< class T1, index_t E1, class T2, index_t E2  >
 inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) span_noexcept
@@ -962,7 +961,7 @@ template< class T1, index_t E1, class T2, index_t E2  >
 inline span_constexpr bool operator==( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return
-#if span_CONFIG_PROVIDE_SAME
+#if span_PROVIDE( SAME )
         same( l, r ) ||
 #endif
         ( l.size() == r.size() && std::equal( l.begin(), l.end(), r.begin() ) );
@@ -1039,7 +1038,7 @@ using span_lite::dynamic_extent;
 
 using span_lite::span;
 
-#if span_HAVE( WITH_CONTAINER )
+#if span_PROVIDE_TO_STD( WITH_CONTAINER )
 using span_lite::with_container;
 #endif
 
@@ -1055,7 +1054,7 @@ using span_lite::as_bytes;
 using span_lite::as_writeable_bytes;
 #endif
 
-#if span_CONFIG_PROVIDE_SAME
+#if span_PROVIDE( SAME )
 using span_lite::same;
 #endif
 }  // namespace nonstd
@@ -1064,7 +1063,7 @@ using span_lite::same;
 
 // make_span() [span-lite extension]:
 
-#if span_HAVE( MAKE_SPAN )
+#if span_PROVIDE_TO_STD( MAKE_SPAN )
 
 namespace nonstd {
 namespace span_lite {
@@ -1142,7 +1141,7 @@ make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 
 #endif // span_USES_STD_SPAN || ( ... )
 
-#if ! span_USES_STD_SPAN && span_HAVE( WITH_CONTAINER )
+#if ! span_USES_STD_SPAN && span_PROVIDE_TO_STD( WITH_CONTAINER )
 
 template< class Container >
 inline span_constexpr span<typename Container::value_type>
@@ -1158,7 +1157,7 @@ make_span( with_container_t, Container const & cont ) span_noexcept
     return span< const typename Container::value_type >( with_container, cont );
 }
 
-#endif // ! span_USES_STD_SPAN && span_HAVE( WITH_CONTAINER )
+#endif // ! span_USES_STD_SPAN && span_PROVIDE( WITH_CONTAINER )
 
 
 }  // namespace span_lite
@@ -1170,9 +1169,9 @@ namespace nonstd {
 using span_lite::make_span;
 }  // namespace nonstd
 
-#endif // #if span_HAVE( MAKE_SPAN )
+#endif // #if span_PROVIDE_TO_STD( MAKE_SPAN )
 
-#if span_CONFIG_PROVIDE_BYTE_SPAN && ( span_USES_STD_SPAN || span_HAVE( BYTE ) )
+#if span_PROVIDE( BYTE_SPAN ) && ( span_USES_STD_SPAN || span_HAVE( BYTE ) )
 
 namespace nonstd {
 namespace span_lite {
@@ -1200,7 +1199,7 @@ namespace nonstd {
 using span_lite::byte_span;
 }  // namespace nonstd
 
-#endif // span_CONFIG_PROVIDE_BYTE_SPAN
+#endif // span_PROVIDE( BYTE_SPAN )
 
 #if ! span_USES_STD_SPAN
 span_RESTORE_WARNINGS()

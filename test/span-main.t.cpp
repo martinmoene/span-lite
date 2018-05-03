@@ -222,16 +222,13 @@ CASE( "presence of C++ library features" "[.stdlibrary]" )
 
 CASE( "presence of span library features" "[.span]" )
 {
-#ifdef span_HAVE_WITH_CONTAINER
-    span_PRESENT( span_HAVE_WITH_CONTAINER );
-#else
-    span_ABSENT(  span_HAVE_WITH_CONTAINER );
-#endif
-#ifdef span_HAVE_MAKE_SPAN
-    span_PRESENT( span_HAVE_MAKE_SPAN );
-#else
-    span_ABSENT(  span_HAVE_MAKE_SPAN );
-#endif
+    span_PRESENT( span_PROVIDE(        BYTE_SPAN      ) );
+    span_PRESENT( span_PROVIDE_TO_STD( MAKE_SPAN      ) );
+    span_PRESENT( span_PROVIDE_TO_STD( WITH_CONTAINER ) );
+    span_PRESENT( span_PROVIDE(        CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE ) );
+    span_PRESENT( span_PROVIDE(        BACK_FRONT ) );
+    span_PRESENT( span_PROVIDE(        SWAP ) );
+    span_PRESENT( span_PROVIDE(        SAME ) );
 }
 
 int main( int argc, char * argv[] )
