@@ -314,32 +314,40 @@ CASE( "span<>: Allows to construct from a container (std::vector<>)" )
 
 CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
 {
+#if span_HAVE( WITH_CONTAINER )
 # if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
-#else
+# else
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
     std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
-#endif
+# endif
     span<      int> v( with_container, vec );
     span<const int> w( with_container, vec );
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
+#else
+    EXPECT( !!"with_container is not available (span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD)" );
+#endif
 }
 
 CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
 {
+#if span_HAVE( WITH_CONTAINER )
 # if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
-#else
+# else
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
     const std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
-#endif
+# endif
     span<      int> v( with_container, vec );
     span<const int> w( with_container, vec );
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
+#else
+    EXPECT( !!"with_container is not available (span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD)" );
+#endif
 }
 
 CASE( "span<>: Allows to copy-construct from another span of the same type" )
@@ -681,6 +689,7 @@ CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE
 
 CASE( "span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]" )
 {
+#if span_CONFIG_PROVIDE_SAME
     int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };
     char x[] = { '\x1' };
 
@@ -699,8 +708,11 @@ CASE( "span<>: Allows to identfy if a span is the same as another span [span_CON
     EXPECT(         va == va );
     EXPECT(         vb == va );
     EXPECT_NOT(     vc == va );
-//  EXPECT_NOT(     vx == va );
-//  EXPECT_NOT(     vx == vu );
+    EXPECT(         vx == va );
+    EXPECT(         vx == vu );
+#else
+    EXPECT( !!"same() is not available (span_CONFIG_PROVIDE_SAME=0)" );
+#endif
 }
 
 CASE( "span<>: Allows to compare equal to another span of the same type" )

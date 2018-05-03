@@ -1038,7 +1038,10 @@ namespace nonstd {
 using span_lite::dynamic_extent;
 
 using span_lite::span;
+
+#if span_HAVE( WITH_CONTAINER )
 using span_lite::with_container;
+#endif
 
 using span_lite::operator==;
 using span_lite::operator!=;
