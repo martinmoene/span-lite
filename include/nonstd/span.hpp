@@ -958,11 +958,14 @@ inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) 
 template< class T1, index_t E1, class T2, index_t E2  >
 inline span_constexpr bool operator==( span<T1,E1> const & l, span<T2,E2> const & r )
 {
-    return
 #if span_CONFIG_PROVIDE_SAME
+    return
         same( l, r ) ||
-#endif
+        ( l.size() == r.size() && ( static_cast<void const*>( l.begin() ) == r.begin() || std::equal( l.begin(), l.end(), r.begin() ) ) );
+#else
+    return
         ( l.size() == r.size() && ( l.begin() == r.begin() || std::equal( l.begin(), l.end(), r.begin() ) ) );
+#endif
 }
 
 template< class T1, index_t E1, class T2, index_t E2  >

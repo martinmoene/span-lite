@@ -1226,8 +1226,8 @@ CASE( "[.issue 3: same()]" )
 
     span<uint8_type const> bspan4 = make_span( data, 4 );
 
-//  assert(        bspan4 == fspan1   ); // compile error: conversion requires reinterpret_cast
-//  assert(        fspan1 == bspan4   ); // compile error: conversion requires reinterpret_cast
+    assert(        bspan4 == fspan1   );
+    assert(        fspan1 == bspan4   );
     assert( !same( fspan1 ,  bspan4 ) );
 
 # if span_HAVE( BYTE )
@@ -1255,9 +1255,9 @@ CASE( "[.issue 3: same()]" )
     assert( !same( uspan1, uspan3 ) );
     assert( !same( uspan2, uspan3 ) );
 
-//  assert( uspan1 != uspan2 );  // compile error: conversion requires reinterpret_cast
-//  assert( uspan1 != uspan3 );  // compile error: conversion requires reinterpret_cast
-//  assert( uspan2 != uspan3 );  // compile error: conversion requires reinterpret_cast
+    assert( uspan1 != uspan2 );
+    assert( uspan1 != uspan3 );
+    assert( uspan2 != uspan3 );
 
 # if span_HAVE( BYTE )
     assert(  same( as_bytes( uspan1 ), as_bytes( uspan2 ) ) );
