@@ -435,6 +435,8 @@ namespace details {
 
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
+using std::true_type;
+using std::false_type;
 #endif
 
 #if span_HAVE( REMOVE_CONST )
@@ -531,6 +533,28 @@ inline span_constexpr index_t to_size( T size )
 {
     return static_cast<index_t>( size );
 }
+
+#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
+
+// Can construct from containers that:
+
+template< 
+    class Container, class ElementType 
+    , class = typename std::enable_if<
+        ! details::is_span< Container >::value &&
+        ! details::is_array< Container >::value &&
+        ! details::is_std_array< Container >::value &&
+          std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], ElementType(*)[] >::value
+    >::type
+#if span_HAVE( DATA )
+        // data(cont) and size(cont) well-formed:
+    , class = decltype( std::data( std::declval<Container>() ) )
+    , class = decltype( std::size( std::declval<Container>() ) )
+#endif
+>
+struct can_construct_from : details::true_type{};
+
+#endif
 
 //
 // [views.span] - A view over a contiguous, single-dimension sequence of objects
@@ -643,12 +667,7 @@ public:
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     template< class Container
         , class = typename std::enable_if<
-            ! details::is_span< Container >::value &&
-            ! details::is_array< Container >::value &&
-            ! details::is_std_array< Container >::value &&
-            // data(cont) well-formed &&
-            // size(cont) well-formed &&
-              std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], element_type(*)[] >::value
+            can_construct_from< Container, element_type >::value
         >::type
     >
     span_constexpr span( Container & cont )
@@ -658,13 +677,8 @@ public:
 
     template< class Container
         , class = typename std::enable_if<
-              std::is_const< element_type >::value &&
-            ! details::is_span< Container >::value &&
-            ! details::is_array< Container >::value &&
-            ! details::is_std_array< Container >::value &&
-            // data(cont) well-formed &&
-            // size(cont) well-formed &&
-              std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], element_type(*)[] >::value
+            std::is_const< element_type >::value &&
+            can_construct_from< Container, element_type >::value
         >::type
     >
     span_constexpr span( Container const & cont )
