@@ -385,7 +385,8 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 # include <stdexcept>
 # define span_CONFIG_CONTRACT_CHECK( type, cond ) \
-    cond ? static_cast< void >( 0 ) : nonstd::span_lite::details::throw_exception( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." )
+    cond ? static_cast< void >( 0 ) : nonstd::span_lite::details::throw_exception( \
+        nonstd::span_lite::details::fail_fast( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." ) )
 #else
 # define span_CONFIG_CONTRACT_CHECK( type, cond ) \
     nonstd::span_lite::details::terminate()
@@ -497,6 +498,8 @@ struct is_array<T[N]> : std::true_type {};
 
 #endif // span_HAVE( TYPE_TRAITS )
 
+#if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+
 struct fail_fast : std::logic_error
 {
     explicit fail_fast( char const * const message )
@@ -504,16 +507,20 @@ struct fail_fast : std::logic_error
     {}
 };
 
-span_noreturn inline void terminate() span_noexcept
-{
-    std::terminate();
-}
-
 template< class E >
 span_noreturn void throw_exception( E const & e )
 {
     throw e;
 }
+
+#else // span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+
+span_noreturn inline void terminate() span_noexcept
+{
+    std::terminate();
+}
+
+#endif // span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 
 }  // namespace details
 
@@ -538,7 +545,7 @@ template<
           std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], ElementType(*)[] >::value
     >::type
 #if span_HAVE( DATA )
-        // data(cont) and size(cont) well-formed:
+      // data(cont) and size(cont) well-formed:
     , class = decltype( std::data( std::declval<Container>() ) )
     , class = decltype( std::size( std::declval<Container>() ) )
 #endif

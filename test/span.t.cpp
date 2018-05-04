@@ -101,6 +101,15 @@ CASE( "span<>: Terminates access outside the span" )
 //  EXPECT_THROWS(   F::blow_at(3) );
 }
 
+CASE( "span<>: Termination throws nonstd::span_lite::details::fail_fast exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
+{
+    struct F {
+        static void blow() { int arr[] = { 1, }; span<int> v( arr ); (void) v[1]; }
+    };
+
+    EXPECT_THROWS_AS( F::blow(), nonstd::span_lite::details::fail_fast );
+}
+
 CASE( "span<>: Allows to default-construct" )
 {
     span<int> v;
