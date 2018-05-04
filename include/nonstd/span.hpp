@@ -68,19 +68,19 @@
 
 // Compiler detection (C++20 is speculative):
 // Note: MSVC supports C++14 in full since it supports C++17;
-//       VC14.0/1900 (VS2015) lacks too much from  C++14.
+//       VC14.0/1900 (VS2015) lacks too much from C++14.
 
 #if defined _MSVC_LANG
-# define span_CPLUSPLUS (_MSC_VER == 1900 ? 201103L : _MSVC_LANG )
+# define span_CPLUSPLUS  (_MSC_VER == 1900 ? 201103L : _MSVC_LANG )
 #else 
-# define span_CPLUSPLUS __cplusplus
+# define span_CPLUSPLUS  __cplusplus
 #endif
 
-#define span_CPP98_OR_GREATER ( span_CPLUSPLUS >= 199711L )
-#define span_CPP11_OR_GREATER ( span_CPLUSPLUS >= 201103L )
-#define span_CPP14_OR_GREATER ( span_CPLUSPLUS >= 201402L )
-#define span_CPP17_OR_GREATER ( span_CPLUSPLUS >= 201703L )
-#define span_CPP20_OR_GREATER ( span_CPLUSPLUS >= 202000L )
+#define span_CPP98_OR_GREATER  ( span_CPLUSPLUS >= 199711L )
+#define span_CPP11_OR_GREATER  ( span_CPLUSPLUS >= 201103L )
+#define span_CPP14_OR_GREATER  ( span_CPLUSPLUS >= 201402L )
+#define span_CPP17_OR_GREATER  ( span_CPLUSPLUS >= 201703L )
+#define span_CPP20_OR_GREATER  ( span_CPLUSPLUS >= 202000L )
 
 // C++ language version (represent 98 as 3):
 
@@ -88,18 +88,18 @@
 
 #define span_IN_STD( v )  ( (v) == 98 || (v) >= span_CPLUSPLUS_V )
 
-#define span_PROVIDE(        feature ) ( span_CONFIG_PROVIDE_##feature )
-#define span_PROVIDE_TO_STD( feature ) ( span_IN_STD( span_PROVIDE( feature##_TO_STD ) ) )
+#define span_PROVIDE(        feature )  ( span_CONFIG_PROVIDE_##feature )
+#define span_PROVIDE_TO_STD( feature )  ( span_IN_STD( span_PROVIDE( feature##_TO_STD ) ) )
 
 // use C++20 std::span if available:
 
 #ifdef __has_include
 # define span_HAS_INCLUDE( arg )  __has_include( arg )
 #else
-# define span_HAS_INCLUDE( arg ) 0
+# define span_HAS_INCLUDE( arg )  0
 #endif
 
-#define span_HAVE_STD_SPAN ( span_CPP20_OR_GREATER && span_HAS_INCLUDE( <span> ) )
+#define  span_HAVE_STD_SPAN  ( span_CPP20_OR_GREATER && span_HAS_INCLUDE( <span> ) )
 
 #ifndef  span_USES_STD_SPAN
 # define span_USES_STD_SPAN  span_HAVE_STD_SPAN
@@ -143,23 +143,23 @@ using std::operator>=;
 // MSVC++ 14.1 _MSC_VER >= 1910 (Visual Studio 2017)
 
 #if defined( _MSC_VER ) && !defined( __clang__ )
-# define span_COMPILER_MSVC_VERSION ( _MSC_VER / 10 - 10 * ( 5 + ( _MSC_VER < 1900 ) ) )
+# define span_COMPILER_MSVC_VERSION  (_MSC_VER / 10 - 10 * ( 5 + (_MSC_VER < 1900 ) ) )
 #else
-# define span_COMPILER_MSVC_VERSION 0
+# define span_COMPILER_MSVC_VERSION  0
 #endif
 
-#define span_COMPILER_VERSION( major, minor, patch ) ( 10 * ( 10 * (major) + (minor) ) + (patch) )
+#define span_COMPILER_VERSION( major, minor, patch )  ( 10 * ( 10 * (major) + (minor) ) + (patch) )
 
 #if defined __clang__
-# define span_COMPILER_CLANG_VERSION span_COMPILER_VERSION( __clang_major__, __clang_minor__, __clang_patchlevel__ )
+# define span_COMPILER_CLANG_VERSION  span_COMPILER_VERSION(__clang_major__, __clang_minor__, __clang_patchlevel__)
 #else
-# define span_COMPILER_CLANG_VERSION 0
+# define span_COMPILER_CLANG_VERSION  0
 #endif
 
 #if defined __GNUC__
-# define span_COMPILER_GNUC_VERSION span_COMPILER_VERSION( __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ )
+# define span_COMPILER_GNUC_VERSION  span_COMPILER_VERSION(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
 #else
-# define span_COMPILER_GNUC_VERSION 0
+# define span_COMPILER_GNUC_VERSION  0
 #endif
 
 // Compiler warning suppression:
@@ -194,11 +194,11 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #endif
 
 // half-open range [lo..hi):
-#define span_BETWEEN( v, lo, hi ) ( (lo) <= (v) && (v) < (hi) )
+#define span_BETWEEN( v, lo, hi )  ( (lo) <= (v) && (v) < (hi) )
 
 // Presence of language and library features:
 
-#define span_HAVE( feature ) ( span_HAVE_##feature )
+#define span_HAVE( feature )  ( span_HAVE_##feature )
 
 // Presence of C++11 language features:
 
@@ -379,7 +379,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #if span_ELIDE_CONTRACT_ENSURES
 # define span_ENSURES( cond )  /* Ensures elided */
 #else
-# define span_ENSURES( cond ) span_CONFIG_CONTRACT_CHECK( "Postcondition", cond )
+# define span_ENSURES( cond )  span_CONFIG_CONTRACT_CHECK( "Postcondition", cond )
 #endif
 
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
@@ -387,16 +387,17 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_CONFIG_CONTRACT_CHECK( type, cond ) \
     cond ? static_cast< void >( 0 ) : nonstd::span_lite::details::throw_exception( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." )
 #else
-# define span_CONFIG_CONTRACT_CHECK( type, cond ) nonstd::span_lite::details::terminate()
+# define span_CONFIG_CONTRACT_CHECK( type, cond ) \
+    nonstd::span_lite::details::terminate()
 #endif
 
 #ifdef __GNUG__
-# define span_LOCATION( file, line ) file ":" span_STRINGIFY( line )
+# define span_LOCATION( file, line )  file ":" span_STRINGIFY( line )
 #else
-# define span_LOCATION( file, line ) file "(" span_STRINGIFY( line ) ")"
+# define span_LOCATION( file, line )  file "(" span_STRINGIFY( line ) ")"
 #endif
 
-#define span_STRINGIFY( x ) #x
+#define span_STRINGIFY( x )  #x
 
 namespace nonstd {
 namespace span_lite {
