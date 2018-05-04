@@ -251,8 +251,8 @@ The following steps assume that the [*span lite* source code](https://github.com
 
 3. Optional. You can control above configuration through the following options:
 
-    `-DSPAN_LITE_OPT_BUILD_TESTS=ON`: build the tests for span, default on
-    `-DSPAN_LITE_OPT_BUILD_EXAMPLES=OFF`: build the examples, default off
+    `-DSPAN_LITE_OPT_BUILD_TESTS=ON`: build the tests for span, default on  
+    `-DSPAN_LITE_OPT_BUILD_EXAMPLES=OFF`: build the examples, default off  
 
 4. Build the test suite.    
 
@@ -288,6 +288,8 @@ Notes and references
 - [p0122 - span: bounds-safe views for sequences of objects](http://wg21.link/p0122).
 - [p0805 - Comparing Containers](http://wg21.link/p0805)
 - [p0091 - Template argument deduction for class templates](http://wg21.link/p0091)
+- [p0856 - Restrict Access Property for mdspan and span](http://wg21.link/p0856)
+- [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101)
 
 
 Appendix
