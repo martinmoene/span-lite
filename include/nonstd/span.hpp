@@ -11,7 +11,7 @@
 #ifndef NONSTD_SPAN_HPP_INCLUDED
 #define NONSTD_SPAN_HPP_INCLUDED
 
-#define span_VERSION "0.2.0"
+#define span_VERSION "0.3.0"
 
 // Configuration:
 
