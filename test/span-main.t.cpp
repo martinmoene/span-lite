@@ -2,7 +2,8 @@
 //
 // https://github.com/martinmoene/span-lite
 //
-// This code is licensed under the MIT License (MIT).
+// Distributed under the Boost Software License, Version 1.0. 
+// (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include "span-main.t.hpp"
 
@@ -165,6 +166,12 @@ CASE( "presence of C++ language features" "[.stdlanguage]" )
 
 CASE( "presence of C++ library features" "[.stdlibrary]" )
 {
+#if span_HAVE( ADDRESSOF )
+    span_PRESENT( span_HAVE_ADDRESSOF );
+#else
+    span_ABSENT(  span_HAVE_ADDRESSOF );
+#endif
+
 #if span_HAVE( ARRAY )
     span_PRESENT( span_HAVE_ARRAY );
 #else

@@ -15,7 +15,7 @@
 		<Unit filename="../../.gitignore" />
 		<Unit filename="../../.travis.yml" />
 		<Unit filename="../../CMakeLists.txt" />
-		<Unit filename="../../LICENSE" />
+		<Unit filename="../../LICENSE.txt" />
 		<Unit filename="../../README.md" />
 		<Unit filename="../../appveyor.yml" />
 		<Unit filename="../../example/01-basic.cpp" />
