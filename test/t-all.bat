@@ -47,7 +47,7 @@ goto :EOF
 
 :CompileLog  contractViolationResponse spanFeature [CppStd]
 echo VC%compiler_version%: %*
-call :Compile >> %log%  2>&1
+call :Compile %* >> %log%  2>&1
 if errorlevel 1 (
     less %log% & goto :EOF
 ) else (
@@ -58,6 +58,7 @@ goto :EOF
 
 :Compile  contractViolationResponse spanFeature [CppStd]
 ::call t.bat %*
+set args=%*
 set compile=cl -EHsc -I../include/nonstd -I"%CppCoreCheckInclude%" %args% -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS %spanSources%
 echo %compile% && %compile%
 goto :EOF
