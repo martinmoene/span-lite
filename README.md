@@ -270,7 +270,8 @@ Other implementations of span
 - *gsl-lite* [span](https://github.com/martinmoene/gsl-lite/blob/73c4f16f2b35fc174fc2f09d44d5ab13e5c638c3/include/gsl/gsl-lite.hpp#L1221).
 - Microsoft GSL [span](https://github.com/Microsoft/GSL/blob/master/include/gsl/span).
 - Google Abseil [span](https://github.com/abseil/abseil-cpp/blob/master/absl/types/span.h).
-- [libc++ span snippet](https://github.com/mclow/snippets/blob/master/span.cpp).
+- Marshall Clow's [libc++ span snippet](https://github.com/mclow/snippets/blob/master/span.cpp).
+- Tristan Brindle's [Implementation of C++20's std::span for older compilers](https://github.com/tcbrindle/span).
 - [Search _span c++_ on GitHub](https://github.com/search?l=C%2B%2B&q=span+c%2B%2B&type=Repositories&utf8=%E2%9C%93).
 
 
