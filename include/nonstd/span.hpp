@@ -227,6 +227,8 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_HAVE_NORETURN  1
 #endif
 
+// MSVC: template parameter deduction guides since Visual Studio 2017 v15.7
+
 #if span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 )
 # define span_HAVE_DEDUCTION_GUIDES  1
 #endif
@@ -612,7 +614,8 @@ public:
     template< size_t N
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == N)
+            (Extent == dynamic_extent || Extent == N) &&
+            std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >::type
 #endif
     >
@@ -1071,16 +1074,16 @@ namespace span_lite {
 
 template< class T >
 inline span_constexpr span<T>
-make_span( T * first, T * last ) span_noexcept
+make_span( T * ptr, index_t count ) span_noexcept
 {
-    return span<T>( first, last );
+    return span<T>( ptr, count );
 }
 
 template< class T >
 inline span_constexpr span<T>
-make_span( T * ptr, index_t count ) span_noexcept
+make_span( T * first, T * last ) span_noexcept
 {
-    return span<T>( ptr, count );
+    return span<T>( first, last );
 }
 
 template< class T, size_t N >
