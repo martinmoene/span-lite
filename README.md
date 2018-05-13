@@ -211,7 +211,7 @@ Define this macro to exclude `span_EXPECTS` from the code and include `span_ENSU
 Define this macro to call `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES`. This is the default case.
 
 \-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_THROWS</b>  
-Define this macro to throw a std::runtime_exception-derived exception `nonstd::span_lite::details::fail_fast` instead of calling `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES` and throw a std::exception-derived exception `narrowing_error` on discarding  information in `narrow`.
+Define this macro to throw a std::runtime_exception-derived exception `nonstd::span_lite::detail::fail_fast` instead of calling `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES` and throw a std::exception-derived exception `narrowing_error` on discarding  information in `narrow`.
 
 
 Reported to work with
@@ -307,7 +307,7 @@ span<>: Terminates creation of a sub span of the first n elements for n exceedin
 span<>: Terminates creation of a sub span of the last n elements for n exceeding the span
 span<>: Terminates creation of a sub span outside the span
 span<>: Terminates access outside the span
-span<>: Termination throws nonstd::span_lite::details::fail_fast exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]
+span<>: Termination throws nonstd::span_lite::detail::fail_fast exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]
 span<>: Allows to default-construct
 span<>: Allows to construct from a nullptr and a zero size (C++11)
 span<>: Allows to construct from two pointers

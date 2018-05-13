@@ -380,11 +380,11 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 # include <stdexcept>
 # define span_CONFIG_CONTRACT_CHECK( type, cond ) \
-    cond ? static_cast< void >( 0 ) : nonstd::span_lite::details::throw_exception( \
-        nonstd::span_lite::details::fail_fast( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." ) )
+    cond ? static_cast< void >( 0 ) : nonstd::span_lite::detail::throw_exception( \
+        nonstd::span_lite::detail::fail_fast( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." ) )
 #else
 # define span_CONFIG_CONTRACT_CHECK( type, cond ) \
-    nonstd::span_lite::details::terminate()
+    nonstd::span_lite::detail::terminate()
 #endif
 
 #ifdef __GNUG__
@@ -418,7 +418,7 @@ const  span_constexpr   with_container_t with_container;
 
 // Implementation details:
 
-namespace details {
+namespace detail {
 
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
@@ -443,7 +443,7 @@ template< class T > struct remove_volatile< T volatile > { typedef T type; };
 template< class T >
 struct remove_cv
 {
-    typedef typename details::remove_volatile< typename details::remove_const< T >::type >::type type;
+    typedef typename detail::remove_volatile< typename detail::remove_const< T >::type >::type type;
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
@@ -517,7 +517,7 @@ span_noreturn inline void terminate() span_noexcept
 
 #endif // span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 
-}  // namespace details
+}  // namespace detail
 
 // Prevent signed-unsigned mismatch:
 
@@ -534,9 +534,9 @@ inline span_constexpr index_t to_size( T size )
 template< 
     class Container, class ElementType 
     , class = typename std::enable_if<
-        ! details::is_span< Container >::value &&
-        ! details::is_array< Container >::value &&
-        ! details::is_std_array< Container >::value &&
+        ! detail::is_span< Container >::value &&
+        ! detail::is_array< Container >::value &&
+        ! detail::is_std_array< Container >::value &&
           std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], ElementType(*)[] >::value
     >::type
 #if span_HAVE( DATA )
@@ -545,7 +545,7 @@ template<
     , class = decltype( std::size( std::declval<Container>() ) )
 #endif
 >
-struct can_construct_from : details::true_type{};
+struct can_construct_from : detail::true_type{};
 
 #endif
 
@@ -559,7 +559,7 @@ public:
     // constants and types
 
     typedef T element_type;
-    typedef typename details::remove_cv< T >::type value_type;
+    typedef typename detail::remove_cv< T >::type value_type;
 
     typedef T &       reference;
     typedef T *       pointer;
@@ -954,7 +954,7 @@ span( Container const & ) -> span<const typename Container::value_type>;
 template< class T1, index_t E1, class T2, index_t E2  >
 inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) span_noexcept
 {
-    return details::is_same<T1, T2>::value
+    return detail::is_same<T1, T2>::value
         && l.size() == r.size()
         && static_cast<void const*>( l.data() ) == r.data();
 }
