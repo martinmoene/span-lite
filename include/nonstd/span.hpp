@@ -360,6 +360,10 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # include <vector>
 #endif
 
+#if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+# include <stdexcept>
+#endif
+
 // Contract violation
 
 #define span_ELIDE_CONTRACT_EXPECTS  ( 0 == ( span_CONFIG_CONTRACT_LEVEL_MASK & 0x01 ) )
@@ -377,15 +381,9 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_ENSURES( cond )  span_CONFIG_CONTRACT_CHECK( "Postcondition", cond )
 #endif
 
-#if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
-# include <stdexcept>
-# define span_CONFIG_CONTRACT_CHECK( type, cond ) \
-    cond ? static_cast< void >( 0 ) : nonstd::span_lite::detail::throw_exception( \
-        nonstd::span_lite::detail::fail_fast( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." ) )
-#else
-# define span_CONFIG_CONTRACT_CHECK( type, cond ) \
-    nonstd::span_lite::detail::terminate()
-#endif
+#define span_CONFIG_CONTRACT_CHECK( type, cond ) \
+    cond ? static_cast< void >( 0 ) \
+         : nonstd::span_lite::detail::report_contract_violation( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." )
 
 #ifdef __GNUG__
 # define span_LOCATION( file, line )  file ":" span_STRINGIFY( line )
@@ -495,22 +493,21 @@ struct is_array<T[N]> : std::true_type {};
 
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 
-struct fail_fast : std::logic_error
+struct contract_violation : std::logic_error
 {
-    explicit fail_fast( char const * const message )
+    explicit contract_violation( char const * const message )
         : std::logic_error( message )
     {}
 };
 
-template< class E >
-span_noreturn void throw_exception( E const & e )
+inline void report_contract_violation( char const * msg )
 {
-    throw e;
+    throw contract_violation( msg );
 }
 
 #else // span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 
-span_noreturn inline void terminate() span_noexcept
+span_noreturn inline void report_contract_violation( char const * /*msg*/ ) span_noexcept
 {
     std::terminate();
 }
