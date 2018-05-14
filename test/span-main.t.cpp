@@ -91,168 +91,36 @@ CASE( "presence of C++ language features" "[.stdlanguage]" )
     span_ABSENT(  _CPPUNWIND );
 #endif
 
-#if span_HAVE( AUTO )
     span_PRESENT( span_HAVE_AUTO );
-#else
-    span_ABSENT(  span_HAVE_AUTO );
-#endif
-
-#if span_HAVE( NULLPTR )
     span_PRESENT( span_HAVE_NULLPTR );
-#else
-    span_ABSENT(  span_HAVE_NULLPTR );
-#endif
-
-#if span_HAVE( STATIC_ASSERT )
     span_PRESENT( span_HAVE_STATIC_ASSERT );
-#else
-    span_ABSENT(  span_HAVE_STATIC_ASSERT );
-#endif
-
-#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
     span_PRESENT( span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG );
-#else
-    span_ABSENT(  span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG );
-#endif
-
-#if span_HAVE( ALIAS_TEMPLATE )
     span_PRESENT( span_HAVE_ALIAS_TEMPLATE );
-#else
-    span_ABSENT(  span_HAVE_ALIAS_TEMPLATE );
-#endif
-
-#if span_HAVE( CONSTEXPR_11)
     span_PRESENT( span_HAVE_CONSTEXPR_11 );
-#else
-    span_ABSENT(  span_HAVE_CONSTEXPR_11 );
-#endif
-
-#if span_HAVE( CONSTEXPR_14 )
     span_PRESENT( span_HAVE_CONSTEXPR_14 );
-#else
-    span_ABSENT(  span_HAVE_CONSTEXPR_14 );
-#endif
-
-//#if span_HAVE( ENUM_CLASS )
-//    span_PRESENT( span_HAVE_ENUM_CLASS );
-//#else
-//    span_ABSENT(  span_HAVE_ENUM_CLASS );
-//#endif
-//
-//#if span_HAVE( ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE )
-//    span_PRESENT( span_HAVE_ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE );
-//#else
-//    span_ABSENT(  span_HAVE_ENUM_CLASS_CONSTRUCTION_FROM_UNDERLYING_TYPE );
-//#endif
-
-#if span_HAVE( EXPLICIT_CONVERSION )
     span_PRESENT( span_HAVE_EXPLICIT_CONVERSION );
-#else
-    span_ABSENT(  span_HAVE_EXPLICIT_CONVERSION );
-#endif
-
-//#if span_HAVE( INITIALIZER_LIST )
-//    span_PRESENT( span_HAVE_INITIALIZER_LIST );
-//#else
-//    span_ABSENT(  span_HAVE_INITIALIZER_LIST );
-//#endif
-
-#if span_HAVE( IS_DEFAULT )
     span_PRESENT( span_HAVE_IS_DEFAULT );
-#else
-    span_ABSENT(  span_HAVE_IS_DEFAULT );
-#endif
-
-#if span_HAVE( IS_DELETE )
     span_PRESENT( span_HAVE_IS_DELETE );
-#else
-    span_ABSENT(  span_HAVE_IS_DELETE );
-#endif
-
-#if span_HAVE( NOEXCEPT )
     span_PRESENT( span_HAVE_NOEXCEPT );
-#else
-    span_ABSENT(  span_HAVE_NOEXCEPT );
-#endif
-
-//#if span_HAVE( REF_QUALIFIER )
-//    span_PRESENT( span_HAVE_REF_QUALIFIER );
-//#else
-//    span_ABSENT(  span_HAVE_REF_QUALIFIER );
-//#endif
 }
 
 CASE( "presence of C++ library features" "[.stdlibrary]" )
 {
-#if span_HAVE( ADDRESSOF )
+    span_PRESENT( span_HAS_CPP0X );
     span_PRESENT( span_HAVE_ADDRESSOF );
-#else
-    span_ABSENT(  span_HAVE_ADDRESSOF );
-#endif
-
-#if span_HAVE( ARRAY )
     span_PRESENT( span_HAVE_ARRAY );
-#else
-    span_ABSENT(  span_HAVE_ARRAY );
-#endif
-
-#if span_HAVE( CONDITIONAL )
     span_PRESENT( span_HAVE_CONDITIONAL );
-#else
-    span_ABSENT(  span_HAVE_CONDITIONAL );
-#endif
-
-#if span_HAVE( CONTAINER_DATA_METHOD )
     span_PRESENT( span_HAVE_CONTAINER_DATA_METHOD );
-#else
-    span_ABSENT(  span_HAVE_CONTAINER_DATA_METHOD );
-#endif
-
-#if span_HAVE( DATA )
     span_PRESENT( span_HAVE_DATA );
-#else
-    span_ABSENT(  span_HAVE_DATA );
-#endif
-
-#if span_HAVE( REMOVE_CONST )
     span_PRESENT( span_HAVE_REMOVE_CONST );
-#else
-    span_ABSENT(  span_HAVE_REMOVE_CONST );
-#endif
-
-//#if span_HAVE( REMOVE_CV )
-//    span_PRESENT( span_HAVE_REMOVE_CV );
-//#else
-//    span_ABSENT(  span_HAVE_REMOVE_CV );
-//#endif
-
-//#if span_HAVE( SIZED_TYPES )
-//    span_PRESENT( span_HAVE_SIZED_TYPES );
-//#else
-//    span_ABSENT(  span_HAVE_SIZED_TYPES );
-//#endif
-
-#if span_HAVE( TO_STRING )
     span_PRESENT( span_HAVE_TO_STRING );
-#else
-    span_ABSENT(  span_HAVE_TO_STRING );
-#endif
-
-#if span_HAVE( TYPE_TRAITS )
     span_PRESENT( span_HAVE_TYPE_TRAITS );
-#else
-    span_ABSENT(  span_HAVE_TYPE_TRAITS );
-#endif
-
-#ifdef _HAS_CPP0X
-    span_PRESENT( _HAS_CPP0X );
-#else
-    span_ABSENT(  _HAS_CPP0X );
-#endif
 }
 
 CASE( "span configuration" "[.span]" )
 {
+    span_PRESENT( span_USES_STD_SPAN );
+
 #ifdef span_CONFIG_SELECT_STD_SPAN
     span_PRESENT( span_CONFIG_SELECT_STD_SPAN );
 #else
@@ -295,17 +163,8 @@ CASE( "span configuration" "[.span]" )
     span_ABSENT(  span_CONFIG_CONTRACT_LEVEL_ENSURES_ONLY );
 #endif
 
-#ifdef span_CONFIG_CONTRACT_VIOLATION_THROWS
     span_PRESENT( span_CONFIG_CONTRACT_VIOLATION_THROWS );
-#else
-    span_ABSENT(  span_CONFIG_CONTRACT_VIOLATION_THROWS );
-#endif
-
-#ifdef span_CONFIG_CONTRACT_VIOLATION_TERMINATES
     span_PRESENT( span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
-#else
-    span_ABSENT(  span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
-#endif
 }
 
 CASE( "presence of span library features" "[.span]" )

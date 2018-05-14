@@ -232,78 +232,68 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #define span_HAVE( feature )  ( span_HAVE_##feature )
 
+#ifdef _HAS_CPP0X
+# define span_HAS_CPP0X  _HAS_CPP0X
+#else
+# define span_HAS_CPP0X  0
+#endif
+
+#define span_CPP11_90   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 90)
+#define span_CPP11_100  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 100)
+#define span_CPP11_110  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 110)
+#define span_CPP11_120  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120)
+#define span_CPP11_140  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140)
+
+#define span_CPP14_000  (span_CPP14_OR_GREATER)
+#define span_CPP14_120  (span_CPP14_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120)
+#define span_CPP14_140  (span_CPP14_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140)
+
+#define span_CPP17_000  (span_CPP17_OR_GREATER)
+
 // Presence of C++11 language features:
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 100
-# define span_HAVE_AUTO  1
-# define span_HAVE_NULLPTR  1
-# define span_HAVE_STATIC_ASSERT  1
-#endif
+#define span_HAVE_AUTO                  span_CPP11_100
+#define span_HAVE_NULLPTR               span_CPP11_100
+#define span_HAVE_STATIC_ASSERT         span_CPP11_100
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120
-# define span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG  1
-#endif
+#define span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG \
+                                        span_CPP11_120
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140
-# define span_HAVE_ALIAS_TEMPLATE  1
-# define span_HAVE_CONSTEXPR_11  1
-# define span_HAVE_EXPLICIT_CONVERSION  1
-# define span_HAVE_IS_DEFAULT  1
-# define span_HAVE_IS_DELETE  1
-# define span_HAVE_NOEXCEPT  1
-#endif
+#define span_HAVE_ALIAS_TEMPLATE        span_CPP11_140
+#define span_HAVE_CONSTEXPR_11          span_CPP11_140
+#define span_HAVE_EXPLICIT_CONVERSION   span_CPP11_140
+#define span_HAVE_IS_DEFAULT            span_CPP11_140
+#define span_HAVE_IS_DELETE             span_CPP11_140
+#define span_HAVE_NOEXCEPT              span_CPP11_140
 
 // Presence of C++14 language features:
 
-#if span_CPP14_OR_GREATER
-# define span_HAVE_CONSTEXPR_14  1
-#endif
+#define span_HAVE_CONSTEXPR_14          span_CPP14_000
 
 // Presence of C++17 language features:
 
-#if span_CPP17_OR_GREATER
-# define span_HAVE_NODISCARD  1
-# define span_HAVE_NORETURN  1
-#endif
+#define span_HAVE_NODISCARD             span_CPP17_000
+#define span_HAVE_NORETURN              span_CPP17_000
 
 // MSVC: template parameter deduction guides since Visual Studio 2017 v15.7
 
-#if span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 )
-# define span_HAVE_DEDUCTION_GUIDES  1
-#endif
+#define span_HAVE_DEDUCTION_GUIDES     (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 ))
 
 // Presence of C++ library features:
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 90
-# define span_HAVE_TYPE_TRAITS  1
-#endif
+#define span_HAVE_TYPE_TRAITS           span_CPP11_90
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 110
-# define span_HAVE_ARRAY  1
-# define span_HAVE_REMOVE_CONST  1
-# define span_HAVE_TO_STRING  1
-#endif
+#define span_HAVE_ARRAY                 span_CPP11_110
+#define span_HAVE_REMOVE_CONST          span_CPP11_110
+#define span_HAVE_TO_STRING             span_CPP11_110
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120
-# define span_HAVE_CONDITIONAL  1
-#endif
+#define span_HAVE_CONDITIONAL           span_CPP11_120
 
-#if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140 || ( span_COMPILER_MSVC_VERSION >= 90 && _HAS_CPP0X )
-# define span_HAVE_CONTAINER_DATA_METHOD  1
-#endif
+#define span_HAVE_CONTAINER_DATA_METHOD (span_CPP11_140 || ( span_COMPILER_MSVC_VERSION >= 90 && span_HAS_CPP0X ))
 
-#if span_CPP17_OR_GREATER
-# define span_HAVE_ADDRESSOF  1
-# define span_HAVE_BYTE  1
-# define span_HAVE_DATA  1
-#endif
-
-// For the rest, consider VC14 as C++11 for optional-lite:
-
-#if span_COMPILER_MSVC_VERSION >= 140
-# undef  span_CPP11_OR_GREATER
-# define span_CPP11_OR_GREATER  1
-#endif
+#define span_HAVE_ADDRESSOF             span_CPP17_000
+#define span_HAVE_BYTE                  span_CPP17_000
+#define span_HAVE_DATA                  span_CPP17_000
 
 // C++ feature usage:
 
