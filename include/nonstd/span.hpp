@@ -19,8 +19,28 @@
 # define span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD  0
 #endif
 
+#ifndef  span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE 
+# define span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE  0
+#endif
+
+#ifndef  span_CONFIG_PROVIDE_BACK_FRONT
+# define span_CONFIG_PROVIDE_BACK_FRONT  0
+#endif
+
+#ifndef  span_CONFIG_PROVIDE_SWAP
+# define span_CONFIG_PROVIDE_SWAP  0
+#endif
+
+#ifndef  span_CONFIG_PROVIDE_SAME
+# define span_CONFIG_PROVIDE_SAME  0
+#endif
+
 #ifndef  span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD
 # define span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD  0
+#endif
+
+#ifndef  span_CONFIG_PROVIDE_BYTE_SPAN
+# define span_CONFIG_PROVIDE_BYTE_SPAN  0
 #endif
 
 // Force use of std or nonstd span:
@@ -81,6 +101,7 @@
 
 #define span_IN_STD( v )  ( (v) == 98 || (v) >= span_CPLUSPLUS_V )
 
+#define span_CONFIG(         feature )  ( span_CONFIG_##feature )
 #define span_PROVIDE(        feature )  ( span_CONFIG_PROVIDE_##feature )
 #define span_PROVIDE_TO_STD( feature )  ( span_IN_STD( span_PROVIDE( feature##_TO_STD ) ) )
 
@@ -405,14 +426,10 @@ span_constexpr const index_t dynamic_extent = -1;
 template< class T, index_t Extent = dynamic_extent >
 class span;
 
-#if span_PROVIDE_TO_STD( WITH_CONTAINER )
-
 // Tag to select span constructor taking a container (prevent ms-gsl warning C26426):
 
 struct with_container_t { span_constexpr with_container_t() span_noexcept {} };
 const  span_constexpr   with_container_t with_container;
-
-#endif
 
 // Implementation details:
 
@@ -1043,9 +1060,7 @@ using span_lite::dynamic_extent;
 
 using span_lite::span;
 
-#if span_PROVIDE_TO_STD( WITH_CONTAINER )
 using span_lite::with_container;
-#endif
 
 using span_lite::operator==;
 using span_lite::operator!=;
