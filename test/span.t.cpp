@@ -279,9 +279,9 @@ CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 #endif
 }
 
-CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, span_CONFIG_PROVIDE_CONSTR..._ELEMENT_TYPE=1)" )
+CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, span_FEATURE_CONSTR..._ELEMENT_TYPE=1)" )
 {
-#if span_PROVIDE( CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE )
+#if span_FEATURE( CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE )
 # if span_HAVE( ARRAY )
     std::array<const int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
@@ -294,7 +294,7 @@ CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, s
     EXPECT( !!"std::array<> is not available (no C++11)" );
 # endif
 #else
-    EXPECT( !!"construction is not available (span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=0)" );
+    EXPECT( !!"construction is not available (span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=0)" );
 #endif
 }
 
@@ -320,7 +320,7 @@ CASE( "span<>: Allows to construct from a container (std::vector<>)" )
 
 CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
 {
-#if span_PROVIDE_TO_STD( WITH_CONTAINER )
+#if span_FEATURE_TO_STD( WITH_CONTAINER )
 # if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
@@ -333,13 +333,13 @@ CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
 #else
-    EXPECT( !!"with_container is not available (span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD)" );
+    EXPECT( !!"with_container is not available (span_FEATURE_WITH_CONTAINER_TO_STD)" );
 #endif
 }
 
 CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
 {
-#if span_PROVIDE_TO_STD( WITH_CONTAINER )
+#if span_FEATURE_TO_STD( WITH_CONTAINER )
 # if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
@@ -352,7 +352,7 @@ CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
 #else
-    EXPECT( !!"with_container is not available (span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD)" );
+    EXPECT( !!"with_container is not available (span_FEATURE_WITH_CONTAINER_TO_STD)" );
 #endif
 }
 
@@ -601,27 +601,27 @@ CASE( "span<>: Allows to observe an element via data()" )
     }
 }
 
-CASE( "span<>: Allows to observe the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to observe the first element via front() [span_FEATURE_BACK_FRONT=1]" )
 {
-#if span_PROVIDE( BACK_FRONT )
+#if span_FEATURE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
     EXPECT( v.front() == 1 );
 #else
-    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"front() is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to observe the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to observe the last element via back() [span_FEATURE_BACK_FRONT=1]" )
 {
-#if span_PROVIDE( BACK_FRONT )
+#if span_FEATURE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
     EXPECT( v.back() == 3 );
 #else
-    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"back()is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
@@ -665,9 +665,9 @@ CASE( "span<>: Allows to change an element via data()" )
     EXPECT( 33 == *w.data() );
 }
 
-CASE( "span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to change the first element via front() [span_FEATURE_BACK_FRONT=1]" )
 {
-#if span_PROVIDE( BACK_FRONT )
+#if span_FEATURE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -675,13 +675,13 @@ CASE( "span<>: Allows to change the first element via front() [span_CONFIG_PROVI
 
     EXPECT( v.front() == 42 );
 #else
-    EXPECT( !!"front() is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"front() is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to change the last element via back() [span_FEATURE_BACK_FRONT=1]" )
 {
-#if span_PROVIDE( BACK_FRONT )
+#if span_FEATURE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -689,13 +689,13 @@ CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE
 
     EXPECT( v.back() == 42 );
 #else
-    EXPECT( !!"back()is not available (span_CONFIG_PROVIDE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"back()is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to swap with another span [span_CONFIG_PROVIDE_SWAP=1]" )
+CASE( "span<>: Allows to swap with another span [span_FEATURE_SWAP=1]" )
 {
-#if span_PROVIDE( SWAP )
+#if span_FEATURE( SWAP )
     int arr[] = { 1, 2, 3, };
     span<int> a( arr );
     span<int> b = a.subspan( 1 );
@@ -707,13 +707,13 @@ CASE( "span<>: Allows to swap with another span [span_CONFIG_PROVIDE_SWAP=1]" )
     EXPECT( a[0]     == 2 );
     EXPECT( b[0]     == 1 );
 #else
-    EXPECT( !!"swap()is not available (span_CONFIG_PROVIDE_SWAP undefined or 0)" );
+    EXPECT( !!"swap()is not available (span_FEATURE_SWAP undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]" )
+CASE( "span<>: Allows to identfy if a span is the same as another span [span_FEATURE_SAME=1]" )
 {
-#if span_PROVIDE( SAME )
+#if span_FEATURE( SAME )
     int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };
     char x[] = { '\x1' };
 
@@ -735,7 +735,7 @@ CASE( "span<>: Allows to identfy if a span is the same as another span [span_CON
     EXPECT(         vx == va );
     EXPECT(         vx == vu );
 #else
-    EXPECT( !!"same() is not available (span_CONFIG_PROVIDE_SAME=0)" );
+    EXPECT( !!"same() is not available (span_FEATURE_SAME=0)" );
 #endif
 }
 
@@ -815,10 +815,10 @@ CASE( "span<>: Allows to compare greater than or equal to another span of the sa
     EXPECT(     vc >= va );
 }
 
-CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_CONFIG_PROVIDE_SAME=0]" )
+CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_FEATURE_SAME=0]" )
 {
-#if span_PROVIDE( SAME )
-    EXPECT( !!"skipped as same() is provided via span_CONFIG_PROVIDE_SAME=1" );
+#if span_FEATURE( SAME )
+    EXPECT( !!"skipped as same() is provided via span_FEATURE_SAME=1" );
 #else
     int aa[] = { 1 }, bb[] = { 2 };
     span<         int>  a( aa );
@@ -1042,9 +1042,9 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 //    {for ( size_t i = 1; i < sizeof(type2); ++i ) EXPECT( vb[i] == type2(0) ); }
 //}
 
-#if span_PROVIDE_TO_STD( MAKE_SPAN )
+#if span_FEATURE_TO_STD( MAKE_SPAN )
 
-CASE( "make_span() [span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99]" )
+CASE( "make_span() [span_FEATURE_MAKE_SPAN_TO_STD=99]" )
 {
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 }
@@ -1155,7 +1155,7 @@ CASE( "make_span(): Allows building from a const container (std::vector<>)" )
 
 CASE( "make_span(): Allows building from a container (with_container_t, std::vector<>)" )
 {
-#if span_PROVIDE_TO_STD( WITH_CONTAINER )
+#if span_FEATURE_TO_STD( WITH_CONTAINER )
 #if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
@@ -1171,7 +1171,7 @@ CASE( "make_span(): Allows building from a container (with_container_t, std::vec
 
 CASE( "make_span(): Allows building from a const container (with_container_t, std::vector<>)" )
 {
-#if span_PROVIDE_TO_STD( WITH_CONTAINER )
+#if span_FEATURE_TO_STD( WITH_CONTAINER )
 #if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
@@ -1185,11 +1185,11 @@ CASE( "make_span(): Allows building from a const container (with_container_t, st
 #endif
 }
 
-#endif // span_CONFIG_PROVIDE_MAKE_SPAN
+#endif // span_FEATURE_MAKE_SPAN
 
-#if span_PROVIDE( BYTE_SPAN )
+#if span_FEATURE( BYTE_SPAN )
 
-CASE( "byte_span() [span_CONFIG_PROVIDE_BYTE_SPAN=1]" )
+CASE( "byte_span() [span_FEATURE_BYTE_SPAN=1]" )
 {
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 }
@@ -1222,7 +1222,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 #endif
 }
 
-#endif // span_PROVIDE( BYTE_SPAN )
+#endif // span_FEATURE( BYTE_SPAN )
 
 // Issues
 
@@ -1230,7 +1230,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
 CASE( "[hide][issue 3: heterogeneous comparison]" )
 {
-#if span_PROVIDE_TO_STD( MAKE_SPAN )
+#if span_FEATURE_TO_STD( MAKE_SPAN )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span< const int > spn( data );
@@ -1240,14 +1240,14 @@ CASE( "[hide][issue 3: heterogeneous comparison]" )
     assert( make_span( data ) == make_span(data) ); // Ok, non-heterogeneous comparison
     assert( make_span( data ) == spn             ); // Compile error: comparing fixed with dynamic extension
 #else
-    EXPECT( !!"test is unavailable as make_span() is not provided via span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99" );
-#endif // span_PROVIDE_TO_STD( MAKE_SPAN )
+    EXPECT( !!"test is unavailable as make_span() is not provided via span_FEATURE_MAKE_SPAN_TO_STD=99" );
+#endif // span_FEATURE_TO_STD( MAKE_SPAN )
 }
 
 CASE( "[hide][issue 3: same()]" )
 {
-#if span_PROVIDE_TO_STD( MAKE_SPAN )
-#if span_PROVIDE( SAME )
+#if span_FEATURE_TO_STD( MAKE_SPAN )
+#if span_FEATURE( SAME )
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 
     typedef unsigned char uint8_type;
@@ -1309,11 +1309,11 @@ CASE( "[hide][issue 3: same()]" )
     assert( !same( as_bytes( uspan2 ), as_bytes( uspan3 ) ) );
 #endif
 #else
-    EXPECT( !!"same() is not provided via span_CONFIG_PROVIDE_SAME=1" );
-#endif // span_PROVIDE( SAME )
+    EXPECT( !!"same() is not provided via span_FEATURE_SAME=1" );
+#endif // span_FEATURE( SAME )
 #else
-    EXPECT( !!"test is unavailable as make_span is not provided via span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99" );
-#endif // span_PROVIDE_TO_STD( MAKE_SPAN )
+    EXPECT( !!"test is unavailable as make_span is not provided via span_FEATURE_MAKE_SPAN_TO_STD=99" );
+#endif // span_FEATURE_TO_STD( MAKE_SPAN )
 }
 
 // end of file

@@ -116,24 +116,24 @@ To construct a span from a container with compilers that cannot constrain such a
 
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
-| **Macro**          |&nbsp;| macro **`span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD`**|
+| **Macro**          |&nbsp;| macro **`span_FEATURE_WITH_CONTAINER_TO_STD`**|
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
 | **Objects**        |&nbsp;| **with_container** value to disambiguate below constructors |
-| **Constructors**   |&nbsp;| macro **`span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
+| **Constructors**   |&nbsp;| macro **`span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Methods**        |&nbsp;| macro **`span_CONFIG_PROVIDE_BACK_FRONT`** |
+| **Methods**        |&nbsp;| macro **`span_FEATURE_BACK_FRONT`** |
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
 | &nbsp;             |&nbsp;| constexpr reference **front()** const noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Method**         |&nbsp;| macro **`span_CONFIG_PROVIDE_SWAP`** |
+| **Method**         |&nbsp;| macro **`span_FEATURE_SWAP`** |
 | &nbsp;             |&nbsp;| constexpr void **swap**(span & other) noexcept  |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Free function**  |&nbsp;| macro **`span_CONFIG_PROVIDE_SAME`** |
+| **Free function**  |&nbsp;| macro **`span_FEATURE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Free functions** |&nbsp;| macro **`span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD`** |
+| **Free functions** |&nbsp;| macro **`span_FEATURE_MAKE_SPAN_TO_STD`** |
 | &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
 | &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* ptr, index_t count) noexcept |
 | &nbsp; | &nbsp;   | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(T (&arr)[N]) noexcept |
@@ -146,7 +146,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;T><br>**make_span**(std::vector&lt;T, Allocator> & cont) |
 | &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;const T><br>**make_span**(std::vector&lt;T, Allocator> const & cont) |
 | &nbsp; | &nbsp;   | &nbsp; |                                       
-| **Free functions**|&nbsp;| macro **`span_CONFIG_PROVIDE_BYTE_SPAN`** |
+| **Free functions**|&nbsp;| macro **`span_FEATURE_BYTE_SPAN`** |
 | &nbsp; | &nbsp;   | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
 | &nbsp; | &nbsp;   | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
 
@@ -164,31 +164,31 @@ Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
 Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 
 ### Provide construction using `with_container_t`
--D<b>span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD</b>=14  
+-D<b>span_FEATURE_WITH_CONTAINER_TO_STD</b>=14  
 Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Default is undefined.
 
 ### Provide construction from `std::array` with const data
--D<b>span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
+-D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
 Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
--D<b>span_CONFIG_PROVIDE_BACK_FRONT</b>=1  
+-D<b>span_FEATURE_BACK_FRONT</b>=1  
 Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
 
 ### Provide `swap()` member function
--D<b>span_CONFIG_PROVIDE_SWAP</b>=1  
+-D<b>span_FEATURE_SWAP</b>=1  
 Define this to 1 to provide member function `swap()`. Default is undefined.
 
 ### Provide `same()` function
--D<b>span_CONFIG_PROVIDE_SAME</b>=1  
+-D<b>span_FEATURE_SAME</b>=1  
 Define this to 1 to provide function `same()` to test if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. Default is undefined.
 
 ### Provide `make_span()` functions
--D<b>span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD</b>=14  
+-D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=14  
 Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`. Default is undefined.
 
 ### Provide `byte_span()` functions
--D<b>span_CONFIG_PROVIDE_BYTE_SPAN</b>=1  
+-D<b>span_FEATURE_BYTE_SPAN</b>=1  
 Define this to 1 to provide creator functions `nonstd::byte_span()`. Default is undefined.
 
 ### Contract violation response macros
@@ -322,7 +322,7 @@ span<>: Allows to construct from a const C-array
 span<>: Allows to construct from a C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a const C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a std::array<> (C++11)
-span<>: Allows to construct from a std::array<> with const data (C++11, span_CONFIG_PROVIDE_CONSTR..._ELEMENT_TYPE=1)
+span<>: Allows to construct from a std::array<> with const data (C++11, span_FEATURE_CONSTR..._ELEMENT_TYPE=1)
 span<>: Allows to construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a const container (std::vector<>)
@@ -342,22 +342,22 @@ span<>: Allows const reverse iteration
 span<>: Allows to observe an element via array indexing
 span<>: Allows to observe an element via call indexing
 span<>: Allows to observe an element via data()
-span<>: Allows to observe the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]
-span<>: Allows to observe the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]
+span<>: Allows to observe the first element via front() [span_FEATURE_BACK_FRONT=1]
+span<>: Allows to observe the last element via back() [span_FEATURE_BACK_FRONT=1]
 span<>: Allows to change an element via array indexing
 span<>: Allows to change an element via call indexing
 span<>: Allows to change an element via data()
-span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]
-span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]
-span<>: Allows to swap with another span [span_CONFIG_PROVIDE_SWAP=1]
-span<>: Allows to identfy if a span is the same as another span [span_CONFIG_PROVIDE_SAME=1]
+span<>: Allows to change the first element via front() [span_FEATURE_BACK_FRONT=1]
+span<>: Allows to change the last element via back() [span_FEATURE_BACK_FRONT=1]
+span<>: Allows to swap with another span [span_FEATURE_SWAP=1]
+span<>: Allows to identfy if a span is the same as another span [span_FEATURE_SAME=1]
 span<>: Allows to compare equal to another span of the same type
 span<>: Allows to compare unequal to another span of the same type
 span<>: Allows to compare less than another span of the same type
 span<>: Allows to compare less than or equal to another span of the same type
 span<>: Allows to compare greater than another span of the same type
 span<>: Allows to compare greater than or equal to another span of the same type
-span<>: Allows to compare to another span of the same type and different cv-ness [span_CONFIG_PROVIDE_SAME=0]
+span<>: Allows to compare to another span of the same type and different cv-ness [span_FEATURE_SAME=0]
 span<>: Allows to compare empty spans as equal
 span<>: Allows to test for empty span via empty(), empty case
 span<>: Allows to test for empty span via empty(), non-empty case
@@ -365,7 +365,7 @@ span<>: Allows to obtain the number of elements via size()
 span<>: Allows to obtain the number of bytes via size_bytes()
 span<>: Allows to view the elements as read-only bytes
 span<>: Allows to view and change the elements as writable bytes
-make_span() [span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99]
+make_span() [span_FEATURE_MAKE_SPAN_TO_STD=99]
 make_span(): Allows building from two pointers
 make_span(): Allows building from two const pointers
 make_span(): Allows building from a non-null pointer and a size
@@ -378,7 +378,7 @@ make_span(): Allows building from a container (std::vector<>)
 make_span(): Allows building from a const container (std::vector<>)
 make_span(): Allows building from a container (with_container_t, std::vector<>)
 make_span(): Allows building from a const container (with_container_t, std::vector<>)
-byte_span() [span_CONFIG_PROVIDE_BYTE_SPAN=1]
+byte_span() [span_FEATURE_BYTE_SPAN=1]
 byte_span(): Allows building a span of std::byte from a single object (C++17)
 byte_span(): Allows building a span of const std::byte from a single const object (C++17)
 ```
