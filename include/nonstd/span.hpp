@@ -836,13 +836,17 @@ public:
 
 #if span_PROVIDE( BACK_FRONT )
 
-    span_constexpr reference front() const span_noexcept
+    span_constexpr14 reference front() const span_noexcept
     {
+        span_EXPECTS( ! empty() );
+
         return *data();
     }
 
-    span_constexpr reference back() const span_noexcept
+    span_constexpr14 reference back() const span_noexcept
     {
+        span_EXPECTS( ! empty() );
+
         return *( data() + size() - 1 );
     }
 
