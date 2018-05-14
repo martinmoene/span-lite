@@ -21,9 +21,9 @@ set spanFeatures=^
     "span_FEATURE_MAKE_SPAN_TO_STD=99" ^
     "span_FEATURE_WITH_CONTAINER_TO_STD=99" ^
     "span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1" ^
-    "span_FEATURE_MEMBER_AT=1" ^
-    "span_FEATURE_BACK_FRONT=1" ^
-    "span_FEATURE_SWAP=1" ^
+    "span_FEATURE_MEMBER_AT=1"
+    "span_FEATURE_MEMBER_BACK_FRONT=1" ^
+    "span_FEATURE_MEMBER_SWAP=1" ^
     "span_FEATURE_SAME=1"
 
 set cppStandards=^

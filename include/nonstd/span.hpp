@@ -27,12 +27,12 @@
 # define span_FEATURE_MEMBER_AT  0
 #endif
 
-#ifndef  span_FEATURE_BACK_FRONT
-# define span_FEATURE_BACK_FRONT  0
+#ifndef  span_FEATURE_MEMBER_BACK_FRONT
+# define span_FEATURE_MEMBER_BACK_FRONT  0
 #endif
 
-#ifndef  span_FEATURE_SWAP
-# define span_FEATURE_SWAP  0
+#ifndef  span_FEATURE_MEMBER_SWAP
+# define span_FEATURE_MEMBER_SWAP  0
 #endif
 
 #ifndef  span_FEATURE_SAME
@@ -915,7 +915,7 @@ public:
         return data_;
     }
 
-#if span_FEATURE( BACK_FRONT )
+#if span_FEATURE( MEMBER_BACK_FRONT )
 
     span_constexpr_exp reference front() const span_noexcept
     {
@@ -935,7 +935,7 @@ public:
 
     // xx.x.x.x Modifiers [span.modifiers]
 
-#if span_FEATURE( SWAP )
+#if span_FEATURE( MEMBER_SWAP )
 
     span_constexpr14 void swap( span & other ) span_noexcept
     {

@@ -537,7 +537,7 @@ CASE( "span<>: Allows to observe an element via call indexing" )
     }
 }
 
-CASE( "span<>: Allows to observe an element via at()" )
+CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT=1]" )
 {
 #if span_FEATURE( MEMBER_AT )
     int arr[] = { 1, 2, 3, };
@@ -575,27 +575,27 @@ CASE( "span<>: Allows to observe an element via data()" )
     }
 }
 
-CASE( "span<>: Allows to observe the first element via front() [span_FEATURE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to observe the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]" )
 {
-#if span_FEATURE( BACK_FRONT )
+#if span_FEATURE( MEMBER_BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
     EXPECT( v.front() == 1 );
 #else
-    EXPECT( !!"front() is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"front() is not available (span_FEATURE_MEMBER_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to observe the last element via back() [span_FEATURE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to observe the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]" )
 {
-#if span_FEATURE( BACK_FRONT )
+#if span_FEATURE( MEMBER_BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
     EXPECT( v.back() == 3 );
 #else
-    EXPECT( !!"back()is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"back()is not available (span_FEATURE_MEMBER_BACK_FRONT undefined or 0)" );
 #endif
 }
 
@@ -625,7 +625,7 @@ CASE( "span<>: Allows to change an element via call indexing" )
     EXPECT( 33 == arr[2] );
 }
 
-CASE( "span<>: Allows to change an element via at()" )
+CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT=1]" )
 {
 #if span_FEATURE( MEMBER_AT )
     int arr[] = { 1, 2, 3, };
@@ -656,9 +656,9 @@ CASE( "span<>: Allows to change an element via data()" )
     EXPECT( 33 == *w.data() );
 }
 
-CASE( "span<>: Allows to change the first element via front() [span_FEATURE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to change the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]" )
 {
-#if span_FEATURE( BACK_FRONT )
+#if span_FEATURE( MEMBER_BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -666,13 +666,13 @@ CASE( "span<>: Allows to change the first element via front() [span_FEATURE_BACK
 
     EXPECT( v.front() == 42 );
 #else
-    EXPECT( !!"front() is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"front() is not available (span_FEATURE_MEMBER_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to change the last element via back() [span_FEATURE_BACK_FRONT=1]" )
+CASE( "span<>: Allows to change the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]" )
 {
-#if span_FEATURE( BACK_FRONT )
+#if span_FEATURE( MEMBER_BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -680,11 +680,11 @@ CASE( "span<>: Allows to change the last element via back() [span_FEATURE_BACK_F
 
     EXPECT( v.back() == 42 );
 #else
-    EXPECT( !!"back()is not available (span_FEATURE_BACK_FRONT undefined or 0)" );
+    EXPECT( !!"back()is not available (span_FEATURE_MEMBER_BACK_FRONT undefined or 0)" );
 #endif
 }
 
-CASE( "span<>: Allows to swap with another span [span_FEATURE_SWAP=1]" )
+CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
 {
 #if span_FEATURE( SWAP )
     int arr[] = { 1, 2, 3, };
@@ -698,7 +698,7 @@ CASE( "span<>: Allows to swap with another span [span_FEATURE_SWAP=1]" )
     EXPECT( a[0]     == 2 );
     EXPECT( b[0]     == 1 );
 #else
-    EXPECT( !!"swap()is not available (span_FEATURE_SWAP undefined or 0)" );
+    EXPECT( !!"swap()is not available (span_FEATURE_MEMBER_SWAP undefined or 0)" );
 #endif
 }
 

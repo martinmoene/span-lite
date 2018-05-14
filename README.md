@@ -130,11 +130,11 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_AT`** |
 | &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const  |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Methods**        |&nbsp;| macro **`span_FEATURE_BACK_FRONT`** |
+| **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_BACK_FRONT`** |
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
 | &nbsp;             |&nbsp;| constexpr reference **front()** const noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Method**         |&nbsp;| macro **`span_FEATURE_SWAP`** |
+| **Method**         |&nbsp;| macro **`span_FEATURE_MEMBER_SWAP`** |
 | &nbsp;             |&nbsp;| constexpr void **swap**(span & other) noexcept  |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free function**  |&nbsp;| macro **`span_FEATURE_SAME`** |
@@ -187,11 +187,11 @@ Define this to 1 to enable constructing a span from a std::array with const data
 Define this to 1 to provide member function `at()`. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
--D<b>span_FEATURE_BACK_FRONT</b>=1  
+-D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=1  
 Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
 
 ### Provide `swap()` member function
--D<b>span_FEATURE_SWAP</b>=1  
+-D<b>span_FEATURE_MEMBER_SWAP</b>=1  
 Define this to 1 to provide member function `swap()`. Default is undefined.
 
 ### Provide `same()` function
@@ -350,22 +350,24 @@ span<>: Allows to create a sub span of the first n elements
 span<>: Allows to create a sub span of the last n elements
 span<>: Allows to create a sub span starting at a given offset
 span<>: Allows to create a sub span starting at a given offset with a given length
+span<>: Allows to observe an element via array indexing
+span<>: Allows to observe an element via call indexing
+span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT=1]
+span<>: Allows to observe an element via data()
+span<>: Allows to observe the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]
+span<>: Allows to observe the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]
+span<>: Allows to change an element via array indexing
+span<>: Allows to change an element via call indexing
+span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT=1]
+span<>: Allows to change an element via data()
+span<>: Allows to change the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]
+span<>: Allows to change the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]
+span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]
 span<>: Allows forward iteration
 span<>: Allows const forward iteration
 span<>: Allows reverse iteration
 span<>: Allows const reverse iteration
-span<>: Allows to observe an element via array indexing
-span<>: Allows to observe an element via call indexing
-span<>: Allows to observe an element via data()
-span<>: Allows to observe the first element via front() [span_FEATURE_BACK_FRONT=1]
-span<>: Allows to observe the last element via back() [span_FEATURE_BACK_FRONT=1]
-span<>: Allows to change an element via array indexing
-span<>: Allows to change an element via call indexing
-span<>: Allows to change an element via data()
-span<>: Allows to change the first element via front() [span_FEATURE_BACK_FRONT=1]
-span<>: Allows to change the last element via back() [span_FEATURE_BACK_FRONT=1]
-span<>: Allows to swap with another span [span_FEATURE_SWAP=1]
-span<>: Allows to identfy if a span is the same as another span [span_FEATURE_SAME=1]
+span<>: Allows to identify if a span is the same as another span [span_FEATURE_SAME=1]
 span<>: Allows to compare equal to another span of the same type
 span<>: Allows to compare unequal to another span of the same type
 span<>: Allows to compare less than another span of the same type

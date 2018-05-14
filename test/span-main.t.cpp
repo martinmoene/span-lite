@@ -314,8 +314,9 @@ CASE( "presence of span library features" "[.span]" )
     span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
     span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
     span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );
-    span_PRESENT( span_FEATURE_BACK_FRONT );
-    span_PRESENT( span_FEATURE_SWAP );
+    span_PRESENT( span_FEATURE_MEMBER_AT );
+    span_PRESENT( span_FEATURE_MEMBER_BACK_FRONT );
+    span_PRESENT( span_FEATURE_MEMBER_SWAP );
     span_PRESENT( span_FEATURE_SAME );
 }
 
