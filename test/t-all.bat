@@ -9,12 +9,26 @@ echo. > %log%
 set /a compiler_version=0
 call :CompilerVersion compiler_version
 
-set    spanProgram=span-main.t.exe
-set    spanSources=span-main.t.cpp span.t.cpp
+set spanProgram=span-main.t.exe
+set spanSources=span-main.t.cpp span.t.cpp
 
-set    cvResponses=span_CONFIG_CONTRACT_VIOLATION_THROWS span_CONFIG_CONTRACT_VIOLATION_TERMINATES
-set   spanFeatures="span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD=99" span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE span_CONFIG_PROVIDE_BACK_FRONT span_CONFIG_PROVIDE_SWAP span_CONFIG_PROVIDE_SAME "span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99" span_CONFIG_PROVIDE_BYTE_SPAN
-set   cppStandards=c++14 c++17 c++latest
+set cvResponses=^
+    span_CONFIG_CONTRACT_VIOLATION_THROWS ^
+    span_CONFIG_CONTRACT_VIOLATION_TERMINATES
+
+set spanFeatures=^
+    "span_CONFIG_PROVIDE_BYTE_SPAN=1" ^
+    "span_CONFIG_PROVIDE_MAKE_SPAN_TO_STD=99" ^
+    "span_CONFIG_PROVIDE_WITH_CONTAINER_TO_STD=99" ^
+    "span_CONFIG_PROVIDE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1" ^
+    "span_CONFIG_PROVIDE_BACK_FRONT=1" ^
+    "span_CONFIG_PROVIDE_SWAP=1" ^
+    "span_CONFIG_PROVIDE_SAME=1"
+
+set cppStandards=^
+    c++14 ^
+    c++17 ^
+    c++latest
 
 set CppCoreCheckInclude=%VCINSTALLDIR%\Auxiliary\VS\include
 
@@ -59,7 +73,7 @@ goto :EOF
 :Compile  contractViolationResponse spanFeature [CppStd]
 ::call t.bat %*
 set args=%*
-set compile=cl -EHsc -I../include/nonstd -I"%CppCoreCheckInclude%" %args% -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS %spanSources%
+set compile=cl -EHsc -I../include/nonstd -I"%CppCoreCheckInclude%" %args% -DNOMINMAX %spanSources%
 echo %compile% && %compile%
 goto :EOF
 
