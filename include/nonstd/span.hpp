@@ -395,7 +395,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_EXPECTS( cond )  /* Expect elided */
 #else
 # define span_constexpr_exp    span_constexpr14
-# define span_EXPECTS( cond )  span_CONFIG_CONTRACT_CHECK( "Precondition", cond )
+# define span_EXPECTS( cond )  span_CONTRACT_CHECK( "Precondition", cond )
 #endif
 
 #if span_ELIDE_CONTRACT_ENSURES
@@ -403,10 +403,10 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_ENSURES( cond )  /* Ensures elided */
 #else
 # define span_constexpr_ens    span_constexpr14
-# define span_ENSURES( cond )  span_CONFIG_CONTRACT_CHECK( "Postcondition", cond )
+# define span_ENSURES( cond )  span_CONTRACT_CHECK( "Postcondition", cond )
 #endif
 
-#define span_CONFIG_CONTRACT_CHECK( type, cond ) \
+#define span_CONTRACT_CHECK( type, cond ) \
     cond ? static_cast< void >( 0 ) \
          : nonstd::span_lite::detail::report_contract_violation( span_LOCATION( __FILE__, __LINE__ ) ": " type " violation." )
 
