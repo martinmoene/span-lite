@@ -96,11 +96,15 @@ CASE( "span<>: Terminates access outside the span" )
 
 CASE( "span<>: Termination throws nonstd::span_lite::detail::contract_violation exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
 {
+#if span_CONFIG( CONTRACT_VIOLATION_THROWS )
     struct F {
         static void blow() { int arr[] = { 1, }; span<int> v( arr ); (void) v[1]; }
     };
 
     EXPECT_THROWS_AS( F::blow(), nonstd::span_lite::detail::contract_violation );
+#else
+    EXPECT( !!"exception contract_violation is not available (non-throwing contract violation)" );
+#endif
 }
 
 CASE( "span<>: Allows to default-construct" )
@@ -262,7 +266,7 @@ CASE( "span<>: Allows to construct from a const C-array with size via decay to p
 
 CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 {
-# if span_HAVE( ARRAY )
+#if span_HAVE( ARRAY )
     std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<      int> v( arr );
@@ -296,7 +300,7 @@ CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, s
 
 CASE( "span<>: Allows to construct from a container (std::vector<>)" )
 {
-# if span_HAVE( INITIALIZER_LIST )
+#if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
@@ -599,7 +603,7 @@ CASE( "span<>: Allows to observe an element via data()" )
 
 CASE( "span<>: Allows to observe the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
-# if span_PROVIDE( BACK_FRONT )
+#if span_PROVIDE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -611,7 +615,7 @@ CASE( "span<>: Allows to observe the first element via front() [span_CONFIG_PROV
 
 CASE( "span<>: Allows to observe the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
-# if span_PROVIDE( BACK_FRONT )
+#if span_PROVIDE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -663,7 +667,7 @@ CASE( "span<>: Allows to change an element via data()" )
 
 CASE( "span<>: Allows to change the first element via front() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
-# if span_PROVIDE( BACK_FRONT )
+#if span_PROVIDE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -677,7 +681,7 @@ CASE( "span<>: Allows to change the first element via front() [span_CONFIG_PROVI
 
 CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE_BACK_FRONT=1]" )
 {
-# if span_PROVIDE( BACK_FRONT )
+#if span_PROVIDE( BACK_FRONT )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -691,7 +695,7 @@ CASE( "span<>: Allows to change the last element via back() [span_CONFIG_PROVIDE
 
 CASE( "span<>: Allows to swap with another span [span_CONFIG_PROVIDE_SWAP=1]" )
 {
-# if span_PROVIDE( SWAP )
+#if span_PROVIDE( SWAP )
     int arr[] = { 1, 2, 3, };
     span<int> a( arr );
     span<int> b = a.subspan( 1 );
@@ -1101,7 +1105,7 @@ CASE( "make_span(): Allows building from a const C-array" )
 
 CASE( "make_span(): Allows building from a std::array<> (C++11)" )
 {
-# if span_HAVE( ARRAY )
+#if span_HAVE( ARRAY )
     std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<int> v = make_span( arr );
@@ -1114,7 +1118,7 @@ CASE( "make_span(): Allows building from a std::array<> (C++11)" )
 
 CASE( "make_span(): Allows building from a const std::array<> (C++11)" )
 {
-# if span_HAVE( ARRAY )
+#if span_HAVE( ARRAY )
     const std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<const int> v = make_span( arr );
@@ -1127,7 +1131,7 @@ CASE( "make_span(): Allows building from a const std::array<> (C++11)" )
 
 CASE( "make_span(): Allows building from a container (std::vector<>)" )
 {
-# if span_HAVE( INITIALIZER_LIST )
+#if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     std::vector<int> vec; {for ( int i = 1; i < 10; ++i ) vec.push_back(i); }
@@ -1139,7 +1143,7 @@ CASE( "make_span(): Allows building from a container (std::vector<>)" )
 
 CASE( "make_span(): Allows building from a const container (std::vector<>)" )
 {
-# if span_HAVE( INITIALIZER_LIST )
+#if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     const std::vector<int> vec( 10, 42 );
@@ -1151,7 +1155,8 @@ CASE( "make_span(): Allows building from a const container (std::vector<>)" )
 
 CASE( "make_span(): Allows building from a container (with_container_t, std::vector<>)" )
 {
-# if span_HAVE( INITIALIZER_LIST )
+#if span_PROVIDE_TO_STD( WITH_CONTAINER )
+#if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     std::vector<int> vec; {for ( int i = 1; i < 10; ++i ) vec.push_back(i); }
@@ -1159,11 +1164,15 @@ CASE( "make_span(): Allows building from a container (with_container_t, std::vec
     span<int> v = make_span( with_container, vec );
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
+#else
+    EXPECT( !!"make_span(with_container,...) is not available (span_PROVIDE_WITH_CONTAINER_TO_STD=0)" );
+#endif
 }
 
 CASE( "make_span(): Allows building from a const container (with_container_t, std::vector<>)" )
 {
-# if span_HAVE( INITIALIZER_LIST )
+#if span_PROVIDE_TO_STD( WITH_CONTAINER )
+#if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     const std::vector<int> vec( 10, 42 );
@@ -1171,6 +1180,9 @@ CASE( "make_span(): Allows building from a const container (with_container_t, st
     span<const int> v = make_span( with_container, vec );
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
+#else
+    EXPECT( !!"make_span(with_container,...) is not available (span_PROVIDE_WITH_CONTAINER_TO_STD=0)" );
+#endif
 }
 
 #endif // span_CONFIG_PROVIDE_MAKE_SPAN
@@ -1184,7 +1196,7 @@ CASE( "byte_span() [span_CONFIG_PROVIDE_BYTE_SPAN=1]" )
 
 CASE( "byte_span(): Allows building a span of std::byte from a single object (C++17)" )
 {
-# if span_HAVE( BYTE )
+#if span_HAVE( BYTE )
     int x = std::numeric_limits<int>::max();
 
     span<std::byte> spn = byte_span( x );
@@ -1198,7 +1210,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
 
 CASE( "byte_span(): Allows building a span of const std::byte from a single const object (C++17)" )
 {
-# if span_HAVE( BYTE )
+#if span_HAVE( BYTE )
     const int x = std::numeric_limits<int>::max();
 
     span<const std::byte> spn = byte_span( x );
@@ -1248,7 +1260,7 @@ CASE( "[hide][issue 3: same()]" )
     assert( fspan1.data() == farray );
     assert( fspan1.size() == DIMENSION_OF( farray ) );
 
-# if span_HAVE( BYTE )
+#if span_HAVE( BYTE )
     span<std::byte const> fspan2 = byte_span( farray[0] );
 
     assert( static_cast<void const *>( fspan1.data() ) == fspan2.data() );
@@ -1262,7 +1274,7 @@ CASE( "[hide][issue 3: same()]" )
     assert(        fspan1 == bspan4   );
     assert( !same( fspan1 ,  bspan4 ) );
 
-# if span_HAVE( BYTE )
+#if span_HAVE( BYTE )
     assert(        as_bytes( fspan1 ) != as_bytes( bspan4 )   );
     assert( !same( as_bytes( fspan1 ) ,  as_bytes( bspan4 ) ) );
 #endif
@@ -1291,11 +1303,11 @@ CASE( "[hide][issue 3: same()]" )
     assert( uspan1 != uspan3 );
     assert( uspan2 != uspan3 );
 
-# if span_HAVE( BYTE )
+#if span_HAVE( BYTE )
     assert(  same( as_bytes( uspan1 ), as_bytes( uspan2 ) ) );
     assert( !same( as_bytes( uspan1 ), as_bytes( uspan3 ) ) );
     assert( !same( as_bytes( uspan2 ), as_bytes( uspan3 ) ) );
-# endif
+#endif
 #else
     EXPECT( !!"same() is not provided via span_CONFIG_PROVIDE_SAME=1" );
 #endif // span_PROVIDE( SAME )
