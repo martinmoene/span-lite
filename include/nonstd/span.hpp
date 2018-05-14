@@ -242,7 +242,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120
 # define span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG  1
-# define span_HAVE_TO_STRING  1
 #endif
 
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140
@@ -282,6 +281,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 110
 # define span_HAVE_ARRAY  1
 # define span_HAVE_REMOVE_CONST  1
+# define span_HAVE_TO_STRING  1
 #endif
 
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120
@@ -380,10 +380,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // Additional includes:
 
-#if span_HAVE( TYPE_TRAITS )
-# include <type_traits>
-#endif
-
 #if span_HAVE( ADDRESSOF )
 # include <memory>
 #endif
@@ -394,6 +390,14 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #if span_HAVE( BYTE )
 # include <cstddef>
+#endif
+
+#if span_HAVE( TYPE_TRAITS )
+# include <type_traits>
+#endif
+
+#if ! span_HAVE( TO_STRING )
+# include <sstream>
 #endif
 
 #if ! span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
@@ -491,9 +495,9 @@ struct remove_cv
 #endif  // span_HAVE( REMOVE_CONST )
 
 #if ! span_HAVE( TO_STRING )
-inline std::string to_string( const long x, const int base = 10 )
+inline std::string to_string( const index_t x )
 {
-   char buf[65] = ""; return _ltoa( x, buf, base );
+    std::stringstream ss; ss << x; return ss.str();
 }
 #endif
 
@@ -552,7 +556,7 @@ struct out_of_range : std::out_of_range
     
     std::string format( char const * const where, index_t idx, index_t size )
     {
-        return std::string(where) + ": index '" + to_string(idx) + "' out of range '" + to_string(size)+ "'"; 
+        return std::string(where) + ": index '" + to_string(idx) + "' is out of range [0.." + to_string(size)+ ")"; 
     }
 };
 #endif
