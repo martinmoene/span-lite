@@ -21,6 +21,7 @@ set spanFeatures=^
     "span_FEATURE_MAKE_SPAN_TO_STD=99" ^
     "span_FEATURE_WITH_CONTAINER_TO_STD=99" ^
     "span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1" ^
+    "span_FEATURE_MEMBER_AT=1" ^
     "span_FEATURE_BACK_FRONT=1" ^
     "span_FEATURE_SWAP=1" ^
     "span_FEATURE_SAME=1"
@@ -29,6 +30,10 @@ set cppStandards=^
     c++14 ^
     c++17 ^
     c++latest
+
+set msvc_defines=^
+    -DNOMINMAX ^
+    -D_CRT_SECURE_NO_WARNINGS
 
 set CppCoreCheckInclude=%VCINSTALLDIR%\Auxiliary\VS\include
 
@@ -73,7 +78,7 @@ goto :EOF
 :Compile  contractViolationResponse spanFeature [CppStd]
 ::call t.bat %*
 set args=%*
-set compile=cl -EHsc -I../include/nonstd -I"%CppCoreCheckInclude%" %args% -DNOMINMAX %spanSources%
+set compile=cl -EHsc -I../include/nonstd -I"%CppCoreCheckInclude%" %args% %msvc_defines% %spanSources%
 echo %compile% && %compile%
 goto :EOF
 

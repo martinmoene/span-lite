@@ -511,54 +511,6 @@ CASE( "span<>: Allows to create a sub span starting at a given offset with a giv
 //    EXPECT( t.empty() );
 //}
 
-CASE( "span<>: Allows forward iteration" )
-{
-    int arr[] = { 1, 2, 3, };
-    span<int> v( arr );
-
-    for ( span<int>::iterator pos = v.begin(); pos != v.end(); ++pos )
-    {
-        EXPECT( *pos == arr[ std::distance( v.begin(), pos )] );
-    }
-}
-
-CASE( "span<>: Allows const forward iteration" )
-{
-    int arr[] = { 1, 2, 3, };
-    span<int> v( arr );
-
-    for ( span<int>::const_iterator pos = v.cbegin(); pos != v.cend(); ++pos )
-    {
-        EXPECT( *pos == arr[ std::distance( v.cbegin(), pos )] );
-    }
-}
-
-CASE( "span<>: Allows reverse iteration" )
-{
-    int arr[] = { 1, 2, 3, };
-    span<int> v( arr );
-
-    for ( span<int>::reverse_iterator pos = v.rbegin(); pos != v.rend(); ++pos )
-    {
-//        size_t dist = narrow<size_t>( std::distance(v.rbegin(), pos) );
-        index_type dist = std::distance(v.rbegin(), pos);
-        EXPECT( *pos == arr[ v.size() - 1 - dist ] );
-    }
-}
-
-CASE( "span<>: Allows const reverse iteration" )
-{
-    int arr[] = { 1, 2, 3, };
-    const span<int> v( arr );
-
-    for ( span<int>::const_reverse_iterator pos = v.crbegin(); pos != v.crend(); ++pos )
-    {
-//        size_t dist = narrow<size_t>( std::distance(v.crbegin(), pos) );
-        index_type dist = std::distance(v.crbegin(), pos);
-        EXPECT( *pos == arr[ v.size() - 1 - dist ] );
-    }
-}
-
 CASE( "span<>: Allows to observe an element via array indexing" )
 {
     int arr[] = { 1, 2, 3, };
@@ -583,6 +535,28 @@ CASE( "span<>: Allows to observe an element via call indexing" )
         EXPECT( v(i) == arr[i] );
         EXPECT( w(i) == arr[i] );
     }
+}
+
+CASE( "span<>: Allows to observe an element via at()" )
+{
+#if span_FEATURE( MEMBER_AT )
+    int arr[] = { 1, 2, 3, };
+    span<int>       v( arr );
+    span<int> const w( arr );
+
+    for ( index_type i = 0; i < v.size(); ++i )
+    {
+        EXPECT( v.at(i) == arr[i] );
+        EXPECT( w.at(i) == arr[i] );
+    }
+
+    EXPECT_THROWS_AS( v.at(42), std::out_of_range );
+    EXPECT_THROWS_AS( w.at(42), std::out_of_range );
+    
+//  try { v.at(42); } catch( std::out_of_range const & e ) { std::cout << e.what(); }
+#else
+    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
+#endif
 }
 
 CASE( "span<>: Allows to observe an element via data()" )
@@ -651,6 +625,23 @@ CASE( "span<>: Allows to change an element via call indexing" )
     EXPECT( 33 == arr[2] );
 }
 
+CASE( "span<>: Allows to change an element via at()" )
+{
+#if span_FEATURE( MEMBER_AT )
+    int arr[] = { 1, 2, 3, };
+    span<int>       v( arr );
+    span<int> const w( arr );
+
+    v.at(1) = 22;
+    w.at(2) = 33;
+
+    EXPECT( 22 == arr[1] );
+    EXPECT( 33 == arr[2] );
+#else
+    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
+#endif
+}
+
 CASE( "span<>: Allows to change an element via data()" )
 {
     int arr[] = { 1, 2, 3, };
@@ -711,7 +702,55 @@ CASE( "span<>: Allows to swap with another span [span_FEATURE_SWAP=1]" )
 #endif
 }
 
-CASE( "span<>: Allows to identfy if a span is the same as another span [span_FEATURE_SAME=1]" )
+CASE( "span<>: Allows forward iteration" )
+{
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    for ( span<int>::iterator pos = v.begin(); pos != v.end(); ++pos )
+    {
+        EXPECT( *pos == arr[ std::distance( v.begin(), pos )] );
+    }
+}
+
+CASE( "span<>: Allows const forward iteration" )
+{
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    for ( span<int>::const_iterator pos = v.cbegin(); pos != v.cend(); ++pos )
+    {
+        EXPECT( *pos == arr[ std::distance( v.cbegin(), pos )] );
+    }
+}
+
+CASE( "span<>: Allows reverse iteration" )
+{
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+
+    for ( span<int>::reverse_iterator pos = v.rbegin(); pos != v.rend(); ++pos )
+    {
+//        size_t dist = narrow<size_t>( std::distance(v.rbegin(), pos) );
+        index_type dist = std::distance(v.rbegin(), pos);
+        EXPECT( *pos == arr[ v.size() - 1 - dist ] );
+    }
+}
+
+CASE( "span<>: Allows const reverse iteration" )
+{
+    int arr[] = { 1, 2, 3, };
+    const span<int> v( arr );
+
+    for ( span<int>::const_reverse_iterator pos = v.crbegin(); pos != v.crend(); ++pos )
+    {
+//        size_t dist = narrow<size_t>( std::distance(v.crbegin(), pos) );
+        index_type dist = std::distance(v.crbegin(), pos);
+        EXPECT( *pos == arr[ v.size() - 1 - dist ] );
+    }
+}
+
+CASE( "span<>: Allows to identify if a span is the same as another span [span_FEATURE_SAME=1]" )
 {
 #if span_FEATURE( SAME )
     int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };

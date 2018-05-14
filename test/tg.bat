@@ -21,6 +21,7 @@ set span_contract=^
 set span_provide=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
+    -Dspan_FEATURE_MEMBER_AT=1 ^
     -Dspan_FEATURE_BACK_FRONT=1 ^
     -Dspan_FEATURE_SWAP=1 ^
     -Dspan_FEATURE_SAME=1 ^

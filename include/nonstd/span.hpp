@@ -23,6 +23,10 @@
 # define span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE  0
 #endif
 
+#ifndef  span_FEATURE_MEMBER_AT
+# define span_FEATURE_MEMBER_AT  0
+#endif
+
 #ifndef  span_FEATURE_BACK_FRONT
 # define span_FEATURE_BACK_FRONT  0
 #endif
@@ -54,6 +58,19 @@
 #if    defined( span_CONFIG_SELECT_STD_SPAN    ) && span_CONFIG_SELECT_STD_SPAN && \
        defined( span_CONFIG_SELECT_NONSTD_SPAN ) && span_CONFIG_SELECT_NONSTD_SPAN
 #error Please define none or one of span_CONFIG_SELECT_STD_SPAN, span_CONFIG_SELECT_NONSTD_SPAN to 1, but not both.
+#endif
+
+// Control presence of exception handling (try and auto discover):
+
+#ifndef span_CONFIG_NO_EXCEPTIONS
+# if defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)
+#  define span_CONFIG_NO_EXCEPTIONS  0
+# else
+#  define span_CONFIG_NO_EXCEPTIONS  1
+#  undef  span_CONFIG_CONTRACT_VIOLATION_THROWS
+#  undef  span_CONFIG_CONTRACT_VIOLATION_TERMINATES
+#  define span_CONFIG_CONTRACT_VIOLATION_TERMINATES  1
+# endif
 #endif
 
 // Control pre- and postcondition violation behaviour:
@@ -142,6 +159,7 @@ using std::operator>=;
 #else  // span_USES_STD_SPAN
 
 #include <algorithm>
+#include <string>
 
 // Compiler versions:
 //
@@ -224,6 +242,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120
 # define span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG  1
+# define span_HAVE_TO_STRING  1
 #endif
 
 #if span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140
@@ -439,6 +458,10 @@ const  span_constexpr   with_container_t with_container;
 
 namespace detail {
 
+#if span_HAVE( TO_STRING )
+using std::to_string;
+#endif
+
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
 using std::true_type;
@@ -466,6 +489,13 @@ struct remove_cv
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
+
+#if ! span_HAVE( TO_STRING )
+inline std::string to_string( const long x, const int base = 10 )
+{
+   char buf[65] = ""; return _ltoa( x, buf, base );
+}
+#endif
 
 #if ! span_HAVE( TYPE_TRAITS )
 
@@ -511,6 +541,21 @@ template< class T, std::size_t N >
 struct is_array<T[N]> : std::true_type {};
 
 #endif // span_HAVE( TYPE_TRAITS )
+
+#if ! span_CONFIG( NO_EXCEPTIONS )
+
+struct out_of_range : std::out_of_range
+{
+    explicit out_of_range( char const * const where, index_t idx, index_t size )
+        : std::out_of_range( format( where, idx, size ) )
+    {}
+    
+    std::string format( char const * const where, index_t idx, index_t size )
+    {
+        return std::string(where) + ": index '" + to_string(idx) + "' out of range '" + to_string(size)+ "'"; 
+    }
+};
+#endif
 
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 
@@ -849,6 +894,21 @@ public:
 
         return *( data() + idx );
     }
+
+#if span_FEATURE( MEMBER_AT )
+    span_constexpr14 reference at( index_type idx ) const
+    {
+#if span_CONFIG( NO_EXCEPTIONS )
+        return this->operator[]( idx );
+#else
+        if ( idx < 0 || size() <= idx ) 
+        {
+            throw detail::out_of_range( "span::at()", idx, size() );
+        }
+        return *( data() + idx );
+#endif
+    }
+#endif
 
     span_constexpr pointer data() const span_noexcept
     {

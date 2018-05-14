@@ -93,6 +93,10 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide construction of a span from a `std::array` with const data. See the table below and section [configuration](#configuration).
 
+### `at()`
+
+*span lite* can provide member function `at()` for element access. Unless exceptions have been disabled, `at()` throws std::out_of_range if the index falls outside the span. With exceptions disabled, `at(index_t)` delegates bounds checking to `operator[](index_t)`. See the table below and sections [configuration](#configuration) and [disable exceptions](#disable-exceptions).
+
 ### `back()` and `front()`
 
 *span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
@@ -122,6 +126,9 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Constructors**   |&nbsp;| macro **`span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_AT`** |
+| &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const  |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_FEATURE_BACK_FRONT`** |
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
@@ -163,6 +170,10 @@ Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
 -D<b>span_CONFIG_SELECT_NONSTD_SPAN</b>=1  
 Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
 
+### Disable exceptions
+-D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  
+Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Disabling exceptions will force contract violation to use termination, see [contract violation macros](#contract-violation-response-macros). Default is undefined.
+
 ### Provide construction using `with_container_t`
 -D<b>span_FEATURE_WITH_CONTAINER_TO_STD</b>=14  
 Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Default is undefined.
@@ -170,6 +181,10 @@ Define this to the highest C++ language version for which to enable constructing
 ### Provide construction from `std::array` with const data
 -D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
 Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
+
+### Provide `at()` member function
+-D<b>span_FEATURE_MEMBER_AT</b>=1  
+Define this to 1 to provide member function `at()`. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
 -D<b>span_FEATURE_BACK_FRONT</b>=1  
@@ -211,7 +226,7 @@ Define this macro to exclude `span_EXPECTS` from the code and include `span_ENSU
 Define this macro to call `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES`. This is the default case.
 
 \-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_THROWS</b>  
-Define this macro to throw an exception of implementation-defined type that is derived from `std::runtime_exception` instead of calling `std::terminate()` on a contract violation in `span_EXPECTS` and `span_ENSURES`.
+Define this macro to throw an exception of implementation-defined type that is derived from `std::runtime_exception` instead of calling `std::terminate()` on a contract violation in `span_EXPECTS` and `span_ENSURES`. See also [disable exceptions](#disable-exceptions).
 
 
 Reported to work with

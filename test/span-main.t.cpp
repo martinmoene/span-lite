@@ -73,6 +73,24 @@ CASE( "compiler version" "[.compiler]" )
 
 CASE( "presence of C++ language features" "[.stdlanguage]" )
 {
+#if defined(__cpp_exceptions)
+    span_PRESENT( __cpp_exceptions );
+#else
+    span_ABSENT(  __cpp_exceptions );
+#endif
+
+#if defined(__EXCEPTIONS)
+    span_PRESENT( __EXCEPTIONS );
+#else
+    span_ABSENT(  __EXCEPTIONS );
+#endif
+
+#if defined(_CPPUNWIND)
+    span_PRESENT( _CPPUNWIND );
+#else
+    span_ABSENT(  _CPPUNWIND );
+#endif
+
 #if span_HAVE( AUTO )
     span_PRESENT( span_HAVE_AUTO );
 #else
@@ -214,6 +232,12 @@ CASE( "presence of C++ library features" "[.stdlibrary]" )
 //    span_ABSENT(  span_HAVE_SIZED_TYPES );
 //#endif
 
+#if span_HAVE( TO_STRING )
+    span_PRESENT( span_HAVE_TO_STRING );
+#else
+    span_ABSENT(  span_HAVE_TO_STRING );
+#endif
+
 #if span_HAVE( TYPE_TRAITS )
     span_PRESENT( span_HAVE_TYPE_TRAITS );
 #else
@@ -227,15 +251,72 @@ CASE( "presence of C++ library features" "[.stdlibrary]" )
 #endif
 }
 
+CASE( "span configuration" "[.span]" )
+{
+#ifdef span_CONFIG_SELECT_STD_SPAN
+    span_PRESENT( span_CONFIG_SELECT_STD_SPAN );
+#else
+    span_ABSENT(  span_CONFIG_SELECT_STD_SPAN );
+#endif
+
+#ifdef span_CONFIG_SELECT_NONSTD_SPAN
+    span_PRESENT( span_CONFIG_SELECT_NONSTD_SPAN );
+#else
+    span_ABSENT(  span_CONFIG_SELECT_NONSTD_SPAN );
+#endif
+
+#ifdef span_CONFIG_NO_EXCEPTIONS
+    span_PRESENT( span_CONFIG_NO_EXCEPTIONS );
+#else
+    span_ABSENT(  span_CONFIG_NO_EXCEPTIONS );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_LEVEL_ON
+    span_PRESENT( span_CONFIG_CONTRACT_LEVEL_ON );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_LEVEL_ON );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_LEVEL_OFF
+    span_PRESENT( span_CONFIG_CONTRACT_LEVEL_OFF );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_LEVEL_OFF );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_LEVEL_EXPECTS_ONLY
+    span_PRESENT( span_CONFIG_CONTRACT_LEVEL_EXPECTS_ONLY );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_LEVEL_EXPECTS_ONLY );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_LEVEL_ENSURES_ONLY
+    span_PRESENT( span_CONFIG_CONTRACT_LEVEL_ENSURES_ONLY );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_LEVEL_ENSURES_ONLY );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_VIOLATION_THROWS
+    span_PRESENT( span_CONFIG_CONTRACT_VIOLATION_THROWS );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_VIOLATION_THROWS );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_VIOLATION_TERMINATES
+    span_PRESENT( span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
+#endif
+}
+
 CASE( "presence of span library features" "[.span]" )
 {
-    span_PRESENT( span_FEATURE(        BYTE_SPAN      ) );
-    span_PRESENT( span_FEATURE_TO_STD( MAKE_SPAN      ) );
-    span_PRESENT( span_FEATURE_TO_STD( WITH_CONTAINER ) );
-    span_PRESENT( span_FEATURE(        CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE ) );
-    span_PRESENT( span_FEATURE(        BACK_FRONT ) );
-    span_PRESENT( span_FEATURE(        SWAP ) );
-    span_PRESENT( span_FEATURE(        SAME ) );
+    span_PRESENT( span_FEATURE_BYTE_SPAN  );
+    span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
+    span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
+    span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );
+    span_PRESENT( span_FEATURE_BACK_FRONT );
+    span_PRESENT( span_FEATURE_SWAP );
+    span_PRESENT( span_FEATURE_SAME );
 }
 
 int main( int argc, char * argv[] )
