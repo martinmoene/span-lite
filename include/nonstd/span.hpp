@@ -391,14 +391,18 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #define span_ELIDE_CONTRACT_ENSURES  ( 0 == ( span_CONFIG_CONTRACT_LEVEL_MASK & 0x10 ) )
 
 #if span_ELIDE_CONTRACT_EXPECTS
+# define span_constexpr_exp    span_constexpr
 # define span_EXPECTS( cond )  /* Expect elided */
 #else
+# define span_constexpr_exp    span_constexpr14
 # define span_EXPECTS( cond )  span_CONFIG_CONTRACT_CHECK( "Precondition", cond )
 #endif
 
 #if span_ELIDE_CONTRACT_ENSURES
+# define span_constexpr_ens    span_constexpr
 # define span_ENSURES( cond )  /* Ensures elided */
 #else
+# define span_constexpr_ens    span_constexpr14
 # define span_ENSURES( cond )  span_CONFIG_CONTRACT_CHECK( "Postcondition", cond )
 #endif
 
@@ -606,7 +610,7 @@ public:
         // span_EXPECTS( size() == 0 );
     }
 
-    span_constexpr14 span( pointer ptr, index_type count )
+    span_constexpr_exp span( pointer ptr, index_type count )
         : data_( ptr )
         , size_( count )
     {
@@ -616,7 +620,7 @@ public:
         );
     }
 
-    span_constexpr14 span( pointer firstElem, pointer lastElem )
+    span_constexpr_exp span( pointer firstElem, pointer lastElem )
         : data_( firstElem )
         , size_( std::distance( firstElem, lastElem ) )
     {
@@ -743,7 +747,7 @@ public:
         >::type
 #endif
     >
-    span_constexpr14 span( span<OtherElementType, OtherExtent> const & other ) span_noexcept
+    span_constexpr_exp span( span<OtherElementType, OtherExtent> const & other ) span_noexcept
         : data_( reinterpret_cast<pointer>( other.data() ) )
         , size_( other.size() )
     {
@@ -753,7 +757,7 @@ public:
     // 26.7.3.3 Subviews [span.sub]
 
     template< index_type Count >
-    span_constexpr14 span< element_type, Count >
+    span_constexpr_exp span< element_type, Count >
     first() const
     {
         span_EXPECTS( 0 <= Count && Count <= size() );
@@ -762,7 +766,7 @@ public:
     }
 
     template< index_type Count >
-    span_constexpr14 span< element_type, Count >
+    span_constexpr_exp span< element_type, Count >
     last() const
     {
         span_EXPECTS( 0 <= Count && Count <= size() );
@@ -775,7 +779,7 @@ public:
 #else
     template< index_type Offset, index_type Count /*= dynamic_extent*/ >
 #endif
-    span_constexpr14 span< element_type, Count >
+    span_constexpr_exp span< element_type, Count >
     subspan() const
     {
         span_EXPECTS(
@@ -786,7 +790,7 @@ public:
         return span( data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
     }
 
-    span_constexpr14 span< element_type, dynamic_extent >
+    span_constexpr_exp span< element_type, dynamic_extent >
     first( index_type count ) const
     {
         span_EXPECTS( 0 <= count && count <= size() );
@@ -794,7 +798,7 @@ public:
         return span( data(), count );
     }
 
-    span_constexpr14 span< element_type, dynamic_extent >
+    span_constexpr_exp span< element_type, dynamic_extent >
     last( index_type count ) const
     {
         span_EXPECTS( 0 <= count && count <= size() );
@@ -802,7 +806,7 @@ public:
         return span( data() + ( size() - count ), count );
     }
 
-    span_constexpr14 span< element_type, dynamic_extent >
+    span_constexpr_exp span< element_type, dynamic_extent >
     subspan( index_type offset, index_type count = dynamic_extent ) const
     {
         span_EXPECTS(
@@ -832,14 +836,14 @@ public:
 
     // 26.7.3.5 Element access [span.elem]
 
-    span_constexpr14 reference operator[]( index_type idx ) const
+    span_constexpr_exp reference operator[]( index_type idx ) const
     {
         span_EXPECTS( 0 <= idx && idx < size() );
 
         return *( data() + idx );
     }
 
-    span_constexpr14 reference operator()( index_type idx ) const
+    span_constexpr_exp reference operator()( index_type idx ) const
     {
         span_EXPECTS( 0 <= idx && idx < size() );
 
@@ -853,14 +857,14 @@ public:
 
 #if span_PROVIDE( BACK_FRONT )
 
-    span_constexpr14 reference front() const span_noexcept
+    span_constexpr_exp reference front() const span_noexcept
     {
         span_EXPECTS( ! empty() );
 
         return *data();
     }
 
-    span_constexpr14 reference back() const span_noexcept
+    span_constexpr_exp reference back() const span_noexcept
     {
         span_EXPECTS( ! empty() );
 
