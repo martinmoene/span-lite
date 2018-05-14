@@ -163,8 +163,17 @@ CASE( "span configuration" "[.span]" )
     span_ABSENT(  span_CONFIG_CONTRACT_LEVEL_ENSURES_ONLY );
 #endif
 
+#ifdef span_CONFIG_CONTRACT_VIOLATION_THROWS
     span_PRESENT( span_CONFIG_CONTRACT_VIOLATION_THROWS );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_VIOLATION_THROWS );
+#endif
+
+#ifdef span_CONFIG_CONTRACT_VIOLATION_TERMINATES
     span_PRESENT( span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
+#else
+    span_ABSENT(  span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
+#endif
 }
 
 CASE( "presence of span library features" "[.span]" )
