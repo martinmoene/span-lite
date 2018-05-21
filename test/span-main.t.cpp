@@ -113,7 +113,6 @@ CASE( "presence of C++ library features" "[.stdlibrary]" )
     span_PRESENT( span_HAVE_CONTAINER_DATA_METHOD );
     span_PRESENT( span_HAVE_DATA );
     span_PRESENT( span_HAVE_REMOVE_CONST );
-    span_PRESENT( span_HAVE_TO_STRING );
     span_PRESENT( span_HAVE_TYPE_TRAITS );
 }
 
@@ -137,6 +136,12 @@ CASE( "span configuration" "[.span]" )
     span_PRESENT( span_CONFIG_NO_EXCEPTIONS );
 #else
     span_ABSENT(  span_CONFIG_NO_EXCEPTIONS );
+#endif
+
+#ifdef span_CONFIG_MEMBER_AT_REPORTS_DETAIL
+    span_PRESENT( span_CONFIG_MEMBER_AT_REPORTS_DETAIL );
+#else
+    span_ABSENT(  span_CONFIG_MEMBER_AT_REPORTS_DETAIL );
 #endif
 
 #ifdef span_CONFIG_CONTRACT_LEVEL_ON

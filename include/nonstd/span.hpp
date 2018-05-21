@@ -73,6 +73,11 @@
 # endif
 #endif
 
+// Control extended information for exception messages
+#ifdef span_CONFIG_MEMBER_AT_REPORTS_DETAIL
+# define span_CONFIG_MEMBER_AT_REPORTS_DETAIL   0
+#endif
+
 // Control pre- and postcondition violation behaviour:
 
 #if    defined( span_CONFIG_CONTRACT_LEVEL_ON )
@@ -218,8 +223,7 @@ using std::operator>=;
 // - C26473: gsl::t.1 : don't cast between pointer types where the source type and the target type are the same
 // - C26481: gsl::b.1 : don't use pointer arithmetic. Use span instead
 // - C26490: gsl::t.1 : don't use reinterpret_cast
-
-span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
+span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490)
 
 #else
 # define span_RESTORE_WARNINGS()  /*empty*/
@@ -285,7 +289,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #define span_HAVE_ARRAY                 span_CPP11_110
 #define span_HAVE_REMOVE_CONST          span_CPP11_110
-#define span_HAVE_TO_STRING             span_CPP11_110
 
 #define span_HAVE_CONDITIONAL           span_CPP11_120
 
@@ -386,16 +389,16 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # include <type_traits>
 #endif
 
-#if ! span_HAVE( TO_STRING )
-# include <sstream>
-#endif
-
 #if ! span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 # include <vector>
 #endif
 
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
 # include <stdexcept>
+#endif
+
+#if span_CONFIG(MEMBER_AT_REPORTS_DETAIL)
+# include <cstdio>
 #endif
 
 // Contract violation
@@ -452,10 +455,6 @@ const  span_constexpr   with_container_t with_container;
 
 namespace detail {
 
-#if span_HAVE( TO_STRING )
-using std::to_string;
-#endif
-
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
 using std::true_type;
@@ -483,13 +482,6 @@ struct remove_cv
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
-
-#if ! span_HAVE( TO_STRING )
-inline std::string to_string( const index_t x )
-{
-    std::stringstream ss; ss << x; return ss.str();
-}
-#endif
 
 #if ! span_HAVE( TYPE_TRAITS )
 
@@ -536,19 +528,20 @@ struct is_array<T[N]> : std::true_type {};
 
 #endif // span_HAVE( TYPE_TRAITS )
 
-#if ! span_CONFIG( NO_EXCEPTIONS )
-
-struct out_of_range : std::out_of_range
+#if span_CONFIG( MEMBER_AT_REPORTS_DETAIL )
+inline void throw_out_of_range( index_t idx, index_t size )
 {
-    explicit out_of_range( char const * const where, index_t idx, index_t size )
-        : std::out_of_range( format( where, idx, size ) )
-    {}
+    static span_constexpr const char fmt[] = "span::at(): index '%lli' is out of range [0..%lli)";
+    char buffer[ 2 * 20 + sizeof fmt ];
+    std::sprintf( buffer, fmt, static_cast<long long>(idx), static_cast<long long>(size) );
     
-    std::string format( char const * const where, index_t idx, index_t size )
-    {
-        return std::string(where) + ": index '" + to_string(idx) + "' is out of range [0.." + to_string(size)+ ")"; 
-    }
-};
+    throw std::out_of_range( buffer );
+}
+#else
+inline void throw_out_of_range( index_t idx, index_t size )
+{
+	throw std::out_of_range( "span::at(): index outside span" );
+}
 #endif
 
 #if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
@@ -893,14 +886,14 @@ public:
     span_constexpr14 reference at( index_type idx ) const
     {
 #if span_CONFIG( NO_EXCEPTIONS )
-        return this->operator[]( idx );
+        span_EXPECTS( 0 <= idx && idx < size() );
 #else
         if ( idx < 0 || size() <= idx ) 
         {
-            throw detail::out_of_range( "span::at()", idx, size() );
+            detail::throw_out_of_range( idx, size() );
         }
-        return *( data() + idx );
 #endif
+        return *( data() + idx );
     }
 #endif
 
