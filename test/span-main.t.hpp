@@ -7,10 +7,16 @@
 
 #pragma once
 
-#ifndef TEST_OPTIONAL_LITE_H_INCLUDED
-#define TEST_OPTIONAL_LITE_H_INCLUDED
+#ifndef TEST_SPAN_LITE_H_INCLUDED
+#define TEST_SPAN_LITE_H_INCLUDED
 
 #include "span.hpp"
+
+#if span_HAVE( BYTE )
+#include <iosfwd>
+namespace lest { std::ostream & operator<<( std::ostream & os, std::byte b ); }
+#endif
+
 #include "lest_cpp03.hpp"
 
 // Compiler warning suppression:
@@ -36,13 +42,6 @@ namespace nonstd { namespace span_lite {
 // use oparator<< instead of to_string() overload;
 // see  http://stackoverflow.com/a/10651752/437272
 
-#if span_HAVE( BYTE )
-inline std::ostream & operator<<( std::ostream & os, std::byte b )
-{
-    return os << "[byte:" << std::hex << std::showbase << std::to_integer<int>(b) << "]";
-}
-#endif
-
 template< typename T >
 inline std::ostream & operator<<( std::ostream & os, span<T> const & v )
 {
@@ -56,8 +55,15 @@ namespace lest {
 
 using ::nonstd::span_lite::operator<<;
 
+#if span_HAVE( BYTE )
+inline std::ostream & operator<<( std::ostream & os, std::byte b )
+{
+    return os << "[byte:" << std::hex << std::showbase << std::to_integer<int>(b) << "]";
+}
+#endif
+
 } // namespace lest
 
-#endif // TEST_OPTIONAL_LITE_H_INCLUDED
+#endif // TEST_SPAN_LITE_H_INCLUDED
 
 // end of file
