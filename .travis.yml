@@ -52,49 +52,49 @@ matrix:
       compiler: clang
       addons: &clang35
         apt:
-          packages: ["clang-3.5", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-3.5", "llvm-3.5-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-3.6
       compiler: clang
       addons: &clang36
         apt:
-          packages: ["clang-3.6", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-3.6", "llvm-3.6-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-3.7
       compiler: clang
       addons: &clang37
         apt:
-          packages: ["clang-3.7", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-3.7", "llvm-3.7-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-3.8
       compiler: clang
       addons: &clang38
         apt:
-          packages: ["clang-3.8", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-3.8", "llvm-3.8-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-3.9
       compiler: clang
       addons: &clang39
         apt:
-          packages: ["clang-3.9", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-3.9", "llvm-3.9-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-4.0
       compiler: clang
       addons: &clang40
         apt:
-          packages: ["clang-4.0", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-4.0", "llvm-4.0-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: COMPILER=clang++-5.0
       compiler: clang
       addons: &clang50
         apt:
-          packages: ["clang-5.0", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-5.0", "llvm-5.0-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: 
@@ -103,7 +103,7 @@ matrix:
       compiler: clang
       addons: &clang60
         apt:
-          packages: ["clang-6.0", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-6.0", "llvm-6.0-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
     - env: 
@@ -112,14 +112,8 @@ matrix:
       compiler: clang
       addons: &clang60
         apt:
-          packages: ["clang-6.0", "libc++abi-dev", "libc++-dev", "g++-7", "python3-pip", "lcov"]
+          packages: ["clang-6.0", "llvm-6.0-dev", "libc++abi-dev", "libc++-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
-
-  allow_failures:
-    - env: COMPILER=clang++-5.0
-      compiler: clang
-    - env: COMPILER=clang++-6.0
-      compiler: clang
 
 script:
   - export CXX=$COMPILER
