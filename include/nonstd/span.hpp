@@ -159,7 +159,6 @@ using std::operator>=;
 #else  // span_USES_STD_SPAN
 
 #include <algorithm>
-#include <string>
 
 // Compiler versions:
 //
@@ -238,6 +237,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_HAS_CPP0X  0
 #endif
 
+#define span_CPP11_80   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 80)
 #define span_CPP11_90   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 90)
 #define span_CPP11_100  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 100)
 #define span_CPP11_110  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 110)
@@ -285,7 +285,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #define span_HAVE_ARRAY                 span_CPP11_110
 #define span_HAVE_REMOVE_CONST          span_CPP11_110
-#define span_HAVE_TO_STRING             span_CPP11_110
+#define span_HAVE_SNPRINTF              span_CPP11_80
 
 #define span_HAVE_CONDITIONAL           span_CPP11_120
 
@@ -363,6 +363,11 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_noreturn /*[[noreturn]]*/
 #endif
 
+#if span_HAVE_SNPRINTF
+#  define span_SNPRINTF(b, n, ...)  (::sprintf_s)((b), (n), __VA_ARGS__)
+#else
+#  define span_SNPRINTF(b, n, ...)  (std::sprintf)((b), __VA_ARGS__)
+#endif
 // Other features:
 
 #define span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR  \
@@ -386,15 +391,15 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # include <type_traits>
 #endif
 
-#if ! span_HAVE( TO_STRING )
-# include <sstream>
-#endif
-
 #if ! span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 # include <vector>
 #endif
 
-#if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+#if span_FEATURE( MEMBER_AT ) > 1
+# include <cstdio>
+#endif
+
+#if span_CONFIG( CONTRACT_VIOLATION_THROWS_V )
 # include <stdexcept>
 #endif
 
@@ -452,10 +457,6 @@ const  span_constexpr   with_container_t with_container;
 
 namespace detail {
 
-#if span_HAVE( TO_STRING )
-using std::to_string;
-#endif
-
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
 using std::true_type;
@@ -483,13 +484,6 @@ struct remove_cv
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
-
-#if ! span_HAVE( TO_STRING )
-inline std::string to_string( const index_t x )
-{
-    std::stringstream ss; ss << x; return ss.str();
-}
-#endif
 
 #if ! span_HAVE( TYPE_TRAITS )
 
@@ -537,21 +531,26 @@ struct is_array<T[N]> : std::true_type {};
 #endif // span_HAVE( TYPE_TRAITS )
 
 #if ! span_CONFIG( NO_EXCEPTIONS )
-
-struct out_of_range : std::out_of_range
+#if   span_FEATURE( MEMBER_AT ) > 1
+inline void throw_out_of_range( index_t idx, index_t size )
 {
-    explicit out_of_range( char const * const where, index_t idx, index_t size )
-        : std::out_of_range( format( where, idx, size ) )
-    {}
+    const char fmt[] = "span::at(): index '%lli' is out of range [0..%lli)";
+    char buffer[ 2 * 20 + sizeof fmt ];
+    span_SNPRINTF( buffer, sizeof buffer, fmt, static_cast<long long>(idx), static_cast<long long>(size) );
     
-    std::string format( char const * const where, index_t idx, index_t size )
-    {
-        return std::string(where) + ": index '" + to_string(idx) + "' is out of range [0.." + to_string(size)+ ")"; 
-    }
-};
-#endif
+    throw std::out_of_range( buffer );
+}
 
-#if span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+#else 
+
+inline void throw_out_of_range( index_t /*idx*/, index_t /*size*/ )
+{
+    throw std::out_of_range( "span::at(): index outside span" );
+}
+#endif  // MEMBER_AT
+#endif  // NO_EXCEPTIONS
+
+#if span_CONFIG( CONTRACT_VIOLATION_THROWS_V )
 
 struct contract_violation : std::logic_error
 {
@@ -565,14 +564,14 @@ inline void report_contract_violation( char const * msg )
     throw contract_violation( msg );
 }
 
-#else // span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+#else // span_CONFIG( CONTRACT_VIOLATION_THROWS_V )
 
 span_noreturn inline void report_contract_violation( char const * /*msg*/ ) span_noexcept
 {
     std::terminate();
 }
 
-#endif // span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+#endif // span_CONFIG( CONTRACT_VIOLATION_THROWS_V )
 
 }  // namespace detail
 
@@ -897,7 +896,7 @@ public:
 #else
         if ( idx < 0 || size() <= idx ) 
         {
-            throw detail::out_of_range( "span::at()", idx, size() );
+            detail::throw_out_of_range( idx, size() );
         }
         return *( data() + idx );
 #endif

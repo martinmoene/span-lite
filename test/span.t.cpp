@@ -83,18 +83,53 @@ CASE( "span<>: Terminates access outside the span" )
     struct F {
         static void blow_ix(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v[i]; }
         static void blow_iv(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v(i); }
-//      static void blow_at(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
+#if span_FEATURE_MEMBER_AT
+        static void blow_at(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
+#endif
     };
 
     EXPECT_NO_THROW( F::blow_ix(2) );
     EXPECT_NO_THROW( F::blow_iv(2) );
-//  EXPECT_NO_THROW( F::blow_at(2) );
     EXPECT_THROWS(   F::blow_ix(3) );
     EXPECT_THROWS(   F::blow_iv(3) );
-//  EXPECT_THROWS(   F::blow_at(3) );
+#if span_FEATURE_MEMBER_AT
+    EXPECT_NO_THROW( F::blow_at(2) );
+    EXPECT_THROWS(   F::blow_at(3) );
+#endif
 }
 
-CASE( "span<>: Termination throws nonstd::span_lite::detail::contract_violation exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
+CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [span_FEATURE_MEMBER_AT>0][span_CONFIG_NO_EXCEPTIONS=0]" )
+{
+#if span_FEATURE( MEMBER_AT )
+    int arr[] = { 1, 2, 3, };
+    span<int>       v( arr );
+    span<int> const w( arr );
+
+    EXPECT_THROWS_AS( v.at(42), std::out_of_range );
+    EXPECT_THROWS_AS( w.at(42), std::out_of_range );
+    
+    struct F { 
+        static void fail(lest::env & lest_env) { 
+            int arr[] = { 1, 2, 3, }; span<int> v( arr ); EXPECT( (v.at(42), true) ); 
+    }};
+
+    lest::test fail[] = { lest::test( "F", F::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 1 == run( fail, os ) );
+#if span_FEATURE( MEMBER_AT ) > 1
+    EXPECT( std::string::npos != os.str().find("42") );
+    EXPECT( std::string::npos != os.str().find("3)") );
+#else
+    EXPECT( std::string::npos != os.str().find("index outside span") );
+#endif
+#else
+    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
+#endif
+}
+
+CASE( "span<>: Termination throws std::logic_error-derived exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
 {
 #if span_CONFIG( CONTRACT_VIOLATION_THROWS )
     struct F {
@@ -537,7 +572,7 @@ CASE( "span<>: Allows to observe an element via call indexing" )
     }
 }
 
-CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT=1]" )
+CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]" )
 {
 #if span_FEATURE( MEMBER_AT )
     int arr[] = { 1, 2, 3, };
@@ -549,11 +584,6 @@ CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT=1]"
         EXPECT( v.at(i) == arr[i] );
         EXPECT( w.at(i) == arr[i] );
     }
-
-    EXPECT_THROWS_AS( v.at(42), std::out_of_range );
-    EXPECT_THROWS_AS( w.at(42), std::out_of_range );
-    
-//  try { v.at(42); } catch( std::out_of_range const & e ) { std::cout << e.what(); }
 #else
     EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
 #endif

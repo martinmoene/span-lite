@@ -128,7 +128,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_AT`** |
-| &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const  |
+| &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const<br>May throw std::out_of_range exception |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_BACK_FRONT`** |
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
@@ -184,7 +184,7 @@ Define this to 1 to enable constructing a span from a std::array with const data
 
 ### Provide `at()` member function
 -D<b>span_FEATURE_MEMBER_AT</b>=1  
-Define this to 1 to provide member function `at()`. Default is undefined.
+Define this to 1 to provide member function `at()`. Define this to 2 to include index and size in message of std::out_of_range exception. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
 -D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=1  
@@ -322,7 +322,8 @@ span<>: Terminates creation of a sub span of the first n elements for n exceedin
 span<>: Terminates creation of a sub span of the last n elements for n exceeding the span
 span<>: Terminates creation of a sub span outside the span
 span<>: Terminates access outside the span
-span<>: Termination throws nonstd::span_lite::detail::contract_violation exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]
+span<>: Throws  on access outside the span via at(): std::out_of_range [span_FEATURE_MEMBER_AT>0][span_CONFIG_NO_EXCEPTIONS=0]
+span<>: Termination throws std::logic_error-derived exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]
 span<>: Allows to default-construct
 span<>: Allows to construct from a nullptr and a zero size (C++11)
 span<>: Allows to construct from two pointers
@@ -352,7 +353,7 @@ span<>: Allows to create a sub span starting at a given offset
 span<>: Allows to create a sub span starting at a given offset with a given length
 span<>: Allows to observe an element via array indexing
 span<>: Allows to observe an element via call indexing
-span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT=1]
+span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]
 span<>: Allows to observe an element via data()
 span<>: Allows to observe the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]
 span<>: Allows to observe the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]
