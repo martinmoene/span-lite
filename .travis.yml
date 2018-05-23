@@ -97,11 +97,22 @@ matrix:
           packages: ["clang-5.0", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
-    - env: COMPILER=clang++-6.0
+    - env: 
+        - COMPILER=clang++-6.0
+        - LIBCXX=libstdc++
       compiler: clang
       addons: &clang60
         apt:
           packages: ["clang-6.0", "g++-7", "python3-pip", "lcov"]
+          sources: *apt_sources
+
+    - env: 
+        - COMPILER=clang++-6.0
+        - LIBCXX=libc++
+      compiler: clang
+      addons: &clang60
+        apt:
+          packages: ["clang-6.0", "libc++abi-dev", "libc++-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
   allow_failures:
@@ -112,5 +123,7 @@ matrix:
 
 script:
   - export CXX=$COMPILER
+  - IPO_CONF=${NO_IPO:--DCMAKE_POLICY_DEFAULT_CMP0069=NEW -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=True}
+  - LIBCXX_CONF=${LIBCXX:+-DCMAKE_CXX_FLAGS=-stdlib=$LIBCXX}
   - mkdir build && cd build
-  - cmake -G "Unix Makefiles" .. && cmake --build . && ctest
+  - cmake -G "Unix Makefiles" $IPO_CONF $LIBCXX_CONF .. && cmake --build . && ctest
