@@ -121,10 +121,6 @@ matrix:
           packages: ["clang-6.0", "libc++abi-dev", "libc++-dev", "g++-7", "python3-pip", "lcov"]
           sources: *apt_sources
 
-  allow_failures:
-    - env: LIBCXX=libc++
-      compiler: clang
-
 script:
   - export CXX=$COMPILER
   - IPO_CONF=${IPO:+-DCMAKE_POLICY_DEFAULT_CMP0069=NEW -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=True}

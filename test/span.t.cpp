@@ -369,6 +369,11 @@ CASE( "span<>: Allows to copy-construct from another span of the same type" )
     EXPECT( std::equal( y.begin(), y.end(), arr ) );
 }
 
+static bool eqcompare(int a, int b)
+{
+    return a == b;
+}
+
 CASE( "span<>: Allows to copy-construct from another span of a compatible type" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
@@ -378,8 +383,9 @@ CASE( "span<>: Allows to copy-construct from another span of a compatible type" 
     span<const volatile int> x( v );
     span<const volatile int> y( v );
 
-    EXPECT( std::equal( x.begin(), x.end(), arr ) );
-    EXPECT( std::equal( y.begin(), y.end(), arr ) );
+    // libc++ takes references and can match volatile/non-volatile
+    EXPECT( std::equal( x.begin(), x.end(), arr, &eqcompare ) );
+    EXPECT( std::equal( y.begin(), y.end(), arr, &eqcompare ) );
 }
 
 CASE( "span<>: Allows to copy-construct from a temporary span of the same type (C++11)" )
