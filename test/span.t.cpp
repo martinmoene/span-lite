@@ -655,7 +655,7 @@ CASE( "span<>: Allows to change an element via call indexing" )
     EXPECT( 33 == arr[2] );
 }
 
-CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT=1]" )
+CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT>0]" )
 {
 #if span_FEATURE( MEMBER_AT )
     int arr[] = { 1, 2, 3, };

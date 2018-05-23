@@ -284,8 +284,9 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #define span_HAVE_TYPE_TRAITS           span_CPP11_90
 
 #define span_HAVE_ARRAY                 span_CPP11_110
+#define span_HAVE_LONGLONG              span_CPP11_80
 #define span_HAVE_REMOVE_CONST          span_CPP11_110
-#define span_HAVE_SNPRINTF              span_CPP11_80
+#define span_HAVE_SNPRINTF              span_CPP11_140
 
 #define span_HAVE_CONDITIONAL           span_CPP11_120
 
@@ -363,11 +364,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_noreturn /*[[noreturn]]*/
 #endif
 
-#if span_HAVE_SNPRINTF
-#  define span_SNPRINTF(b, n, ...)  (::sprintf_s)((b), (n), __VA_ARGS__)
-#else
-#  define span_SNPRINTF(b, n, ...)  (std::sprintf)((b), __VA_ARGS__)
-#endif
 // Other features:
 
 #define span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR  \
@@ -532,16 +528,36 @@ struct is_array<T[N]> : std::true_type {};
 
 #if ! span_CONFIG( NO_EXCEPTIONS )
 #if   span_FEATURE( MEMBER_AT ) > 1
+
+// format index and size:
+
+#if span_HAVE_SNPRINTF 
+# define span_FORMAT_RANGE(b, n, fmt, idx, size)  (std::snprintf)( (b), (n), (fmt), (idx), (size) )
+#elif span_COMPILER_MSVC_VERSION
+# define span_FORMAT_RANGE(b, n, fmt, idx, size)  (::sprintf_s)( (b), (n), (fmt), (idx), (size) )
+#else
+# define span_FORMAT_RANGE(b, n, fmt, idx, size)  (::sprintf)( (b), (fmt), (idx), (size) )
+#endif
+
+#if span_HAVE_LONGLONG
+#define span_FMT_LLI "%lli"
+inline long long to_longlong( index_t x ) { return static_cast<long long>(x); }
+#else
+#define span_FMT_LLI "%li"
+inline long to_longlong( index_t x ) { return static_cast<long>(x); }
+#endif
+
 inline void throw_out_of_range( index_t idx, index_t size )
 {
-    const char fmt[] = "span::at(): index '%lli' is out of range [0..%lli)";
+    const char fmt[] = "span::at(): index '" span_FMT_LLI "' is out of range [0.." span_FMT_LLI ")";
     char buffer[ 2 * 20 + sizeof fmt ];
-    span_SNPRINTF( buffer, sizeof buffer, fmt, static_cast<long long>(idx), static_cast<long long>(size) );
+    span_FORMAT_RANGE( buffer, sizeof buffer, fmt, to_longlong(idx), to_longlong(size) );
     
     throw std::out_of_range( buffer );
 }
+#undef span_FMT_LLI
 
-#else 
+#else // MEMBER_AT
 
 inline void throw_out_of_range( index_t /*idx*/, index_t /*size*/ )
 {
