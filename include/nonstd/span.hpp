@@ -11,7 +11,13 @@
 #ifndef NONSTD_SPAN_HPP_INCLUDED
 #define NONSTD_SPAN_HPP_INCLUDED
 
-#define span_VERSION "0.3.0"
+#define  span_lite_MAJOR  0
+#define  span_lite_MINOR  3
+#define  span_lite_PATCH  0
+#define  span_lite_VERSION  span_STRINGIFY(span_lite_MAJOR) "." span_STRINGIFY(span_lite_MINOR) "." span_STRINGIFY(span_lite_PATCH)
+
+#define span_STRINGIFY(  x )  span_STRINGIFY_( x )
+#define span_STRINGIFY_( x )  #x
 
 // Configuration:
 
@@ -429,8 +435,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #else
 # define span_LOCATION( file, line )  file "(" span_STRINGIFY( line ) ")"
 #endif
-
-#define span_STRINGIFY( x )  #x
 
 namespace nonstd {
 namespace span_lite {

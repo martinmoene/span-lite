@@ -31,6 +31,14 @@ lest::tests & specification()
     return tests;
 }
 
+CASE( "span-lite version" "[.version]" )
+{
+    span_PRESENT( span_lite_MAJOR );
+    span_PRESENT( span_lite_MINOR );
+    span_PRESENT( span_lite_PATCH );
+    span_PRESENT( span_lite_VERSION );
+}
+
 CASE( "__cplusplus" "[.stdc++]" )
 {
     span_PRESENT( __cplusplus );
@@ -43,11 +51,6 @@ CASE( "__cplusplus" "[.stdc++]" )
 
     span_PRESENT( span_CPLUSPLUS );
     span_PRESENT( span_CPLUSPLUS_V );
-}
-
-CASE( "span-lite version" "[.version]" )
-{
-    span_PRESENT( span_VERSION );
 }
 
 CASE( "compiler version" "[.compiler]" )
