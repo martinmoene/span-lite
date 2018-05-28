@@ -2,8 +2,19 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Span - http://wg21.link/p0122" />
+		<Option title="Span Lite" />
 		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[span lite - A single-file header-only version of a C++20-like span for C++98, C++11 and later.
+
+p0122 - https://wg21.link/p0122
+
+Neil MacIntosh <neilmac@fb.com>
+Stephan T. Lavavej <stl@microsoft.com>
+]]>
+			</notes>
+		</Option>
 		<Build>
 			<Target title="default">
 				<Option output="any-lite" prefix_auto="1" extension_auto="1" />
