@@ -16,6 +16,8 @@ project( span_lite )
 
 set( package_name "span-lite" )
 
+set( include_source_dir "${PROJECT_SOURCE_DIR}/include" )
+
 # Interface library:
 
 add_library(                
