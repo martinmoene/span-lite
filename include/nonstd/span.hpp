@@ -332,12 +332,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_explicit /*explicit*/
 #endif
 
-#if span_HAVE_INLINE_NAMESPACE
-# define span_inline_ns inline
-#else
-# define span_inline_ns /*inline*/
-#endif
-
 #if span_HAVE_IS_DELETE
 # define span_is_delete = delete
 #else
