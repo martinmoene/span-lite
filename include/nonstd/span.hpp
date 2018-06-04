@@ -200,6 +200,9 @@ using std::operator>=;
 # define span_COMPILER_GNUC_VERSION  0
 #endif
 
+// half-open range [lo..hi):
+#define span_BETWEEN( v, lo, hi )  ( (lo) <= (v) && (v) < (hi) )
+
 // Compiler warning suppression:
 
 #if defined __clang__
@@ -230,9 +233,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #else
 # define span_RESTORE_WARNINGS()  /*empty*/
 #endif
-
-// half-open range [lo..hi):
-#define span_BETWEEN( v, lo, hi )  ( (lo) <= (v) && (v) < (hi) )
 
 // Presence of language and library features:
 
