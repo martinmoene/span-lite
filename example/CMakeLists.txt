@@ -7,7 +7,7 @@
 
 cmake_minimum_required( VERSION 3.0 )
 
-project( span-lite-example )
+project( example LANGUAGES CXX )
 
 # Target default options and definitions:
 

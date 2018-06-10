@@ -12,7 +12,7 @@ cmake_minimum_required( VERSION 3.0 )
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ON )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
 
-project( span_lite )
+project( span_lite LANGUAGES CXX )
 
 set( package_name "span-lite" )
 
