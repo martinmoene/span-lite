@@ -808,7 +808,7 @@ public:
     {
         span_EXPECTS( 0 <= Count && Count <= size() );
 
-        return span( data(), Count );
+        return span< element_type, Count >( data(), Count );
     }
 
     template< index_type Count >
@@ -817,7 +817,7 @@ public:
     {
         span_EXPECTS( 0 <= Count && Count <= size() );
 
-        return span( data() + (size() - Count), Count );
+        return span< element_type, Count >( data() + (size() - Count), Count );
     }
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
@@ -833,7 +833,7 @@ public:
             ( Count == dynamic_extent || (0 <= Count && Count + Offset <= size()) )
         );
 
-        return span( data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
+        return span< element_type, Count >( data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
@@ -841,7 +841,7 @@ public:
     {
         span_EXPECTS( 0 <= count && count <= size() );
 
-        return span( data(), count );
+        return span< element_type, dynamic_extent >( data(), count );
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
@@ -849,7 +849,7 @@ public:
     {
         span_EXPECTS( 0 <= count && count <= size() );
 
-        return span( data() + ( size() - count ), count );
+        return span< element_type, dynamic_extent >( data() + ( size() - count ), count );
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
@@ -860,7 +860,7 @@ public:
             ( count  == dynamic_extent || ( 0 <= count && offset + count <= size() ) )
         );
 
-        return span( data() + offset, count == dynamic_extent ? size() - offset : count );
+        return span< element_type, dynamic_extent >( data() + offset, count == dynamic_extent ? size() - offset : count );
     }
 
     // 26.7.3.4 Observers [span.obs]
