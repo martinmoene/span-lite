@@ -5,7 +5,7 @@
 //
 // Copyright (c) 2018 Martin Moene
 //
-// Distributed under the Boost Software License, Version 1.0. 
+// Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef NONSTD_SPAN_HPP_INCLUDED
@@ -25,7 +25,7 @@
 # define span_FEATURE_WITH_CONTAINER_TO_STD  0
 #endif
 
-#ifndef  span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE 
+#ifndef  span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE
 # define span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE  0
 #endif
 
@@ -545,7 +545,7 @@ inline void throw_out_of_range( index_t idx, index_t size )
     const char fmt[] = "span::at(): index '%lli' is out of range [0..%lli)";
     char buffer[ 2 * 20 + sizeof fmt ];
     sprintf( buffer, fmt, static_cast<long long>(idx), static_cast<long long>(size) );
-    
+
     throw std::out_of_range( buffer );
 }
 
@@ -595,8 +595,8 @@ inline span_constexpr index_t to_size( T size )
 
 // Can construct from containers that:
 
-template< 
-    class Container, class ElementType 
+template<
+    class Container, class ElementType
     , class = typename std::enable_if<
         ! detail::is_span< Container >::value &&
         ! detail::is_array< Container >::value &&
@@ -829,7 +829,7 @@ public:
     subspan() const
     {
         span_EXPECTS(
-            ( 0 <= Offset && Offset < size() ) &&
+            ( 0 <= Offset && Offset <= size() ) &&
             ( Count == dynamic_extent || (0 <= Count && Count + Offset <= size()) )
         );
 
@@ -856,7 +856,7 @@ public:
     subspan( index_type offset, index_type count = dynamic_extent ) const
     {
         span_EXPECTS(
-            ( ( 0 <= offset  && offset < size() ) ) &&
+            ( ( 0 <= offset  && offset <= size() ) ) &&
             ( count  == dynamic_extent || ( 0 <= count && offset + count <= size() ) )
         );
 
@@ -902,7 +902,7 @@ public:
 #if span_CONFIG( NO_EXCEPTIONS )
         return this->operator[]( idx );
 #else
-        if ( idx < 0 || size() <= idx ) 
+        if ( idx < 0 || size() <= idx )
         {
             detail::throw_out_of_range( idx, size() );
         }
