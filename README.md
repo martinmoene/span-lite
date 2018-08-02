@@ -164,7 +164,7 @@ Configuration
 ### Standard selection macro
 
 \-D<b>span\_CPLUSPLUS</b>=199711L
-Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cpluplus` macro correctly.
+Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cplusplus` macro correctly.
 
 ### Select `std::span` or `nonstd::span`
 At default, *span lite* uses `std::span` if it is available and lets you use it via namespace `nonstd`. You can however override this default and explicitly request to use `std::span` as `nonstd::span` or use span lite's `nonstd::span` via the following macros.
