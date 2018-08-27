@@ -11,11 +11,11 @@
 #ifndef NONSTD_SPAN_HPP_INCLUDED
 #define NONSTD_SPAN_HPP_INCLUDED
 
-#define  span_lite_MAJOR  0
-#define  span_lite_MINOR  3
-#define  span_lite_PATCH  0
+#define span_lite_MAJOR  0
+#define span_lite_MINOR  3
+#define span_lite_PATCH  0
 
-#define  span_lite_VERSION  span_STRINGIFY(span_lite_MAJOR) "." span_STRINGIFY(span_lite_MINOR) "." span_STRINGIFY(span_lite_PATCH)
+#define span_lite_VERSION  span_STRINGIFY(span_lite_MAJOR) "." span_STRINGIFY(span_lite_MINOR) "." span_STRINGIFY(span_lite_PATCH)
 
 #define span_STRINGIFY(  x )  span_STRINGIFY_( x )
 #define span_STRINGIFY_( x )  #x

@@ -7,6 +7,10 @@
 
 cmake_minimum_required( VERSION 3.5 )
 
+# span-lite version, updated by script/update-version.py:
+
+set( span_lite_version "0.3.0" )
+
 # At default, enable building and performing of tests and building of examples:
 
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ON )

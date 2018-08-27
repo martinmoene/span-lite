@@ -33,6 +33,7 @@ Stephan T. Lavavej <stl@microsoft.com>
 		<Unit filename="../../example/02-span.cpp" />
 		<Unit filename="../../example/CMakeLists.txt" />
 		<Unit filename="../../include/nonstd/span.hpp" />
+		<Unit filename="../../script/update-version.py" />
 		<Unit filename="../../test/CMakeLists.txt" />
 		<Unit filename="../../test/lest_cpp03.hpp" />
 		<Unit filename="../../test/span-main.t.cpp" />
