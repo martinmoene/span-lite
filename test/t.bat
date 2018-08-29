@@ -28,7 +28,6 @@ set span_provide=^
     -Dspan_FEATURE_BYTE_SPAN=1
 
 set msvc_defines=^
-    -DNOMINMAX ^
     -D_CRT_SECURE_NO_WARNINGS ^
     -D_SCL_SECURE_NO_WARNINGS
 

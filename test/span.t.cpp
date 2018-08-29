@@ -1266,7 +1266,7 @@ CASE( "byte_span() [span_FEATURE_BYTE_SPAN=1]" )
 CASE( "byte_span(): Allows building a span of std::byte from a single object (C++17)" )
 {
 #if span_HAVE( BYTE )
-    int x = std::numeric_limits<int>::max();
+    int x = (std::numeric_limits<int>::max)();
 
     span<std::byte> spn = byte_span( x );
 
@@ -1280,7 +1280,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
 CASE( "byte_span(): Allows building a span of const std::byte from a single const object (C++17)" )
 {
 #if span_HAVE( BYTE )
-    const int x = std::numeric_limits<int>::max();
+    const int x = (std::numeric_limits<int>::max)();
 
     span<const std::byte> spn = byte_span( x );
 

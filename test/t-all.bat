@@ -32,7 +32,6 @@ set cppStandards=^
     c++latest
 
 set msvc_defines=^
-    -DNOMINMAX ^
     -D_CRT_SECURE_NO_WARNINGS ^
     -D_SCL_SECURE_NO_WARNINGS
 
