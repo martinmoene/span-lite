@@ -16,10 +16,13 @@ set( span_lite_version "0.3.0" )
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ON )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
 
+option( RING_SPAN_LITE_COLOURISE_TEST "Colourise test output" OFF )
+
 project( span_lite LANGUAGES CXX )
 
-set( package_name "span-lite" )
+include( GNUInstallDirs )
 
+set( package_name "span-lite" )
 set( include_source_dir "${PROJECT_SOURCE_DIR}/include" )
 
 # Interface library:
@@ -29,6 +32,13 @@ add_library(
     
 target_include_directories( 
     ${package_name} INTERFACE "$<BUILD_INTERFACE:${include_source_dir}>" )
+
+# Installation:
+
+install( 
+    DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+
+# If requested, build and perform tests, build examples:
 
 enable_testing()
 
