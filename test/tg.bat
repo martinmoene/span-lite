@@ -28,7 +28,7 @@ set span_provide=^
     -Dspan_FEATURE_MAKE_SPAN_TO_STD=99 ^
     -Dspan_FEATURE_BYTE_SPAN=1
 
-set flags=-Wpedantic -Wno-padded -Wno-missing-noreturn
+set flags=-Wpedantic -Wconversion -Wsign-conversion -Wno-padded -Wno-missing-noreturn
 set   gpp=g++
 
 %gpp% -std=%std% -O2 -Wall -Wextra %flags% %stdspn% %span_contract% %span_provide% -o span-main.t.exe -I../include/nonstd span-main.t.cpp span.t.cpp && span-main.t.exe
