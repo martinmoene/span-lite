@@ -192,13 +192,13 @@ using std::operator>=;
 
 #define span_COMPILER_VERSION( major, minor, patch )  ( 10 * ( 10 * (major) + (minor) ) + (patch) )
 
-#if defined __clang__
+#if defined(__clang__)
 # define span_COMPILER_CLANG_VERSION  span_COMPILER_VERSION(__clang_major__, __clang_minor__, __clang_patchlevel__)
 #else
 # define span_COMPILER_CLANG_VERSION  0
 #endif
 
-#if defined __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 # define span_COMPILER_GNUC_VERSION  span_COMPILER_VERSION(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
 #else
 # define span_COMPILER_GNUC_VERSION  0
@@ -209,7 +209,7 @@ using std::operator>=;
 
 // Compiler warning suppression:
 
-#if defined __clang__
+#if defined(__clang__)
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wundef"
 # define span_RESTORE_WARNINGS()   _Pragma( "clang diagnostic pop" )
@@ -534,7 +534,7 @@ struct is_array<T[N]> : std::true_type {};
 
 // format index and size:
 
-#if defined __clang__
+#if defined(__clang__)
 # pragma clang diagnostic ignored "-Wlong-long"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Wformat=ll"
