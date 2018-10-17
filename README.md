@@ -267,11 +267,11 @@ The following steps assume that the [*span lite* source code](https://github.com
 
 2. Configure CMake to use the compiler of your choice (run `cmake --help` for a list).
 
-        cmake -G "Unix Makefiles" ..
+        cmake -G "Unix Makefiles" -DSPAN_LITE_OPT_BUILD_TESTS=ON ..
 
 3. Optional. You can control above configuration through the following options:
 
-    `-DSPAN_LITE_OPT_BUILD_TESTS=ON`: build the tests for span, default on  
+    `-DSPAN_LITE_OPT_BUILD_TESTS=ON`: build the tests for span, default off  
     `-DSPAN_LITE_OPT_BUILD_EXAMPLES=OFF`: build the examples, default off  
 
 4. Build the test suite.    
