@@ -110,7 +110,7 @@
 // Note: VC14.0/1900 (VS2015) lacks too much from C++14.
 
 #ifndef   span_CPLUSPLUS
-# ifdef  _MSVC_LANG
+# if defined(_MSVC_LANG ) && !defined(__clang__)
 #  define span_CPLUSPLUS  (_MSC_VER == 1900 ? 201103L : _MSVC_LANG )
 # else
 #  define span_CPLUSPLUS  __cplusplus
@@ -184,9 +184,11 @@ using std::operator>=;
 // MSVC++ 14.0 _MSC_VER == 1900 (Visual Studio 2015)
 // MSVC++ 14.1 _MSC_VER >= 1910 (Visual Studio 2017)
 
-#if defined( _MSC_VER ) && !defined( __clang__ )
+#if defined(_MSC_VER ) && !defined(__clang__)
+# define span_COMPILER_MSVC_VER      (_MSC_VER )
 # define span_COMPILER_MSVC_VERSION  (_MSC_VER / 10 - 10 * ( 5 + (_MSC_VER < 1900 ) ) )
 #else
+# define span_COMPILER_MSVC_VER      0
 # define span_COMPILER_MSVC_VERSION  0
 #endif
 
@@ -248,16 +250,16 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_HAS_CPP0X  0
 #endif
 
-#define span_CPP11_80   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 80)
-#define span_CPP11_90   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 90)
-#define span_CPP11_100  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 100)
-#define span_CPP11_110  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 110)
-#define span_CPP11_120  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120)
-#define span_CPP11_140  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140)
+#define span_CPP11_80   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VER >= 1400)
+#define span_CPP11_90   (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VER >= 1500)
+#define span_CPP11_100  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VER >= 1600)
+#define span_CPP11_110  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VER >= 1700)
+#define span_CPP11_120  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VER >= 1800)
+#define span_CPP11_140  (span_CPP11_OR_GREATER || span_COMPILER_MSVC_VER >= 1900)
 
 #define span_CPP14_000  (span_CPP14_OR_GREATER)
-#define span_CPP14_120  (span_CPP14_OR_GREATER || span_COMPILER_MSVC_VERSION >= 120)
-#define span_CPP14_140  (span_CPP14_OR_GREATER || span_COMPILER_MSVC_VERSION >= 140)
+#define span_CPP14_120  (span_CPP14_OR_GREATER || span_COMPILER_MSVC_VER >= 1800)
+#define span_CPP14_140  (span_CPP14_OR_GREATER || span_COMPILER_MSVC_VER >= 1900)
 
 #define span_CPP17_000  (span_CPP17_OR_GREATER)
 

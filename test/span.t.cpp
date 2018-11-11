@@ -1097,7 +1097,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 //    type1  a[] = { 0x0, };
 //
 //    span<type1> va( a );
-//#if span_COMPILER_MSVC_VERSION == 6
+//#if span_COMPILER_MSVC_VERSION == 60
 //    span<type2> vb( va.as_span( type2() ) );
 //#else
 //    span<type2> vb( va.as_span<type2>() );
