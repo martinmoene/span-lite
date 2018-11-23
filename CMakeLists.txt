@@ -7,18 +7,26 @@
 
 cmake_minimum_required( VERSION 3.5 )
 
-# span-lite version, updated by script/update-version.py:
+# span-lite project and version, updated by script/update-version.py:
+
+project( span_lite LANGUAGES CXX )
 
 set( span_lite_version "0.3.0" )
 
+# Toplevel or subproject:
+
+if ( CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR )
+    set( span_IS_TOPLEVEL_PROJECT TRUE )
+else()
+    set( span_IS_TOPLEVEL_PROJECT FALSE )
+endif()
+
 # At default, enable building and performing of tests and building of examples:
 
-option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" OFF )
+option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ${span_IS_TOPLEVEL_PROJECT} )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
 
 option( RING_SPAN_LITE_COLOURISE_TEST "Colourise test output" OFF )
-
-project( span_lite LANGUAGES CXX )
 
 include( GNUInstallDirs )
 
