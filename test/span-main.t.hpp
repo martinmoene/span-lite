@@ -12,30 +12,30 @@
 
 #include "span.hpp"
 
-#if span_HAVE( BYTE )
-#include <iosfwd>
-namespace lest { std::ostream & operator<<( std::ostream & os, std::byte b ); }
+// Compiler warning suppression for usage of lest:
+
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wstring-conversion"
+# pragma clang diagnostic ignored "-Wunused-parameter"
+# pragma clang diagnostic ignored "-Wunused-template"
+# pragma clang diagnostic ignored "-Wunused-function"
+# pragma clang diagnostic ignored "-Wunused-member-function"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wunused-parameter"
+# pragma GCC   diagnostic ignored "-Wunused-function"
 #endif
 
 #include "lest_cpp03.hpp"
 
-// Compiler warning suppression:
-
-#if defined(__clang__)
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wundef"
-# pragma clang diagnostic ignored "-Wheader-hygiene"
-# pragma clang diagnostic ignored "-Wstring-conversion"
-#elif defined __GNUC__
-# pragma GCC   diagnostic push
-# pragma GCC   diagnostic ignored "-Wundef"
-#endif
-
-using namespace nonstd;
+extern lest::tests & specification();
 
 #define CASE( name ) lest_CASE( specification(), name )
 
-extern lest::tests & specification();
+#if span_HAVE( BYTE )
+namespace lest { 
+std::ostream & operator<<( std::ostream & os, std::byte b ); 
+}
+#endif
 
 namespace nonstd { namespace span_lite {
 

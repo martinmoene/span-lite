@@ -12,6 +12,8 @@
 
 #define DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
 
+using namespace nonstd;
+
 typedef span<int>::index_type index_type;
 
 CASE( "span<>: Terminates construction from a nullptr and a non-zero size (C++11)" )
@@ -716,7 +718,7 @@ CASE( "span<>: Allows to change the last element via back() [span_FEATURE_MEMBER
 
 CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
 {
-#if span_FEATURE( SWAP )
+#if span_FEATURE( MEMBER_SWAP )
     int arr[] = { 1, 2, 3, };
     span<int> a( arr );
     span<int> b = a.subspan( 1 );
@@ -1327,7 +1329,7 @@ CASE( "[hide][issue 3: same()]" )
     span<float const> fspan1 = make_span( farray );
 
     assert( fspan1.data() == farray );
-    assert( fspan1.size() == DIMENSION_OF( farray ) );
+    assert( fspan1.size() == static_cast<index_type>( DIMENSION_OF( farray ) ) );
 
 #if span_HAVE( BYTE )
     span<std::byte const> fspan2 = byte_span( farray[0] );
