@@ -3,21 +3,28 @@
 :: t.bat - compile & run tests (MSVC).
 ::
 
+set unit=span
+
+:: if no std is given, use compiler default
+
 set std=%1
 if not "%std%"=="" set std=-std:%std%
-
-set CppCoreCheckInclude=%VCINSTALLDIR%\Auxiliary\VS\include
 
 call :CompilerVersion version
 echo VC%version%: %args%
 
-::set    stdspn=-Dspan_CONFIG_SELECT_STD_SPAN=1 -Dspan_CONFIG_SELECT_NONSTD_SPAN=1
+set UCAP=%unit%
+call :toupper UCAP
 
-set span_contract=^
+set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_DEFAULT
+::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_NONSTD
+::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_STD
+
+set unit_contract=^
     -Dspan_CONFIG_CONTRACT_VIOLATION_TERMINATES=0 ^
     -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
     
-set span_provide=^
+set unit_config=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
     -Dspan_FEATURE_MEMBER_AT=2 ^
@@ -31,7 +38,9 @@ set msvc_defines=^
     -D_CRT_SECURE_NO_WARNINGS ^
     -D_SCL_SECURE_NO_WARNINGS
 
-cl -W3 -EHsc %std% %stdspn% %span_contract% %span_provide% %msvc_defines% -I../include/nonstd span-main.t.cpp span.t.cpp && span-main.t.exe
+set CppCoreCheckInclude=%VCINSTALLDIR%\Auxiliary\VS\include
+
+cl -W3 -EHsc %std% %unit_select% %unit_contract% %unit_config% %msvc_defines% -I../include/nonstd %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 endlocal & goto :EOF
 
 :: subroutines:
@@ -51,3 +60,10 @@ set offset=0
 if %version% LSS 1900 set /a offset=1
 set /a version="version / 10 - 10 * ( 5 + offset )"
 endlocal & set %1=%version%& goto :EOF
+
+:: toupper; makes use of the fact that string 
+:: replacement (via SET) is not case sensitive
+:toupper
+for %%L IN (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO SET %1=!%1:%%L=%%L!
+goto :EOF
+

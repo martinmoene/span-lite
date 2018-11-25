@@ -3,6 +3,8 @@
 :: tg.bat - compile & run tests (GNUC).
 ::
 
+set unit=span
+
 :: if no std is given, use c++11
 
 set std=%1
@@ -12,13 +14,18 @@ if "%1" == "" set std=c++11
 call :CompilerVersion version
 echo g++ %version%: %std% %args%
 
-::set stdspn=-Dspan_CONFIG_SELECT_STD_SPAN=1 -Dspan_CONFIG_SELECT_NONSTD_SPAN=1
+set UCAP=%unit%
+call :toupper UCAP
 
-set span_contract=^
+set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_DEFAULT
+::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_NONSTD
+::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_STD
+
+set unit_contract=^
     -Dspan_CONFIG_CONTRACT_VIOLATION_TERMINATES=0 ^
     -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
 
-set span_provide=^
+set unit_provide=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
     -Dspan_FEATURE_MEMBER_AT=2 ^
@@ -28,10 +35,12 @@ set span_provide=^
     -Dspan_FEATURE_MAKE_SPAN_TO_STD=99 ^
     -Dspan_FEATURE_BYTE_SPAN=1
 
-set flags=-Wpedantic -Wconversion -Wsign-conversion -Wno-padded -Wno-missing-noreturn
-set   gpp=g++
+rem -flto / -fwhole-program
+set  optflags=-O2
+set warnflags=-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-padded -Wno-missing-noreturn
+set       gpp=g++
 
-%gpp% -std=%std% -O2 -Wall -Wextra %flags% %stdspn% %span_contract% %span_provide% -o span-main.t.exe -I../include/nonstd span-main.t.cpp span.t.cpp && span-main.t.exe
+%gpp% -std=%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% -o %unit%-main.t.exe -I../include/nonstd %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 
 endlocal & goto :EOF
 
@@ -49,3 +58,10 @@ g++ -o %tmpprogram% %tmpsource% >nul
 for /f %%x in ('%tmpprogram%') do set version=%%x
 del %tmpprogram%.* >nul
 endlocal & set %1=%version%& goto :EOF
+
+:: toupper; makes use of the fact that string
+:: replacement (via SET) is not case sensitive
+:toupper
+for %%L IN (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO SET %1=!%1:%%L=%%L!
+goto :EOF
+
