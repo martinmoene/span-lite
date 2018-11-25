@@ -75,13 +75,13 @@ Synopsis
 --------
 
 **Contents**  
-[Documentation of `std::span`](#stdstring_view)  
+[Documentation of `std::span`](#documentation-of-stdspan)  
 [Non-standard extensions](#non-standard-extensions)  
 [Configuration](#configuration)    
 
 Documentation of `std::span`
 ----------------------------
-Depending on the compiler and C++-standard used, `nonstd::span` behaves less or more like `std::span`. To get an idea of the capabilities of `nonstd::span` with your configuration, look at the output of the [tests](test/span.t.cpp), issuing `span-lite.t --pass @`. For `std::span`, see its [documentation at cppreference](http://en.cppreference.com/w/cpp/container/span).  
+Depending on the compiler and C++-standard used, `nonstd::span` behaves less or more like `std::span`. To get an idea of the capabilities of `nonstd::span` with your configuration, look at the output of the [tests](test/span.t.cpp), issuing `span-main.t --pass @`. For `std::span`, see its [documentation at cppreference](http://en.cppreference.com/w/cpp/container/span).  
 
 Non-standard extensions
 -----------------------
