@@ -183,6 +183,24 @@ else()
     endif()
 endif()
 
+# with C++20, honour explicit request for std::span or nonstd::span:
+
+if( HAS_CPP20_FLAG )
+    set( WHICH span_SPAN_DEFAULT )
+
+    if( SPAN_LITE_OPT_SELECT_STD )
+        set( WHICH span_SPAN_STD )
+    elseif( SPAN_LITE_OPT_SELECT_NONSTD )
+        set( WHICH span_SPAN_NONSTD )
+    endif()
+
+    target_compile_definitions( ${MAIN_BASE}-cpp20.t PRIVATE span_CONFIG_SELECT_ANY=${WHICH} )
+
+    if( HAS_CPPLATEST_FLAG )
+        target_compile_definitions( ${MAIN_BASE}-cpplatest.t PRIVATE span_CONFIG_SELECT_ANY=${WHICH} )
+    endif()
+endif()
+
 # configure unit tests via CTest:
 
 enable_testing()
@@ -199,6 +217,9 @@ if( HAS_STD_FLAGS )
     endif()
     if( HAS_CPP17_FLAG )
         add_test( NAME test-cpp17     COMMAND ${MAIN_BASE}-cpp17.t )
+    endif()
+    if( HAS_CPP20_FLAG )
+        add_test( NAME test-cpp20     COMMAND ${MAIN_BASE}-cpp20.t )
     endif()
     if( HAS_CPPLATEST_FLAG )
         add_test( NAME test-cpplatest COMMAND ${MAIN_BASE}-cpplatest.t )

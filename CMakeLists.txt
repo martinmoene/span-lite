@@ -26,7 +26,10 @@ endif()
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ${span_IS_TOPLEVEL_PROJECT} )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
 
-option( RING_SPAN_LITE_COLOURISE_TEST "Colourise test output" OFF )
+option( SPAN_LITE_COLOURISE_TEST     "Colourise test output" OFF )
+
+option( SPAN_LITE_OPT_SELECT_STD     "Select std::span"    OFF )
+option( SPAN_LITE_OPT_SELECT_NONSTD  "Select nonstd::span" OFF )
 
 include( GNUInstallDirs )
 
