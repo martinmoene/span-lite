@@ -167,13 +167,10 @@ Configuration
 Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cplusplus` macro correctly.
 
 ### Select `std::span` or `nonstd::span`
-At default, *span lite* uses `std::span` if it is available and lets you use it via namespace `nonstd`. You can however override this default and explicitly request to use `std::span` as `nonstd::span` or use span lite's `nonstd::span` via the following macros.
+At default, *span lite* uses `std::span` if it is available and lets you use it via namespace `nonstd`. You can however override this default and explicitly request to use `std::span` or span lite's `nonstd::span` as `nonstd::span` via the following macros.
 
--D<b>span_CONFIG_SELECT_STD_SPAN</b>=1  
-Define this to 1 to select `std::span` as `nonstd::span`. Default is undefined.
-
--D<b>span_CONFIG_SELECT_NONSTD_SPAN</b>=1  
-Define this to 1 to select *span lite*'s `nonstd::span`. Default is undefined.
+-D<b>span\_CONFIG\_SELECT\_SPAN</b>=span_SPAN_DEFAULT  
+Define this to `span_SPAN_STD` to select `std::span` as `nonstd::span`. Define this to `span_SPAN_NONSTD` to select `nonstd::span` as `nonstd::span`. Default is undefined, which has the same effect as defining to `span_SPAN_DEFAULT`.
 
 ### Disable exceptions
 -D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  

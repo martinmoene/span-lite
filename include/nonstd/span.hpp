@@ -20,7 +20,15 @@
 #define span_STRINGIFY(  x )  span_STRINGIFY_( x )
 #define span_STRINGIFY_( x )  #x
 
-// Configuration:
+// span configuration:
+
+#define span_SPAN_DEFAULT  0
+#define span_SPAN_NONSTD   1
+#define span_SPAN_STD      2
+
+#if !defined( span_CONFIG_SELECT_SPAN )
+# define span_CONFIG_SELECT_SPAN  ( span_HAVE_STD_SPAN ? span_SPAN_STD : span_SPAN_NONSTD )
+#endif
 
 #ifndef  span_FEATURE_WITH_CONTAINER_TO_STD
 # define span_FEATURE_WITH_CONTAINER_TO_STD  0
@@ -52,19 +60,6 @@
 
 #ifndef  span_FEATURE_BYTE_SPAN
 # define span_FEATURE_BYTE_SPAN  0
-#endif
-
-// Force use of std or nonstd span:
-
-#ifdef   span_CONFIG_SELECT_STD_SPAN
-# define span_USES_STD_SPAN  span_CONFIG_SELECT_STD_SPAN
-#else
-# define span_USES_STD_SPAN  0
-#endif
-
-#if    defined( span_CONFIG_SELECT_STD_SPAN    ) && span_CONFIG_SELECT_STD_SPAN && \
-       defined( span_CONFIG_SELECT_NONSTD_SPAN ) && span_CONFIG_SELECT_NONSTD_SPAN
-#error Please define none or one of span_CONFIG_SELECT_STD_SPAN, span_CONFIG_SELECT_NONSTD_SPAN to 1, but not both.
 #endif
 
 // Control presence of exception handling (try and auto discover):
@@ -133,19 +128,19 @@
 #define span_FEATURE(        feature )  ( span_FEATURE_##feature )
 #define span_FEATURE_TO_STD( feature )  ( span_IN_STD( span_FEATURE( feature##_TO_STD ) ) )
 
-// use C++20 std::span if available:
+// Use C++20 std::span if available and requested:
 
-#ifdef __has_include
-# define span_HAS_INCLUDE( arg )  __has_include( arg )
+#if span_CPP20_OR_GREATER && defined(__has_include )
+# if __has_include( <span> )
+#  define span_HAVE_STD_SPAN  1
+# else
+#  define span_HAVE_STD_SPAN  0
+# endif
 #else
-# define span_HAS_INCLUDE( arg )  0
+# define  span_HAVE_STD_SPAN  0
 #endif
 
-#define  span_HAVE_STD_SPAN  ( span_CPP20_OR_GREATER && span_HAS_INCLUDE( <span> ) )
-
-#ifndef  span_USES_STD_SPAN
-# define span_USES_STD_SPAN  span_HAVE_STD_SPAN
-#endif
+#define  span_USES_STD_SPAN  ( (span_CONFIG_SELECT_SPAN == span_SPAN_STD) || ((span_CONFIG_SELECT_SPAN == span_SPAN_DEFAULT) && span_HAVE_STD_SPAN) )
 
 //
 // Use C++20 std::span:
@@ -265,49 +260,43 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // Presence of C++11 language features:
 
-#define span_HAVE_AUTO                  span_CPP11_100
-#define span_HAVE_NULLPTR               span_CPP11_100
-#define span_HAVE_STATIC_ASSERT         span_CPP11_100
-
-#define span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG \
-                                        span_CPP11_120
-
-#define span_HAVE_ALIAS_TEMPLATE        span_CPP11_140
-#define span_HAVE_CONSTEXPR_11          span_CPP11_140
-#define span_HAVE_EXPLICIT_CONVERSION   span_CPP11_140
-#define span_HAVE_IS_DEFAULT            span_CPP11_140
-#define span_HAVE_IS_DELETE             span_CPP11_140
-#define span_HAVE_NOEXCEPT              span_CPP11_140
+#define span_HAVE_ALIAS_TEMPLATE            span_CPP11_140
+#define span_HAVE_AUTO                      span_CPP11_100
+#define span_HAVE_CONSTEXPR_11              span_CPP11_140
+#define span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG  span_CPP11_120
+#define span_HAVE_EXPLICIT_CONVERSION       span_CPP11_140
+#define span_HAVE_INITIALIZER_LIST          span_CPP11_120
+#define span_HAVE_IS_DEFAULT                span_CPP11_140
+#define span_HAVE_IS_DELETE                 span_CPP11_140
+#define span_HAVE_NOEXCEPT                  span_CPP11_140
+#define span_HAVE_NULLPTR                   span_CPP11_100
+#define span_HAVE_STATIC_ASSERT             span_CPP11_100
 
 // Presence of C++14 language features:
 
-#define span_HAVE_CONSTEXPR_14          span_CPP14_000
+#define span_HAVE_CONSTEXPR_14              span_CPP14_000
 
 // Presence of C++17 language features:
 
-#define span_HAVE_NODISCARD             span_CPP17_000
-#define span_HAVE_NORETURN              span_CPP17_000
+#define span_HAVE_NODISCARD                 span_CPP17_000
+#define span_HAVE_NORETURN                  span_CPP17_000
 
 // MSVC: template parameter deduction guides since Visual Studio 2017 v15.7
 
-#define span_HAVE_DEDUCTION_GUIDES     (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 ))
+#define span_HAVE_DEDUCTION_GUIDES         (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 ))
 
 // Presence of C++ library features:
 
-#define span_HAVE_TYPE_TRAITS           span_CPP11_90
-
-#define span_HAVE_ARRAY                 span_CPP11_110
-#define span_HAVE_LONGLONG              span_CPP11_80
-#define span_HAVE_REMOVE_CONST          span_CPP11_110
-#define span_HAVE_SNPRINTF              span_CPP11_140
-
-#define span_HAVE_CONDITIONAL           span_CPP11_120
-
-#define span_HAVE_CONTAINER_DATA_METHOD (span_CPP11_140 || ( span_COMPILER_MSVC_VERSION >= 90 && span_HAS_CPP0X ))
-
-#define span_HAVE_ADDRESSOF             span_CPP17_000
-#define span_HAVE_BYTE                  span_CPP17_000
-#define span_HAVE_DATA                  span_CPP17_000
+#define span_HAVE_ADDRESSOF                 span_CPP17_000
+#define span_HAVE_ARRAY                     span_CPP11_110
+#define span_HAVE_BYTE                      span_CPP17_000
+#define span_HAVE_CONDITIONAL               span_CPP11_120
+#define span_HAVE_CONTAINER_DATA_METHOD    (span_CPP11_140 || ( span_COMPILER_MSVC_VERSION >= 90 && span_HAS_CPP0X ))
+#define span_HAVE_DATA                      span_CPP17_000
+#define span_HAVE_LONGLONG                  span_CPP11_80
+#define span_HAVE_REMOVE_CONST              span_CPP11_110
+#define span_HAVE_SNPRINTF                  span_CPP11_140
+#define span_HAVE_TYPE_TRAITS               span_CPP11_90
 
 // C++ feature usage:
 
@@ -1171,26 +1160,26 @@ make_span( T * first, T * last ) span_noexcept
 }
 
 template< class T, size_t N >
-inline span_constexpr span<T,N>
+inline span_constexpr span<T, static_cast<index_t>(N)>
 make_span( T ( &arr )[ N ] ) span_noexcept
 {
-    return span<T,N>( &arr[ 0 ], N );
+    return span<T, static_cast<index_t>(N)>( &arr[ 0 ], N );
 }
 
 #if span_USES_STD_SPAN || span_HAVE( ARRAY )
 
 template< class T, size_t N >
-inline span_constexpr span<T,N>
+inline span_constexpr span<T, static_cast<index_t>(N)>
 make_span( std::array< T, N > & arr ) span_noexcept
 {
-    return span<T,N>( arr );
+    return span<T, static_cast<index_t>(N)>( arr );
 }
 
 template< class T, size_t N >
-inline span_constexpr span< const T, N >
+inline span_constexpr span< const T, static_cast<index_t>(N) >
 make_span( std::array< T, N > const & arr ) span_noexcept
 {
-    return span<const T,N>( arr );
+    return span<const T, static_cast<index_t>(N)>( arr );
 }
 
 #endif // span_HAVE( ARRAY )
