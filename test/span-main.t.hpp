@@ -25,17 +25,16 @@
 # pragma GCC   diagnostic ignored "-Wunused-function"
 #endif
 
+#if span_HAVE( BYTE )
+#include <iosfwd>
+namespace lest { std::ostream & operator<<( std::ostream & os, std::byte b ); }
+#endif
+
 #include "lest_cpp03.hpp"
 
 extern lest::tests & specification();
 
 #define CASE( name ) lest_CASE( specification(), name )
-
-#if span_HAVE( BYTE )
-namespace lest { 
-std::ostream & operator<<( std::ostream & os, std::byte b ); 
-}
-#endif
 
 namespace nonstd { namespace span_lite {
 
