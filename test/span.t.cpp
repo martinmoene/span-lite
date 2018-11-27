@@ -1273,7 +1273,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
     span<xstd::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
-    EXPECT( spn[0]     == to_byte( 0xff ) );
+    EXPECT( spn[0]     == xstd::byte( 0xff ) );
 #else
     EXPECT( !!"(non)std::byte is not available (no C++17, no byte-lite); test requires C++11" );
 #endif
@@ -1287,7 +1287,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
     span<const xstd::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
-    EXPECT( spn[0]     == to_byte( 0xff ) );
+    EXPECT( spn[0]     == xstd::byte( 0xff ) );
 #else
     EXPECT( !!"(non)std::byte is not available (no C++17, no byte-lite); test requires C++11" );
 #endif
