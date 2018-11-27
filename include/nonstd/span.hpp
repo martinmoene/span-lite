@@ -1022,13 +1022,13 @@ private:
 #if span_HAVE( DEDUCTION_GUIDES )   // span_CPP17_OR_GREATER
 
 template< class T, size_t N >
-span( T (&)[N] ) -> span<T, N>;
+span( T (&)[N] ) -> span<T, to_size(N)>;
 
 template< class T, size_t N >
-span( std::array<T, N> & ) -> span<T, N>;
+span( std::array<T, N> & ) -> span<T, to_size(N)>;
 
 template< class T, size_t N >
-span( std::array<T, N> const & ) -> span<const T, N>;
+span( std::array<T, N> const & ) -> span<const T, to_size(N)>;
 
 template< class Container >
 span( Container& ) -> span<typename Container::value_type>;
