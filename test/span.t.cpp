@@ -990,7 +990,7 @@ CASE( "span<>: Allows to obtain the number of bytes via size_bytes()" )
 //    EXPECT( vb == va0 );
 //}
 
-#if span_HAVE( BYTE )
+#if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
 static bool is_little_endian()
 {
@@ -1006,8 +1006,8 @@ static bool is_little_endian()
 
 CASE( "span<>: Allows to view the elements as read-only bytes" )
 {
-#if span_HAVE( BYTE )
-    using std::byte;
+#if span_CPP11_OR_GREATER && ( span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE ) )
+    using byte = xstd::byte;
     using type = std::int32_t;
 
     EXPECT( sizeof( type ) == size_t( 4 ) );
@@ -1016,24 +1016,24 @@ CASE( "span<>: Allows to view the elements as read-only bytes" )
     byte be[] = { byte{0x12}, byte{0x34}, byte{0x56}, byte{0x78}, };
     byte le[] = { byte{0x78}, byte{0x56}, byte{0x34}, byte{0x12}, };
 
-    byte * b = is_little_endian() ? le : be;
+    xstd::byte * b = is_little_endian() ? le : be;
 
     span<type> va( a );
-    span<const byte> vb( as_bytes( va ) );
+    span<const xstd::byte> vb( as_bytes( va ) );
 
     EXPECT( vb[0] == b[0] );
     EXPECT( vb[1] == b[1] );
     EXPECT( vb[2] == b[2] );
     EXPECT( vb[3] == b[3] );
 #else
-    EXPECT( !!"std::byte is not available (no C++17)" );
+    EXPECT( !!"(non)std::byte is not available (no C++17, no byte-lite); test requires C++11" );
 #endif
 }
 
 CASE( "span<>: Allows to view and change the elements as writable bytes" )
 {
-#if span_HAVE( BYTE )
-    using std::byte;
+#if span_CPP11_OR_GREATER && ( span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE ) )
+    using byte = xstd::byte;
     using type = std::int32_t;
 
     EXPECT( sizeof(type) == size_t( 4 ) );
@@ -1055,7 +1055,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
         EXPECT( vb[i] == byte{0} );
     }
 #else
-    EXPECT( !!"std::byte is not available (no C++17)" );
+    EXPECT( !!"(non)std::byte is not available (no C++17, no byte-lite); test requires C++11" );
 #endif
 }
 
@@ -1265,31 +1265,31 @@ CASE( "byte_span() [span_FEATURE_BYTE_SPAN=1]" )
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 }
 
-CASE( "byte_span(): Allows building a span of std::byte from a single object (C++17)" )
+CASE( "byte_span(): Allows building a span of std::byte from a single object (C++17, byte-lite)" )
 {
-#if span_HAVE( BYTE )
+#if span_CPP11_OR_GREATER && ( span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE ) )
     int x = (std::numeric_limits<int>::max)();
 
-    span<std::byte> spn = byte_span( x );
+    span<xstd::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
-    EXPECT( spn[0]     == std::byte( 0xff ) );
+    EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
-    EXPECT( !!"std::byte is not available (no C++17)" );
+    EXPECT( !!"(non)std::byte is not available (no C++17, no byte-lite); test requires C++11" );
 #endif
 }
 
-CASE( "byte_span(): Allows building a span of const std::byte from a single const object (C++17)" )
+CASE( "byte_span(): Allows building a span of const std::byte from a single const object (C++17, byte-lite)" )
 {
-#if span_HAVE( BYTE )
+#if span_CPP11_OR_GREATER && ( span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE ) )
     const int x = (std::numeric_limits<int>::max)();
 
-    span<const std::byte> spn = byte_span( x );
+    span<const xstd::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
-    EXPECT( spn[0]     == std::byte( 0xff ) );
+    EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
-    EXPECT( !!"std::byte is not available (no C++17)" );
+    EXPECT( !!"(non)std::byte is not available (no C++17, no byte-lite); test requires C++11" );
 #endif
 }
 

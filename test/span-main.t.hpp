@@ -10,6 +10,12 @@
 #ifndef TEST_SPAN_LITE_H_INCLUDED
 #define TEST_SPAN_LITE_H_INCLUDED
 
+// Optionally provide byte-lite:
+
+#ifdef    span_BYTE_LITE_HEADER
+# include span_BYTE_LITE_HEADER
+#endif
+
 #include "span.hpp"
 
 // Compiler warning suppression for usage of lest:
@@ -25,9 +31,21 @@
 # pragma GCC   diagnostic ignored "-Wunused-function"
 #endif
 
+// provide std::byte or nonstd::byte as xstd::byte:
+
+namespace xstd {
 #if span_HAVE( BYTE )
+using std::byte;
+using std::to_integer;
+#elif span_HAVE( NONSTD_BYTE )
+using nonstd::byte;
+using nonstd::to_integer;
+#endif
+}
+
+#if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 #include <iosfwd>
-namespace lest { std::ostream & operator<<( std::ostream & os, std::byte b ); }
+namespace lest { std::ostream & operator<<( std::ostream & os, xstd::byte b ); }
 #endif
 
 #include "lest_cpp03.hpp"
@@ -54,10 +72,10 @@ namespace lest {
 
 using ::nonstd::span_lite::operator<<;
 
-#if span_HAVE( BYTE )
-inline std::ostream & operator<<( std::ostream & os, std::byte b )
+#if span_HAVE( BYTE ) ||span_HAVE( NONSTD_BYTE )
+inline std::ostream & operator<<( std::ostream & os, xstd::byte b )
 {
-    return os << "[byte:" << std::hex << std::showbase << std::to_integer<int>(b) << "]";
+    return os << "[byte:" << std::hex << std::showbase << xstd::to_integer<int>(b) << "]";
 }
 #endif
 

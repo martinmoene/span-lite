@@ -45,6 +45,21 @@ CASE( "span configuration" "[.span][.config]" )
     span_PRESENT( span_CONFIG_NO_EXCEPTIONS );
 }
 
+CASE( "Presence of span library features" "[.span][.config]" )
+{
+#if span_USES_STD_SPAN
+    std::cout << "(Note: Followig configuration has no effect: using std::span)\n";
+#endif
+    span_PRESENT( span_FEATURE_BYTE_SPAN  );
+    span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
+    span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
+    span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );
+    span_PRESENT( span_FEATURE_MEMBER_AT );
+    span_PRESENT( span_FEATURE_MEMBER_BACK_FRONT );
+    span_PRESENT( span_FEATURE_MEMBER_SWAP );
+    span_PRESENT( span_FEATURE_SAME );
+}
+
 CASE( "span configuration, contract level" "[.span][.config][.contract]" )
 {
 #if span_USES_STD_SPAN
@@ -86,21 +101,6 @@ CASE( "span configuration, contract level" "[.span][.config][.contract]" )
 #else
     span_ABSENT( span_CONFIG_CONTRACT_VIOLATION_TERMINATES );
 #endif
-}
-
-CASE( "Presence of span library features" "[.span]" )
-{
-#if span_USES_STD_SPAN
-    std::cout << "(Note: Followig configuration has no effect: using std::span)\n";
-#endif
-    span_PRESENT( span_FEATURE_BYTE_SPAN  );
-    span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
-    span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
-    span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );
-    span_PRESENT( span_FEATURE_MEMBER_AT );
-    span_PRESENT( span_FEATURE_MEMBER_BACK_FRONT );
-    span_PRESENT( span_FEATURE_MEMBER_SWAP );
-    span_PRESENT( span_FEATURE_SAME );
 }
 
 CASE( "__cplusplus" "[.stdc++]" )
@@ -151,17 +151,17 @@ CASE( "Presence of C++ language features" "[.stdlanguage]" )
 #if span_USES_STD_SPAN
     std::cout << "(Presence of following C++ language features not available: using std::span)\n";
 #else
-    span_PRESENT( span_HAVE_AUTO );
-    span_PRESENT( span_HAVE_NULLPTR );
-    span_PRESENT( span_HAVE_STATIC_ASSERT );
-    span_PRESENT( span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG );
     span_PRESENT( span_HAVE_ALIAS_TEMPLATE );
+    span_PRESENT( span_HAVE_AUTO );
     span_PRESENT( span_HAVE_CONSTEXPR_11 );
     span_PRESENT( span_HAVE_CONSTEXPR_14 );
+    span_PRESENT( span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG );
     span_PRESENT( span_HAVE_EXPLICIT_CONVERSION );
     span_PRESENT( span_HAVE_IS_DEFAULT );
     span_PRESENT( span_HAVE_IS_DELETE );
     span_PRESENT( span_HAVE_NOEXCEPT );
+    span_PRESENT( span_HAVE_NULLPTR );
+    span_PRESENT( span_HAVE_STATIC_ASSERT );
 #endif
 }
 
@@ -173,9 +173,11 @@ CASE( "Presence of C++ library features" "[.stdlibrary]" )
     span_PRESENT( span_HAS_CPP0X );
     span_PRESENT( span_HAVE_ADDRESSOF );
     span_PRESENT( span_HAVE_ARRAY );
+    span_PRESENT( span_HAVE_BYTE );
     span_PRESENT( span_HAVE_CONDITIONAL );
     span_PRESENT( span_HAVE_CONTAINER_DATA_METHOD );
     span_PRESENT( span_HAVE_DATA );
+    span_PRESENT( span_HAVE_NONSTD_BYTE );
     span_PRESENT( span_HAVE_REMOVE_CONST );
     span_PRESENT( span_HAVE_SNPRINTF );
     span_PRESENT( span_HAVE_TYPE_TRAITS );
