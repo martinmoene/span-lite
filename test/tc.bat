@@ -36,11 +36,14 @@ set unit_config=^
     -Dspan_FEATURE_MAKE_SPAN_TO_STD=99 ^
     -Dspan_FEATURE_BYTE_SPAN=1
 
+set byte_lite=^
+    -Dspan_BYTE_LITE_HEADER=\"../../byte-lite/include/nonstd/byte.hpp\"
+    
 rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-noreturn -Wno-documentation-unknown-command -Wno-documentation-deprecated-sync -Wno-documentation -Wno-weak-vtables -Wno-missing-prototypes -Wno-missing-variable-declarations -Wno-exit-time-destructors -Wno-global-constructors
 
-"%clang%" -m32 -std=%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% -fms-compatibility-version=19.00 -isystem "%VCInstallDir%include" -isystem "%WindowsSdkDir_71A%include" -I../include/nonstd -o %unit%-main.t.exe %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
+"%clang%" -m32 -std=%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% %byte_lite% -fms-compatibility-version=19.00 -isystem "%VCInstallDir%include" -isystem "%WindowsSdkDir_71A%include" -I../include/nonstd -o %unit%-main.t.exe %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 endlocal & goto :EOF
 
 :: subroutines:

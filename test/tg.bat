@@ -25,7 +25,7 @@ set unit_contract=^
     -Dspan_CONFIG_CONTRACT_VIOLATION_TERMINATES=0 ^
     -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
 
-set unit_provide=^
+set unit_config=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
     -Dspan_FEATURE_MEMBER_AT=2 ^
@@ -35,12 +35,15 @@ set unit_provide=^
     -Dspan_FEATURE_MAKE_SPAN_TO_STD=99 ^
     -Dspan_FEATURE_BYTE_SPAN=1
 
+set byte_lite=^
+    -Dspan_BYTE_LITE_HEADER=\"../../byte-lite/include/nonstd/byte.hpp\"
+    
 rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-padded -Wno-missing-noreturn
 set       gpp=g++
 
-%gpp% -std=%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% -o %unit%-main.t.exe -I../include/nonstd %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
+%gpp% -std=%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% %byte_lite% -o %unit%-main.t.exe -I../include/nonstd %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 
 endlocal & goto :EOF
 
