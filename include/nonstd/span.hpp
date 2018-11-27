@@ -298,6 +298,14 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #define span_HAVE_SNPRINTF                  span_CPP11_140
 #define span_HAVE_TYPE_TRAITS               span_CPP11_90
 
+// Presence of byte-lite:
+
+#ifdef NONSTD_BYTE_LITE_HPP
+# define span_HAVE_NONSTD_BYTE  1
+#else 
+# define span_HAVE_NONSTD_BYTE  0
+#endif
+
 // C++ feature usage:
 
 #if span_HAVE_ADDRESSOF
@@ -447,6 +455,12 @@ const  span_constexpr   with_container_t with_container;
 
 namespace detail {
 
+#if span_HAVE( BYTE )
+using std::byte;
+#elif span_HAVE( NONSTD_BYTE )
+using nonstd::byte;
+#endif
+
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
 using std::true_type;
@@ -576,6 +590,8 @@ span_noreturn inline void report_contract_violation( char const * /*msg*/ ) span
 }  // namespace detail
 
 // Prevent signed-unsigned mismatch:
+
+#define span_sizeof_u(T)  static_cast<index_t>( sizeof(T) )
 
 template< class T >
 inline span_constexpr index_t to_size( T size )
@@ -1078,33 +1094,33 @@ inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const 
 
 // 26.7.2.6 views of object representation [span.objectrep]
 
-#if span_HAVE( BYTE )
+#if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
 template< class T, index_t Extent >
-inline span_constexpr span< const std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size(sizeof(T)) * Extent) ) >
+inline span_constexpr span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >
 as_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
-    return { reinterpret_cast< std::byte const * >( spn.data() ), spn.size_bytes() };
+    return { reinterpret_cast< detail::byte const * >( spn.data() ), spn.size_bytes() };
 #else
-    return span< const std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size(sizeof(T)) * Extent) ) >(
-        reinterpret_cast< std::byte const * >( spn.data() ), spn.size_bytes() );  // NOLINT
+    return span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >(
+        reinterpret_cast< detail::byte const * >( spn.data() ), spn.size_bytes() );  // NOLINT
 #endif
 }
 
 template< class T, index_t Extent >
-inline span_constexpr span< std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size(sizeof(T)) * Extent) ) >
+inline span_constexpr span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >
 as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
-    return { reinterpret_cast< std::byte * >( spn.data() ), spn.size_bytes() };
+    return { reinterpret_cast< detail::byte * >( spn.data() ), spn.size_bytes() };
 #else
-    return span< std::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (to_size(sizeof(T)) * Extent) ) >(
-        reinterpret_cast< std::byte * >( spn.data() ), spn.size_bytes() );  // NOLINT
+    return span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >(
+        reinterpret_cast< detail::byte * >( spn.data() ), spn.size_bytes() );  // NOLINT
 #endif
 }
 
-#endif  // span_HAVE( BYTE )
+#endif // span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
 }  // namespace span_lite
 }  // namespace nonstd
@@ -1248,23 +1264,23 @@ using span_lite::make_span;
 
 #endif // #if span_FEATURE_TO_STD( MAKE_SPAN )
 
-#if span_FEATURE( BYTE_SPAN ) && ( span_USES_STD_SPAN || span_HAVE( BYTE ) )
+#if span_CPP11_OR_GREATER && span_FEATURE( BYTE_SPAN ) && ( span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE ) )
 
 namespace nonstd {
 namespace span_lite {
-
+    
 template< class T >
 inline span_constexpr auto
-byte_span( T & t ) span_noexcept -> span< std::byte, sizeof(t) >
+byte_span( T & t ) span_noexcept -> span< detail::byte, span_sizeof_u(T) >
 {
-    return span< std::byte, sizeof(t) >( reinterpret_cast< std::byte * >( &t ), sizeof(t) );
+    return span< detail::byte, span_sizeof_u(t) >( reinterpret_cast< detail::byte * >( &t ), span_sizeof_u(T) );
 }
 
 template< class T >
 inline span_constexpr auto
-byte_span( T const & t ) span_noexcept -> span< const std::byte, sizeof(t) >
+byte_span( T const & t ) span_noexcept -> span< const detail::byte, span_sizeof_u(T) >
 {
-    return span< const std::byte, sizeof(t) >( reinterpret_cast< std::byte const * >( &t ), sizeof(t) );
+    return span< const detail::byte, span_sizeof_u(t) >( reinterpret_cast< detail::byte const * >( &t ), span_sizeof_u(T) );
 }
 
 }  // namespace span_lite
