@@ -591,7 +591,7 @@ span_noreturn inline void report_contract_violation( char const * /*msg*/ ) span
 
 // Prevent signed-unsigned mismatch:
 
-#define span_sizeof_u(T)  static_cast<index_t>( sizeof(T) )
+#define span_sizeof(T)  static_cast<index_t>( sizeof(T) )
 
 template< class T >
 inline span_constexpr index_t to_size( T size )
@@ -1097,25 +1097,25 @@ inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const 
 #if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
 template< class T, index_t Extent >
-inline span_constexpr span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >
+inline span_constexpr span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
 as_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
     return { reinterpret_cast< detail::byte const * >( spn.data() ), spn.size_bytes() };
 #else
-    return span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >(
+    return span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >(
         reinterpret_cast< detail::byte const * >( spn.data() ), spn.size_bytes() );  // NOLINT
 #endif
 }
 
 template< class T, index_t Extent >
-inline span_constexpr span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >
+inline span_constexpr span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
 as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
     return { reinterpret_cast< detail::byte * >( spn.data() ), spn.size_bytes() };
 #else
-    return span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof_u(T) * Extent) ) >(
+    return span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >(
         reinterpret_cast< detail::byte * >( spn.data() ), spn.size_bytes() );  // NOLINT
 #endif
 }
@@ -1271,16 +1271,16 @@ namespace span_lite {
     
 template< class T >
 inline span_constexpr auto
-byte_span( T & t ) span_noexcept -> span< detail::byte, span_sizeof_u(T) >
+byte_span( T & t ) span_noexcept -> span< detail::byte, span_sizeof(T) >
 {
-    return span< detail::byte, span_sizeof_u(t) >( reinterpret_cast< detail::byte * >( &t ), span_sizeof_u(T) );
+    return span< detail::byte, span_sizeof(t) >( reinterpret_cast< detail::byte * >( &t ), span_sizeof(T) );
 }
 
 template< class T >
 inline span_constexpr auto
-byte_span( T const & t ) span_noexcept -> span< const detail::byte, span_sizeof_u(T) >
+byte_span( T const & t ) span_noexcept -> span< const detail::byte, span_sizeof(T) >
 {
-    return span< const detail::byte, span_sizeof_u(t) >( reinterpret_cast< detail::byte const * >( &t ), span_sizeof_u(T) );
+    return span< const detail::byte, span_sizeof(t) >( reinterpret_cast< detail::byte const * >( &t ), span_sizeof(T) );
 }
 
 }  // namespace span_lite
