@@ -50,7 +50,7 @@ C-array:1 array:2 vector:3
 
 In a nutshell
 ---------------
-**span lite** is a single-file header-only library to provide a bounds-safe view for sequences of objects. The library provides a [C++20-like span](http://en.cppreference.com/w/cpp/container/span) for use with C++98 and later. If available, `std::span` is used, unless [configured otherwise](#configuration).
+**span lite** is a single-file header-only library to provide a bounds-safe view for sequences of objects. The library provides a [C++20-like span](http://en.cppreference.com/w/cpp/container/span) for use with C++98 and later. If available, `std::span` is used, unless [configured otherwise](#configuration). *span-lite* can detect the presence of [*byte-lite*](https://github.com/martinmoene/byte-lite) and if present, it provides `as_bytes()` and `as_writeable_bytes()` also for C++14 and earlier. 
 
 **Features and properties of span lite** are ease of installation (single header), freedom of dependencies other than the standard library. To compensate for the class template argument deduction that is missing from pre-C++17 compilers, `nonstd::span` can provide `make_span` functions. See [configuration](#configuration).
 
@@ -154,8 +154,8 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;const T><br>**make_span**(std::vector&lt;T, Allocator> const & cont) |
 | &nbsp; | &nbsp;   | &nbsp; |                                       
 | **Free functions**|&nbsp;| macro **`span_FEATURE_BYTE_SPAN`** |
-| &nbsp; | &nbsp;   | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
-| &nbsp; | &nbsp;   | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
+| &nbsp; | >= C++11 | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
+| &nbsp; | >= C++11 | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
 
 
 Configuration
