@@ -1,0 +1,3 @@
+set(span_lite_version "@span_lite_version@")
+
+include("${CMAKE_CURRENT_LIST_DIR}/span-liteTargets.cmake")
