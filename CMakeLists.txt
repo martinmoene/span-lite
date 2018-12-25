@@ -9,9 +9,14 @@ cmake_minimum_required( VERSION 3.5 )
 
 # span-lite project and version, updated by script/update-version.py:
 
-project( span_lite LANGUAGES CXX )
+project(
+    span_lite
+    VERSION 0.3.0
+    DESCRIPTION "A C++20-like span for C++98, C++11 and later in a single-file header-only library"
+#   HOMEPAGE_URL "https://github.com/martinmoene/span-lite"
+    LANGUAGES CXX )
 
-set( span_lite_version "0.3.0" )
+set( ${PROJECT_NAME}_version "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}" )
 
 # Toplevel or subproject:
 
@@ -21,7 +26,7 @@ else()
     set( span_IS_TOPLEVEL_PROJECT FALSE )
 endif()
 
-# At default, enable building and performing of tests and building of examples:
+# If toplevel project, enable building and performing of tests, disable building of examples:
 
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ${span_IS_TOPLEVEL_PROJECT} )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
