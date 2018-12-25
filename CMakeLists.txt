@@ -20,7 +20,7 @@ set( ${PROJECT_NAME}_version "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.
 
 # Toplevel or subproject:
 
-if ( CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR )
+if ( CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME )
     set( span_IS_TOPLEVEL_PROJECT TRUE )
 else()
     set( span_IS_TOPLEVEL_PROJECT FALSE )
@@ -41,7 +41,10 @@ include( GNUInstallDirs )
 include( CMakePackageConfigHelpers )
 
 set( package_name "span-lite" )
+
 set( include_source_dir "${PROJECT_SOURCE_DIR}/include" )
+set( span_lite_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/${package_name}")
+
 
 # Interface library:
 
@@ -52,21 +55,23 @@ add_library(
     ${package_name}::${package_name} ALIAS ${package_name})
 
 target_include_directories(
-    ${package_name} INTERFACE "$<BUILD_INTERFACE:${include_source_dir}>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+    ${package_name} INTERFACE
+        "$<BUILD_INTERFACE:${include_source_dir}>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
 # Installation:
-set(span_lite_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/${package_name}")
 
 install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    DIRECTORY   ${CMAKE_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${package_name}ConfigVersion.cmake"
     VERSION ${span_lite_version}
     COMPATIBILITY SameMajorVersion )
 
-# install tree package config
+# Package configuration:
+
 configure_package_config_file(
     span-liteConfig.cmake.in
     ${span_lite_config_path}/span-liteConfig.cmake
