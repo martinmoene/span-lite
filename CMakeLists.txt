@@ -16,7 +16,7 @@ project(
 #   HOMEPAGE_URL "https://github.com/martinmoene/span-lite"
     LANGUAGES CXX )
 
-set( ${PROJECT_NAME}_version "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}" )
+message( STATUS "${PROJECT_NAME} version: '${${PROJECT_NAME}_VERSION}'")
 
 # Toplevel or subproject:
 
@@ -44,7 +44,6 @@ set( package_name "span-lite" )
 
 set( include_source_dir "${PROJECT_SOURCE_DIR}/include" )
 set( span_lite_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/${package_name}")
-
 
 # Interface library:
 
@@ -84,28 +83,27 @@ configure_file(
     @ONLY )
 
 install(
-    FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/${span_lite_config_path}/${package_name}Config.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/${package_name}ConfigVersion.cmake"
+    FILES      "${CMAKE_CURRENT_BINARY_DIR}/${span_lite_config_path}/${package_name}Config.cmake"
+               "${CMAKE_CURRENT_BINARY_DIR}/${package_name}ConfigVersion.cmake"
     DESTINATION ${span_lite_config_path} )
 
 install(TARGETS ${package_name} EXPORT ${package_name}Targets)
 
 export(
-    EXPORT ${package_name}Targets
-    NAMESPACE ${package_name}::
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/${package_name}Targets.cmake" )
+    EXPORT      ${package_name}Targets
+    NAMESPACE   ${package_name}::
+    FILE       "${CMAKE_CURRENT_BINARY_DIR}/${package_name}Targets.cmake" )
 
 install(
-    EXPORT ${package_name}Targets
-    NAMESPACE ${package_name}::
-    FILE ${package_name}Targets.cmake
+    EXPORT      ${package_name}Targets
+    NAMESPACE   ${package_name}::
+    FILE        ${package_name}Targets.cmake
     DESTINATION ${span_lite_config_path} )
 
 # If requested, export the cmake package to the package registry
 
 if ( SPAN_LITE_EXPORT_PACKAGE )
-    export(PACKAGE ${package_name})
+    export( PACKAGE ${package_name} )
 endif()
 
 # If requested, build and perform tests, build examples:
