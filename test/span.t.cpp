@@ -5,7 +5,7 @@
 // Copyright (c) 2015 Martin Moene
 // Copyright (c) 2015 Microsoft Corporation. All rights reserved.
 //
-// Distributed under the Boost Software License, Version 1.0. 
+// Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include "span-main.t.hpp"
@@ -109,10 +109,10 @@ CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [s
 
     EXPECT_THROWS_AS( v.at(42), std::out_of_range );
     EXPECT_THROWS_AS( w.at(42), std::out_of_range );
-    
-    struct F { 
-        static void fail(lest::env & lest_env) { 
-            int arr[] = { 1, 2, 3, }; span<int> v( arr ); EXPECT( (v.at(42), true) ); 
+
+    struct F {
+        static void fail(lest::env & lest_env) {
+            int arr[] = { 1, 2, 3, }; span<int> v( arr ); EXPECT( (v.at(42), true) );
     }};
 
     lest::test fail[] = { lest::test( "F", F::fail ) };
@@ -725,8 +725,8 @@ CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
 
     a.swap( b );
 
-    EXPECT( a.size() == 2 );
-    EXPECT( b.size() == 3 );
+    EXPECT( a.size() == index_type(2) );
+    EXPECT( b.size() == index_type(3) );
     EXPECT( a[0]     == 2 );
     EXPECT( b[0]     == 1 );
 #else
@@ -764,7 +764,7 @@ CASE( "span<>: Allows reverse iteration" )
     for ( span<int>::reverse_iterator pos = v.rbegin(); pos != v.rend(); ++pos )
     {
 //        size_t dist = narrow<size_t>( std::distance(v.rbegin(), pos) );
-        index_type dist = std::distance(v.rbegin(), pos);
+        index_type dist = static_cast<index_type>( std::distance(v.rbegin(), pos) );
         EXPECT( *pos == arr[ v.size() - 1 - dist ] );
     }
 }
@@ -777,7 +777,7 @@ CASE( "span<>: Allows const reverse iteration" )
     for ( span<int>::const_reverse_iterator pos = v.crbegin(); pos != v.crend(); ++pos )
     {
 //        size_t dist = narrow<size_t>( std::distance(v.crbegin(), pos) );
-        index_type dist = std::distance(v.crbegin(), pos);
+        index_type dist = static_cast<index_type>( std::distance(v.crbegin(), pos) );
         EXPECT( *pos == arr[ v.size() - 1 - dist ] );
     }
 }
@@ -1042,7 +1042,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
     span<type> va( a );
     span<byte> vb( as_writeable_bytes(va) );
 
-    for ( std::ptrdiff_t i = 0; i < std::ptrdiff_t( sizeof(type) ); ++i )
+    for ( index_type i = 0; i < index_type( sizeof(type) ); ++i )
     {
         EXPECT( vb[i] == byte{0} );
     }
@@ -1050,7 +1050,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
     vb[0] = byte{0x42};
 
     EXPECT( vb[0] == byte{0x42} );
-    for ( std::ptrdiff_t i = 1; i < std::ptrdiff_t( sizeof(type) ); ++i )
+    for ( index_type i = 1; i < index_type( sizeof(type) ); ++i )
     {
         EXPECT( vb[i] == byte{0} );
     }
@@ -1272,7 +1272,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
 
     span<xstd::byte> spn = byte_span( x );
 
-    EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
+    EXPECT( spn.size() == index_type( sizeof x ) );
 #if span_HAVE( NONSTD_BYTE )
     EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
@@ -1290,7 +1290,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
     span<const xstd::byte> spn = byte_span( x );
 
-    EXPECT( spn.size() == std::ptrdiff_t( sizeof x ) );
+    EXPECT( spn.size() == index_type( sizeof x ) );
 #if span_HAVE( NONSTD_BYTE )
     EXPECT( spn[0]     == to_byte( 0xff ) );
 #else

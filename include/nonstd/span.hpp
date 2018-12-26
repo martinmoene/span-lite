@@ -30,6 +30,12 @@
 # define span_CONFIG_SELECT_SPAN  ( span_HAVE_STD_SPAN ? span_SPAN_STD : span_SPAN_NONSTD )
 #endif
 
+#ifndef  span_CONFIG_INDEX_TYPE
+# define span_CONFIG_INDEX_TYPE  std::ptrdiff_t
+#endif
+
+// span configuration (features):
+
 #ifndef  span_FEATURE_WITH_CONTAINER_TO_STD
 # define span_FEATURE_WITH_CONTAINER_TO_STD  0
 #endif
@@ -302,7 +308,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #ifdef NONSTD_BYTE_LITE_HPP
 # define span_HAVE_NONSTD_BYTE  1
-#else 
+#else
 # define span_HAVE_NONSTD_BYTE  0
 #endif
 
@@ -439,11 +445,13 @@ namespace span_lite {
 
 // [views.constants], constants
 
-typedef std::ptrdiff_t index_t;
+typedef span_CONFIG_INDEX_TYPE index_t;
 
-span_constexpr const index_t dynamic_extent = -1;
+typedef std::ptrdiff_t extent_t;
 
-template< class T, index_t Extent = dynamic_extent >
+span_constexpr const extent_t dynamic_extent = -1;
+
+template< class T, extent_t Extent = dynamic_extent >
 class span;
 
 // Tag to select span constructor taking a container (prevent ms-gsl warning C26426):
@@ -591,7 +599,7 @@ span_noreturn inline void report_contract_violation( char const * /*msg*/ ) span
 
 // Prevent signed-unsigned mismatch:
 
-#define span_sizeof(T)  static_cast<index_t>( sizeof(T) )
+#define span_sizeof(T)  static_cast<extent_t>( sizeof(T) )
 
 template< class T >
 inline span_constexpr index_t to_size( T size )
@@ -624,7 +632,7 @@ struct can_construct_from : detail::true_type{};
 //
 // [views.span] - A view over a contiguous, single-dimension sequence of objects
 //
-template< class T, index_t Extent /*= dynamic_extent*/ >
+template< class T, extent_t Extent /*= dynamic_extent*/ >
 class span
 {
 public:
@@ -639,15 +647,17 @@ public:
     typedef T const & const_reference;
 
     typedef index_t   index_type;
-    typedef index_t   difference_type;
+    typedef extent_t  extent_type;
 
-    typedef pointer       iterator;
-    typedef const_pointer const_iterator;
+    typedef pointer        iterator;
+    typedef const_pointer  const_iterator;
+
+    typedef std::ptrdiff_t difference_type;
 
     typedef std::reverse_iterator< iterator >       reverse_iterator;
     typedef std::reverse_iterator< const_iterator > const_reverse_iterator;
 
-//    static constexpr index_type extent = Extent;
+//    static constexpr extent_type extent = Extent;
     enum { extent = Extent };
 
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
@@ -676,7 +686,7 @@ public:
 
     span_constexpr_exp span( pointer firstElem, pointer lastElem )
         : data_( firstElem )
-        , size_( std::distance( firstElem, lastElem ) )
+        , size_( to_size( std::distance( firstElem, lastElem ) ) )
     {
         span_EXPECTS(
             std::distance( firstElem, lastElem ) >= 0
@@ -793,7 +803,7 @@ public:
     }
 #endif
 
-    template< class OtherElementType, index_type OtherExtent
+    template< class OtherElementType, extent_type OtherExtent
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
             (Extent == dynamic_extent || Extent == OtherExtent) &&
@@ -805,12 +815,12 @@ public:
         : data_( reinterpret_cast<pointer>( other.data() ) )
         , size_( other.size() )
     {
-        span_EXPECTS( OtherExtent == dynamic_extent || other.size() == OtherExtent );
+        span_EXPECTS( OtherExtent == dynamic_extent || other.size() == to_size(OtherExtent) );
     }
 
     // 26.7.3.3 Subviews [span.sub]
 
-    template< index_type Count >
+    template< extent_type Count >
     span_constexpr_exp span< element_type, Count >
     first() const
     {
@@ -819,7 +829,7 @@ public:
         return span< element_type, Count >( data(), Count );
     }
 
-    template< index_type Count >
+    template< extent_type Count >
     span_constexpr_exp span< element_type, Count >
     last() const
     {
@@ -829,9 +839,9 @@ public:
     }
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-    template< index_type Offset, index_type Count = dynamic_extent >
+    template< index_type Offset, extent_type Count = dynamic_extent >
 #else
-    template< index_type Offset, index_type Count /*= dynamic_extent*/ >
+    template< index_type Offset, extent_type Count /*= dynamic_extent*/ >
 #endif
     span_constexpr_exp span< element_type, Count >
     subspan() const
@@ -861,14 +871,15 @@ public:
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
-    subspan( index_type offset, index_type count = dynamic_extent ) const
+    subspan( index_type offset, index_type count = static_cast<index_type>(dynamic_extent) ) const
     {
         span_EXPECTS(
             ( ( 0 <= offset  && offset <= size() ) ) &&
-            ( count  == dynamic_extent || ( 0 <= count && offset + count <= size() ) )
+            ( count == static_cast<index_type>(dynamic_extent) || ( 0 <= count && offset + count <= size() ) )
         );
 
-        return span< element_type, dynamic_extent >( data() + offset, count == dynamic_extent ? size() - offset : count );
+        return span< element_type, dynamic_extent >(
+            data() + offset, count == static_cast<index_type>(dynamic_extent) ? size() - offset : count );
     }
 
     // 26.7.3.4 Observers [span.obs]
@@ -1022,13 +1033,13 @@ private:
 #if span_HAVE( DEDUCTION_GUIDES )   // span_CPP17_OR_GREATER
 
 template< class T, size_t N >
-span( T (&)[N] ) -> span<T, to_size(N)>;
+span( T (&)[N] ) -> span<T, static_cast<extent_t>(N)>;
 
 template< class T, size_t N >
-span( std::array<T, N> & ) -> span<T, to_size(N)>;
+span( std::array<T, N> & ) -> span<T, static_cast<extent_t>(N)>;
 
 template< class T, size_t N >
-span( std::array<T, N> const & ) -> span<const T, to_size(N)>;
+span( std::array<T, N> const & ) -> span<const T, static_cast<extent_t>(N)>;
 
 template< class Container >
 span( Container& ) -> span<typename Container::value_type>;
@@ -1042,7 +1053,7 @@ span( Container const & ) -> span<const typename Container::value_type>;
 
 #if span_FEATURE( SAME )
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) span_noexcept
 {
     return detail::is_same<T1, T2>::value
@@ -1052,7 +1063,7 @@ inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) 
 
 #endif
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool operator==( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return
@@ -1062,31 +1073,31 @@ inline span_constexpr bool operator==( span<T1,E1> const & l, span<T2,E2> const 
         ( l.size() == r.size() && std::equal( l.begin(), l.end(), r.begin() ) );
 }
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool operator<( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return std::lexicographical_compare( l.begin(), l.end(), r.begin(), r.end() );
 }
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool operator!=( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return !( l == r );
 }
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool operator<=( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return !( r < l );
 }
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool operator>( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return ( r < l );
 }
 
-template< class T1, index_t E1, class T2, index_t E2  >
+template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const & r )
 {
     return !( l < r );
@@ -1096,7 +1107,7 @@ inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const 
 
 #if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
-template< class T, index_t Extent >
+template< class T, extent_t Extent >
 inline span_constexpr span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
 as_bytes( span<T,Extent> spn ) span_noexcept
 {
@@ -1108,7 +1119,7 @@ as_bytes( span<T,Extent> spn ) span_noexcept
 #endif
 }
 
-template< class T, index_t Extent >
+template< class T, extent_t Extent >
 inline span_constexpr span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
 as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 {
@@ -1176,26 +1187,26 @@ make_span( T * first, T * last ) span_noexcept
 }
 
 template< class T, size_t N >
-inline span_constexpr span<T, static_cast<index_t>(N)>
+inline span_constexpr span<T, static_cast<extent_t>(N)>
 make_span( T ( &arr )[ N ] ) span_noexcept
 {
-    return span<T, static_cast<index_t>(N)>( &arr[ 0 ], N );
+    return span<T, static_cast<extent_t>(N)>( &arr[ 0 ], N );
 }
 
 #if span_USES_STD_SPAN || span_HAVE( ARRAY )
 
 template< class T, size_t N >
-inline span_constexpr span<T, static_cast<index_t>(N)>
+inline span_constexpr span<T, static_cast<extent_t>(N)>
 make_span( std::array< T, N > & arr ) span_noexcept
 {
-    return span<T, static_cast<index_t>(N)>( arr );
+    return span<T, static_cast<extent_t>(N)>( arr );
 }
 
 template< class T, size_t N >
-inline span_constexpr span< const T, static_cast<index_t>(N) >
+inline span_constexpr span< const T, static_cast<extent_t>(N) >
 make_span( std::array< T, N > const & arr ) span_noexcept
 {
-    return span<const T, static_cast<index_t>(N)>( arr );
+    return span<const T, static_cast<extent_t>(N)>( arr );
 }
 
 #endif // span_HAVE( ARRAY )
@@ -1268,7 +1279,7 @@ using span_lite::make_span;
 
 namespace nonstd {
 namespace span_lite {
-    
+
 template< class T >
 inline span_constexpr auto
 byte_span( T & t ) span_noexcept -> span< detail::byte, span_sizeof(T) >
