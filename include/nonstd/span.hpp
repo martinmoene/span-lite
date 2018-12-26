@@ -26,7 +26,7 @@
 #define span_SPAN_NONSTD   1
 #define span_SPAN_STD      2
 
-#if !defined( span_CONFIG_SELECT_SPAN )
+#ifndef  span_CONFIG_SELECT_SPAN
 # define span_CONFIG_SELECT_SPAN  ( span_HAVE_STD_SPAN ? span_SPAN_STD : span_SPAN_NONSTD )
 #endif
 
