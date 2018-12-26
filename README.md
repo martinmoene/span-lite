@@ -172,6 +172,10 @@ At default, *span lite* uses `std::span` if it is available and lets you use it 
 -D<b>span\_CONFIG\_SELECT\_SPAN</b>=span_SPAN_DEFAULT  
 Define this to `span_SPAN_STD` to select `std::span` as `nonstd::span`. Define this to `span_SPAN_NONSTD` to select `nonstd::span` as `nonstd::span`. Default is undefined, which has the same effect as defining to `span_SPAN_DEFAULT`.
 
+### Select index type
+-D<b>span_CONFIG_INDEX_TYPE</b>=std::ptrdiff_t  
+Define this to `std::size_t` to use the unsigned type as generally used in the standard library for indexing and the result of `size()` and prevent many signed-unsigned comparisons. The default is `std::ptrdiff_t`, but this will change to `std::size_t` as in C++20 in the near future.
+
 ### Disable exceptions
 -D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Disabling exceptions will force contract violation to use termination, see [contract violation macros](#contract-violation-response-macros). Default is undefined.
@@ -306,10 +310,12 @@ Notes and references
 - [p0122 - span: bounds-safe views for sequences of objects](http://wg21.link/p0122).
 - [p1024 - Usability Enhancements for std::span](http://wg21.link/p1024).
 - [p1089 - Sizes Should Only span Unsigned](http://wg21.link/p1089).
-- [p0805 - Comparing Containers](http://wg21.link/p0805)
-- [p0091 - Template argument deduction for class templates](http://wg21.link/p0091)
-- [p0856 - Restrict Access Property for mdspan and span](http://wg21.link/p0856)
-- [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101)
+- [p0805 - Comparing Containers](http://wg21.link/p0805).
+- [p0091 - Template argument deduction for class templates](http://wg21.link/p0091).
+- [p0856 - Restrict Access Property for mdspan and span](http://wg21.link/p0856).
+- [p1227 - Signed size() functions](http://wg21.link/p1227).
+- [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
+- [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
 
 
 Appendix
