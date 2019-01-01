@@ -2,12 +2,16 @@
 #
 # https://github.com/martinmoene/span-lite
 #
-# Distributed under the Boost Software License, Version 1.0. 
+# Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 cmake_minimum_required( VERSION 3.5 )
 
 project( example LANGUAGES CXX )
+
+set( PACKAGE ${package_name} )
+
+message( STATUS "Subproject '${PROJECT_NAME}'")
 
 # Target default options and definitions:
 
@@ -16,9 +20,9 @@ set( DEFINITIONS "" )
 
 # Sources (.cpp) and their base names:
 
-set( SOURCES 
-    01-basic.cpp 
-    02-span.cpp 
+set( SOURCES
+    01-basic.cpp
+    02-span.cpp
 )
 
 string( REPLACE ".cpp" "" BASENAMES "${SOURCES}" )
@@ -28,9 +32,9 @@ string( REPLACE ".cpp" "" BASENAMES "${SOURCES}" )
 function( make_target source )
     string( REPLACE ".cpp" "" target "${source}" )
     add_executable            ( ${target} ${source}  )
+    target_link_libraries     ( ${target} PRIVATE ${PACKAGE} )
     target_compile_options    ( ${target} PRIVATE ${OPTIONS} )
     target_compile_definitions( ${target} PRIVATE ${DEFINITIONS} )
-    target_link_libraries     ( ${target} PRIVATE span-lite )
 endfunction()
 
 # Targets:

@@ -16,7 +16,13 @@ project(
 #   HOMEPAGE_URL "https://github.com/martinmoene/span-lite"
     LANGUAGES CXX )
 
-message( STATUS "${PROJECT_NAME} version: '${${PROJECT_NAME}_VERSION}'")
+# Package information:
+
+set( unit_name       "span"              CACHE STRING "Name of the unit" )
+set( package_name    "${unit_name}-lite" CACHE STRING "Name of the package" )
+set( package_version "${${PROJECT_NAME}_VERSION}" )
+
+message( STATUS "Project '${PROJECT_NAME}', package '${package_name}' version: '${package_version}'")
 
 # Toplevel or subproject:
 
@@ -37,13 +43,26 @@ option( SPAN_LITE_COLOURISE_TEST     "Colourise test output" OFF )
 option( SPAN_LITE_OPT_SELECT_STD     "Select std::span"    OFF )
 option( SPAN_LITE_OPT_SELECT_NONSTD  "Select nonstd::span" OFF )
 
+# If requested, build and perform tests, build examples:
+
+if ( SPAN_LITE_OPT_BUILD_TESTS )
+    enable_testing()
+    add_subdirectory( test )
+endif()
+
+if ( SPAN_LITE_OPT_BUILD_EXAMPLES )
+    enable_testing()
+    add_subdirectory( example )
+endif()
+
+#
+# Interface, installation and packaging
+#
+
+# CMake helpers:
+
 include( GNUInstallDirs )
 include( CMakePackageConfigHelpers )
-
-set( package_name "span-lite" )
-
-set( include_source_dir "${PROJECT_SOURCE_DIR}/include" )
-set( span_lite_config_path "${CMAKE_INSTALL_LIBDIR}/cmake/${package_name}")
 
 # Interface library:
 
@@ -51,71 +70,59 @@ add_library(
     ${package_name} INTERFACE )
 
 add_library(
-    ${package_name}::${package_name} ALIAS ${package_name})
+    ${package_name}::${package_name} ALIAS ${package_name} )
 
 target_include_directories(
-    ${package_name} INTERFACE
-        "$<BUILD_INTERFACE:${include_source_dir}>"
+    ${package_name}
+    INTERFACE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
+# Package configuration:
+# Note: package_name and package_target are used in package_config_in
+
+set( package_folder         "${package_name}" )
+set( package_nspace         "${package_name}::" )
+set( package_target         "${package_name}-targets" )
+set( package_config         "${package_name}-config.cmake" )
+set( package_config_in      "${package_name}-config.cmake.in" )
+set( package_config_version "${package_name}-config-version.cmake" )
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${package_config_in}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${package_config}"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${package_config_version}"
+    VERSION       ${package_version}
+    COMPATIBILITY SameMajorVersion
+)
 
 # Installation:
 
 install(
-    DIRECTORY   ${CMAKE_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/${package_name}ConfigVersion.cmake"
-    VERSION ${span_lite_version}
-    COMPATIBILITY SameMajorVersion )
-
-# Package configuration:
-
-configure_package_config_file(
-    span-liteConfig.cmake.in
-    ${span_lite_config_path}/span-liteConfig.cmake
-    INSTALL_DESTINATION ${span_lite_config_path}
-    NO_CHECK_REQUIRED_COMPONENTS_MACRO )
-
-configure_file(
-    ${package_name}Config.cmake.in
-    ${package_name}Config.cmake
-    @ONLY )
+    TARGETS      ${package_name}
+    EXPORT       ${package_target}
+#   INCLUDES DESTINATION "${...}"  # already set via target_include_directories()
+)
 
 install(
-    FILES      "${CMAKE_CURRENT_BINARY_DIR}/${span_lite_config_path}/${package_name}Config.cmake"
-               "${CMAKE_CURRENT_BINARY_DIR}/${package_name}ConfigVersion.cmake"
-    DESTINATION ${span_lite_config_path} )
-
-install(TARGETS ${package_name} EXPORT ${package_name}Targets)
-
-export(
-    EXPORT      ${package_name}Targets
-    NAMESPACE   ${package_name}::
-    FILE       "${CMAKE_CURRENT_BINARY_DIR}/${package_name}Targets.cmake" )
+    EXPORT       ${package_target}
+    NAMESPACE    ${package_nspace}
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
+)
 
 install(
-    EXPORT      ${package_name}Targets
-    NAMESPACE   ${package_name}::
-    FILE        ${package_name}Targets.cmake
-    DESTINATION ${span_lite_config_path} )
+    FILES       "${CMAKE_CURRENT_BINARY_DIR}/${package_config}"
+                "${CMAKE_CURRENT_BINARY_DIR}/${package_config_version}"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
+)
 
-# If requested, export the cmake package to the package registry
-
-if ( SPAN_LITE_EXPORT_PACKAGE )
-    export( PACKAGE ${package_name} )
-endif()
-
-# If requested, build and perform tests, build examples:
-
-enable_testing()
-
-if ( SPAN_LITE_OPT_BUILD_TESTS )
-    add_subdirectory( test )
-endif()
-
-if ( SPAN_LITE_OPT_BUILD_EXAMPLES )
-    add_subdirectory( example )
-endif()
+install(
+    DIRECTORY   "${CMAKE_SOURCE_DIR}/include"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+)
 
 # end of file
