@@ -1316,6 +1316,60 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
 #endif // span_FEATURE( BYTE_SPAN )
 
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_HAVE( AUTO )
+
+CASE( "first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]" )
+{
+    EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
+}
+
+CASE( "first(): Allows to create a sub span of the first n elements" )
+{
+    int arr[] = { 1, 2, 3, 4, 5, };
+    span<int> v( arr );
+    index_type count = 3;
+
+    span<      int> s = first( v, count );
+    span<const int> t = first( v, count );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+}
+
+CASE( "last(): Allows to create a sub span of the last n elements" )
+{
+    int arr[] = { 1, 2, 3, 4, 5, };
+    span<int> v( arr );
+    index_type count = 3;
+
+    span<      int> s = last( v, count );
+    span<const int> t = last( v, count );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+}
+
+CASE( "subspan(): Allows to create a sub span starting at a given offset" )
+{
+    int arr[] = { 1, 2, 3, };
+    span<int> v( arr );
+    index_type offset = 1;
+
+    span<      int> s = subspan( v, offset );
+    span<const int> t = subspan( v, offset );
+
+    EXPECT( s.size() == v.size() - offset );
+    EXPECT( t.size() == v.size() - offset );
+    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+}
+
+#endif // span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+
 // Issues
 
 #include <cassert>

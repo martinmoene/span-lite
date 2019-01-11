@@ -24,6 +24,7 @@ set spanFeatures=^
     "span_FEATURE_MEMBER_AT=2" ^
     "span_FEATURE_MEMBER_BACK_FRONT=1" ^
     "span_FEATURE_MEMBER_SWAP=1" ^
+    "span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1" ^
     "span_FEATURE_SAME=1"
 
 set cppStandards=^

@@ -113,6 +113,10 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide function `same()` to determine if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. See the table below and section [configuration](#configuration).
 
+### `first()`, `last()` and `subspan()`
+
+*span lite* can provide functions `first()`, `last()` and `subspan()` to avoid having to use the *dot template* syntax when the span is a dependent type. See the table below and section [configuration](#configuration).
+
 ### `make_span()`
 
 *span lite* can provide `make_span()` creator functions to compensate for the class template argument deduction that is missing from pre-C++17 compilers. See the table below and section [configuration](#configuration).
@@ -147,22 +151,30 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Free function**  |&nbsp;| macro **`span_FEATURE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
+| **Free functions** |&nbsp;| macro **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB`** |
+| &nbsp; | >= C++11  | template&lt;extent_t Count, class T><br>constexpr auto<br>**first**(T & t) ->... |
+| &nbsp; | >= C++11  | template&lt;class T><br>constexpr auto<br>**first**(T & t, index_t count) ->... |
+| &nbsp; | >= C++11  | template&lt;extent_t Count, class T><br>constexpr auto<br>**last**(T & t) ->... |
+| &nbsp; | >= C++11  | template&lt;class T><br>constexpr auto<br>**last**(T & t, extent_t count) ->... |
+| &nbsp; | >= C++11  | template&lt;index_t Offset, extent_t Count = dynamic_extent, class T><br>constexpr auto<br>**subspan**(T & t) ->... |
+| &nbsp; | >= C++11  | template&lt;class T><br>constexpr auto<br>**subspan**(T & t, index_t offset, extent_t count = dynamic_extent) ->... |
+| &nbsp; | &nbsp;    | &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_FEATURE_MAKE_SPAN_TO_STD`** |
-| &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
-| &nbsp; | &nbsp;   | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* ptr, index_t count) noexcept |
-| &nbsp; | &nbsp;   | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(T (&arr)[N]) noexcept |
-| &nbsp; | >= C++11 | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(std::array&lt;T,N> & arr) noexcept |
-| &nbsp; | >= C++11 | template&lt;class T, size_t N><br>constexpr span&lt;const T,N><br>**make_span**(std::array&lt;T,N > const & arr) noexcept |
-| &nbsp; | >= C++11 | template&lt;class Container><br>constexpr auto<br>**make_span**(Container & cont) -><br>&emsp;span&lt;typename Container::value_type> noexcept |
-| &nbsp; | >= C++11 | template&lt;class Container><br>constexpr auto<br>**make_span**(Container const & cont) -><br>&emsp;span&lt;const typename Container::value_type> noexcept |
-| &nbsp; | &nbsp;   | template&lt;class Container><br>span&lt;typename Container::value_type><br>**make_span**( with_container_t, Container & cont ) |
-| &nbsp; | &nbsp;   | template&lt;class Container><br>span&lt;const typename Container::value_type><br>**make_span**( with_container_t, Container const & cont ) |
-| &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;T><br>**make_span**(std::vector&lt;T, Allocator> & cont) |
-| &nbsp; | < C++11  | template&lt;class T, Allocator><br>span&lt;const T><br>**make_span**(std::vector&lt;T, Allocator> const & cont) |
-| &nbsp; | &nbsp;   | &nbsp; |                                       
-| **Free functions**|&nbsp;| macro **`span_FEATURE_BYTE_SPAN`** |
-| &nbsp; | >= C++11 | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
-| &nbsp; | >= C++11 | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
+| &nbsp; | &nbsp;    | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
+| &nbsp; | &nbsp;    | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* ptr, index_t count) noexcept |
+| &nbsp; | &nbsp;    | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(T (&arr)[N]) noexcept |
+| &nbsp; | >= C++11  | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(std::array&lt;T,N> & arr) noexcept |
+| &nbsp; | >= C++11  | template&lt;class T, size_t N><br>constexpr span&lt;const T,N><br>**make_span**(std::array&lt;T,N > const & arr) noexcept |
+| &nbsp; | >= C++11  | template&lt;class Container><br>constexpr auto<br>**make_span**(Container & cont) -><br>&emsp;span&lt;typename Container::value_type> noexcept |
+| &nbsp; | >= C++11  | template&lt;class Container><br>constexpr auto<br>**make_span**(Container const & cont) -><br>&emsp;span&lt;const typename Container::value_type> noexcept |
+| &nbsp; | &nbsp;    | template&lt;class Container><br>span&lt;typename Container::value_type><br>**make_span**( with_container_t, Container & cont ) |
+| &nbsp; | &nbsp;    | template&lt;class Container><br>span&lt;const typename Container::value_type><br>**make_span**( with_container_t, Container const & cont ) |
+| &nbsp; | < C++11   | template&lt;class T, Allocator><br>span&lt;T><br>**make_span**(std::vector&lt;T, Allocator> & cont) |
+| &nbsp; | < C++11   | template&lt;class T, Allocator><br>span&lt;const T><br>**make_span**(std::vector&lt;T, Allocator> const & cont) |
+| &nbsp; | &nbsp;    | &nbsp; |                                       
+| **Free functions** |&nbsp;| macro **`span_FEATURE_BYTE_SPAN`** |
+| &nbsp; | >= C++11  | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
+| &nbsp; | >= C++11  | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
 
 
 Configuration
@@ -214,6 +226,10 @@ Define this to 1 to provide member function `swap()`. Default is undefined.
 ### Provide `same()` function
 -D<b>span_FEATURE_SAME</b>=1  
 Define this to 1 to provide function `same()` to test if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. Default is undefined.
+
+### Provide `first()`, `last()` and `subspan()` functions
+-D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB</b>=1  
+Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This requires `make_span()` functions to be available, see `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
 ### Provide `make_span()` functions
 -D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=14  

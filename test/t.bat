@@ -32,6 +32,7 @@ set unit_config=^
     -Dspan_FEATURE_MEMBER_BACK_FRONT=1 ^
     -Dspan_FEATURE_MEMBER_SWAP=1 ^
     -Dspan_FEATURE_SAME=1 ^
+    -Dspan_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1 ^
     -Dspan_FEATURE_MAKE_SPAN_TO_STD=99 ^
     -Dspan_FEATURE_BYTE_SPAN=1
 
