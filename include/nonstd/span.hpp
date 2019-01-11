@@ -1155,7 +1155,7 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 
 // extensions: non-member views:
 
-#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_HAVE( AUTO )
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_CPP11_120
 
 #if ! span_FEATURE_TO_STD( MAKE_SPAN )
 # error nonstd::span: non-member first(), last() and subspan() require make_span(), see span_FEATURE_MAKE_SPAN_TO_STD

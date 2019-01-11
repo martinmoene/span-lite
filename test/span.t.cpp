@@ -1316,8 +1316,6 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
 #endif // span_FEATURE( BYTE_SPAN )
 
-#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_HAVE( AUTO )
-
 CASE( "first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]" )
 {
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
@@ -1325,6 +1323,8 @@ CASE( "first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]" )
 
 CASE( "first(): Allows to create a sub span of the first n elements" )
 {
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+#if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
     index_type count = 3;
@@ -1336,10 +1336,18 @@ CASE( "first(): Allows to create a sub span of the first n elements" )
     EXPECT( t.size() == count );
     EXPECT( std::equal( s.begin(), s.end(), arr ) );
     EXPECT( std::equal( t.begin(), t.end(), arr ) );
+#else
+    EXPECT( !!"first() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
+#endif
 }
 
 CASE( "last(): Allows to create a sub span of the last n elements" )
 {
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+#if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
     index_type count = 3;
@@ -1351,10 +1359,18 @@ CASE( "last(): Allows to create a sub span of the last n elements" )
     EXPECT( t.size() == count );
     EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
     EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+#else
+    EXPECT( !!"last() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
+#endif
 }
 
 CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 {
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+#if span_CPP11_120
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
     index_type offset = 1;
@@ -1366,9 +1382,13 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset" )
     EXPECT( t.size() == v.size() - offset );
     EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
     EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+#else
+    EXPECT( !!"subspan() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
+#endif
 }
-
-#endif // span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
 
 // Issues
 
