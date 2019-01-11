@@ -132,7 +132,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_CALL_OPERATOR`** |
-| &nbsp;             |&nbsp;| constexpr reference **operator()**(index_t idx) const<br>Equivalent to **operator()**(), marked `[[deprecated]]` |
+| &nbsp;             |&nbsp;| constexpr reference **operator()**(index_t idx) const<br>Equivalent to **operator[]**(), marked `[[deprecated]]` |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_AT`** |
 | &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const<br>May throw std::out_of_range exception |
