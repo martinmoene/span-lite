@@ -21,8 +21,8 @@ int main()
 }
 
 #if 0
-cl -EHsc -I../include/nonstd 01-basic.cpp && 01-basic.exe
-g++ -std=c++11 -Wall -I../include/nonstd -o 01-basic.exe 01-basic.cpp && 01-basic.exe
+cl -EHsc -I../include 01-basic.cpp && 01-basic.exe
+g++ -std=c++11 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-basic.exe
 
 Output: C-array:1 array:2 vector:3
 #endif

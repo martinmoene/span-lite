@@ -78,7 +78,7 @@ goto :EOF
 :Compile  contractViolationResponse spanFeature [CppStd]
 ::call t.bat %*
 set args=%*
-set compile=cl -EHsc -I../include/nonstd -I"%CppCoreCheckInclude%" %args% %msvc_defines% %spanSources%
+set compile=cl -EHsc -I../include -I"%CppCoreCheckInclude%" %args% %msvc_defines% %spanSources%
 echo %compile% && %compile%
 goto :EOF
 

@@ -64,6 +64,6 @@ int main()
 }
 
 #if 0
-cl -EHsc -I../include/nonstd 02-span.cpp && 02-span.exe
-g++ -std=c++11 -Wall -I../include/nonstd -o 02-span.exe 02-span.cpp && 02-span.exe
+cl -EHsc -I../include 02-span.cpp && 02-span.exe
+g++ -std=c++11 -Wall -I../include -o 02-span.exe 02-span.cpp && 02-span.exe
 #endif

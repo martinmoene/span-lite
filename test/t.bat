@@ -23,7 +23,7 @@ set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_DEFAULT
 set unit_contract=^
     -Dspan_CONFIG_CONTRACT_VIOLATION_TERMINATES=0 ^
     -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
-    
+
 set unit_config=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
@@ -43,8 +43,8 @@ set CppCoreCheckInclude=^
 
 set byte_lite=^
     -Dspan_BYTE_LITE_HEADER=\"../../byte-lite/include/nonstd/byte.hpp\"
-    
-cl -W3 -EHsc %std% %unit_select% %unit_contract% %unit_config% %msvc_defines% %byte_lite% -I"%CppCoreCheckInclude%" -I../include/nonstd %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
+
+cl -W3 -EHsc %std% %unit_select% %unit_contract% %unit_config% %msvc_defines% %byte_lite% -I"%CppCoreCheckInclude%" -I../include %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 endlocal & goto :EOF
 
 :: subroutines:
@@ -65,7 +65,7 @@ if %version% LSS 1900 set /a offset=1
 set /a version="version / 10 - 10 * ( 5 + offset )"
 endlocal & set %1=%version%& goto :EOF
 
-:: toupper; makes use of the fact that string 
+:: toupper; makes use of the fact that string
 :: replacement (via SET) is not case sensitive
 :toupper
 for %%L IN (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO SET %1=!%1:%%L=%%L!
