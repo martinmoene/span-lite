@@ -52,6 +52,10 @@
 # define span_FEATURE_MEMBER_BACK_FRONT  0
 #endif
 
+#ifndef  span_FEATURE_MEMBER_CALL_OPERATOR
+# define span_FEATURE_MEMBER_CALL_OPERATOR  0
+#endif
+
 #ifndef  span_FEATURE_MEMBER_SWAP
 # define span_FEATURE_MEMBER_SWAP  0
 #endif
@@ -284,6 +288,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // Presence of C++17 language features:
 
+#define span_HAVE_DEPRECATED                span_CPP17_000
 #define span_HAVE_NODISCARD                 span_CPP17_000
 #define span_HAVE_NORETURN                  span_CPP17_000
 
@@ -360,6 +365,12 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_nullptr nullptr
 #else
 # define span_nullptr NULL
+#endif
+
+#if span_HAVE_DEPRECATED
+# define span_deprecated(msg) [[deprecated(msg)]]
+#else
+# define span_deprecated(msg) /*[[deprecated]]*/
 #endif
 
 #if span_HAVE_NODISCARD
@@ -851,7 +862,8 @@ public:
             ( Count == dynamic_extent || (0 <= Count && Count + Offset <= size()) )
         );
 
-        return span< element_type, Count >( data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
+        return span< element_type, Count >(
+            data() + Offset, Count != dynamic_extent ? Count : (Extent != dynamic_extent ? Extent - Offset : size() - Offset) );
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
@@ -908,12 +920,16 @@ public:
         return *( data() + idx );
     }
 
+#if span_FEATURE( MEMBER_CALL_OPERATOR )
+    span_deprecated("replace operator() with operator[]")
+
     span_constexpr_exp reference operator()( index_type idx ) const
     {
         span_EXPECTS( 0 <= idx && idx < size() );
 
         return *( data() + idx );
     }
+#endif
 
 #if span_FEATURE( MEMBER_AT )
     span_constexpr14 reference at( index_type idx ) const

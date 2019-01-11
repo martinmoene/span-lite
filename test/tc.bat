@@ -29,6 +29,7 @@ set unit_contract=^
 set unit_config=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
+    -Dspan_FEATURE_MEMBER_CALL_OPERATOR=1 ^
     -Dspan_FEATURE_MEMBER_AT=2 ^
     -Dspan_FEATURE_MEMBER_BACK_FRONT=1 ^
     -Dspan_FEATURE_MEMBER_SWAP=1 ^
@@ -38,7 +39,7 @@ set unit_config=^
 
 set byte_lite=^
     -Dspan_BYTE_LITE_HEADER=\"../../byte-lite/include/nonstd/byte.hpp\"
-    
+
 rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-noreturn -Wno-documentation-unknown-command -Wno-documentation-deprecated-sync -Wno-documentation -Wno-weak-vtables -Wno-missing-prototypes -Wno-missing-variable-declarations -Wno-exit-time-destructors -Wno-global-constructors

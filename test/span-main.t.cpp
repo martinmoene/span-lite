@@ -2,7 +2,7 @@
 //
 // https://github.com/martinmoene/span-lite
 //
-// Distributed under the Boost Software License, Version 1.0. 
+// Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include "span-main.t.hpp"
@@ -38,10 +38,10 @@ CASE( "span configuration" "[.span][.config]" )
 #endif
     span_PRESENT( span_HAVE_STD_SPAN );
     span_PRESENT( span_USES_STD_SPAN );
-    span_PRESENT( span_CONFIG_SELECT_SPAN );
     span_PRESENT( span_SPAN_DEFAULT );
     span_PRESENT( span_SPAN_NONSTD );
     span_PRESENT( span_SPAN_STD );
+    span_PRESENT( span_CONFIG_SELECT_SPAN );
     span_PRESENT( span_CONFIG_NO_EXCEPTIONS );
 }
 
@@ -54,6 +54,7 @@ CASE( "Presence of span library features" "[.span][.config]" )
     span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
     span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
     span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );
+    span_PRESENT( span_FEATURE_MEMBER_CALL_OPERATOR );
     span_PRESENT( span_FEATURE_MEMBER_AT );
     span_PRESENT( span_FEATURE_MEMBER_BACK_FRONT );
     span_PRESENT( span_FEATURE_MEMBER_SWAP );
@@ -156,10 +157,13 @@ CASE( "Presence of C++ language features" "[.stdlanguage]" )
     span_PRESENT( span_HAVE_CONSTEXPR_11 );
     span_PRESENT( span_HAVE_CONSTEXPR_14 );
     span_PRESENT( span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG );
+    span_PRESENT( span_HAVE_DEPRECATED );
     span_PRESENT( span_HAVE_EXPLICIT_CONVERSION );
     span_PRESENT( span_HAVE_IS_DEFAULT );
     span_PRESENT( span_HAVE_IS_DELETE );
+    span_PRESENT( span_HAVE_NODISCARD );
     span_PRESENT( span_HAVE_NOEXCEPT );
+    span_PRESENT( span_HAVE_NORETURN );
     span_PRESENT( span_HAVE_NULLPTR );
     span_PRESENT( span_HAVE_STATIC_ASSERT );
 #endif

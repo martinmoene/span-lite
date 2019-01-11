@@ -93,6 +93,10 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide construction of a span from a `std::array` with const data. See the table below and section [configuration](#configuration).
 
+### `operator()`
+
+*span lite* can provide member function call `operator()` for element access. It is equivalent to `operator[]` and has been marked `[[deprecated]]`. Its main purpose is to provide a migration path. 
+
 ### `at()`
 
 *span lite* can provide member function `at()` for element access. Unless exceptions have been disabled, `at()` throws std::out_of_range if the index falls outside the span. With exceptions disabled, `at(index_t)` delegates bounds checking to `operator[](index_t)`. See the table below and sections [configuration](#configuration) and [disable exceptions](#disable-exceptions).
@@ -126,6 +130,9 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Constructors**   |&nbsp;| macro **`span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container & cont) |
 | &nbsp;             |&nbsp;| template&lt;class Container><br>constexpr **span**(with_container_t, Container const & cont) |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_CALL_OPERATOR`** |
+| &nbsp;             |&nbsp;| constexpr reference **operator()**(index_t idx) const<br>Equivalent to **operator()**(), marked `[[deprecated]]` |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_AT`** |
 | &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const<br>May throw std::out_of_range exception |
@@ -187,6 +194,10 @@ Define this to the highest C++ language version for which to enable constructing
 ### Provide construction from `std::array` with const data
 -D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
 Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
+
+### Provide `operator()` member function
+-D<b>span_FEATURE_MEMBER_CALL_OPERATOR</b>=1  
+Define this to 1 to provide member function `operator()`for element access. It is equivalent to `operator[]` and has been marked `[[deprecated]]`. Its main purpose is to provide a migration path. Default is undefined.
 
 ### Provide `at()` member function
 -D<b>span_FEATURE_MEMBER_AT</b>=1  

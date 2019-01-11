@@ -84,16 +84,21 @@ CASE( "span<>: Terminates access outside the span" )
 {
     struct F {
         static void blow_ix(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v[i]; }
+#if span_FEATURE_MEMBER_CALL_OPERATOR
         static void blow_iv(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v(i); }
+#endif
 #if span_FEATURE_MEMBER_AT
         static void blow_at(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
 #endif
     };
 
     EXPECT_NO_THROW( F::blow_ix(2) );
-    EXPECT_NO_THROW( F::blow_iv(2) );
     EXPECT_THROWS(   F::blow_ix(3) );
+
+#if span_FEATURE_MEMBER_CALL_OPERATOR
+    EXPECT_NO_THROW( F::blow_iv(2) );
     EXPECT_THROWS(   F::blow_iv(3) );
+#endif
 #if span_FEATURE_MEMBER_AT
     EXPECT_NO_THROW( F::blow_at(2) );
     EXPECT_THROWS(   F::blow_at(3) );
@@ -563,6 +568,7 @@ CASE( "span<>: Allows to observe an element via array indexing" )
 
 CASE( "span<>: Allows to observe an element via call indexing" )
 {
+#if span_FEATURE_MEMBER_CALL_OPERATOR
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -572,6 +578,9 @@ CASE( "span<>: Allows to observe an element via call indexing" )
         EXPECT( v(i) == arr[i] );
         EXPECT( w(i) == arr[i] );
     }
+#else
+    EXPECT( !!"member () is not available (span_FEATURE_MEMBER_CALL_OPERATOR=0)" );
+#endif
 }
 
 CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]" )
@@ -646,6 +655,7 @@ CASE( "span<>: Allows to change an element via array indexing" )
 
 CASE( "span<>: Allows to change an element via call indexing" )
 {
+#if span_FEATURE_MEMBER_CALL_OPERATOR
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -655,6 +665,9 @@ CASE( "span<>: Allows to change an element via call indexing" )
 
     EXPECT( 22 == arr[1] );
     EXPECT( 33 == arr[2] );
+#else
+    EXPECT( !!"member () is not available (span_FEATURE_MEMBER_CALL_OPERATOR=0)" );
+#endif
 }
 
 CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT>0]" )

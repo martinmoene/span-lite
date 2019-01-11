@@ -63,7 +63,7 @@ template< typename T >
 inline std::ostream & operator<<( std::ostream & os, span<T> const & v )
 {
     using lest::to_string;
-    return os << "[span:" << (v.empty() ? "[empty]" : to_string( v(0) ) ) << "]";
+    return os << "[span:" << (v.empty() ? "[empty]" : to_string( v[0] ) ) << "]";
 }
 
 }}
