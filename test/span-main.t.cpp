@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Martin Moene
+// Copyright 2018-2019 Martin Moene
 //
 // https://github.com/martinmoene/span-lite
 //

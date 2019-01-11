@@ -1,4 +1,4 @@
-# Copyright 2018 by Martin Moene
+# Copyright 2018-2019 by Martin Moene
 #
 # https://github.com/martinmoene/span-lite
 #

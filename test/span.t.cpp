@@ -2,8 +2,8 @@
 // span-lite is based on GSL: Guideline Support Library.
 // For more information see https://github.com/martinmoene/span-lite
 //
-// Copyright (c) 2015 Martin Moene
-// Copyright (c) 2015 Microsoft Corporation. All rights reserved.
+// Copyright 2015, 2018-2019 Martin Moene
+// Copyright 2015 Microsoft Corporation. All rights reserved.
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -1374,7 +1374,7 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 
 #include <cassert>
 
-CASE( "[hide][issue 3: heterogeneous comparison]" )
+CASE( "[hide][issue-3: heterogeneous comparison]" )
 {
 #if span_FEATURE_TO_STD( MAKE_SPAN )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
@@ -1390,7 +1390,7 @@ CASE( "[hide][issue 3: heterogeneous comparison]" )
 #endif // span_FEATURE_TO_STD( MAKE_SPAN )
 }
 
-CASE( "[hide][issue 3: same()]" )
+CASE( "[hide][issue-3: same()]" )
 {
 #if span_FEATURE_TO_STD( MAKE_SPAN )
 #if span_FEATURE( SAME )
