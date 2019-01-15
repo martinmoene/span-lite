@@ -233,7 +233,7 @@ Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This 
 
 ### Provide `make_span()` functions
 -D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=14  
-Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`. Default is undefined.
+Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`, like 98, 03, 11, 14, 17, 20. Default is undefined.
 
 ### Provide `byte_span()` functions
 -D<b>span_FEATURE_BYTE_SPAN</b>=1  
