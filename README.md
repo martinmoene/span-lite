@@ -232,11 +232,11 @@ Define this to 1 to provide function `same()` to test if two spans refer as iden
 
 ### Provide `first()`, `last()` and `subspan()` functions
 -D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB</b>=1  
-Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This requires `make_span()` functions to be available, see `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
+Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This implies `span_FEATURE_MAKE_SPAN` to provide functions `make_span()` that are required for this feature. Default is undefined.
 
 ### Provide `make_span()` functions
 -D<b>span_FEATURE_MAKE_SPAN</b>=1  
-Define this to 1 to provide creator functions `nonstd::make_span()`. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
+Define this to 1 to provide creator functions `nonstd::make_span()`. This feature is implied by using `span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1`. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
 -D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=14  
 Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`, like 98, 03, 11, 14, 17, 20. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.

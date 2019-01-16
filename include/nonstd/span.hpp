@@ -1162,12 +1162,9 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 #endif // span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
 // extensions: non-member views:
+// this feature implies the presence of make_span()
 
 #if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_CPP11_120
-
-#if ! span_FEATURE( MAKE_SPAN )
-# error nonstd::span: non-member first(), last() and subspan() require make_span(), see span_FEATURE_MAKE_SPAN
-#endif
 
 template< extent_t Count, class T >
 span_constexpr auto
@@ -1247,7 +1244,7 @@ using span_lite::same;
 
 // make_span() [span-lite extension]:
 
-#if span_FEATURE( MAKE_SPAN )
+#if span_FEATURE( MAKE_SPAN ) || span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
 
 namespace nonstd {
 namespace span_lite {
