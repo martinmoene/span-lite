@@ -128,7 +128,7 @@ To construct a span from a container with compilers that cannot constrain such a
 
 | Kind               | std  | Function or method |                                       
 |--------------------|------|--------------------|
-| **Macro**          |&nbsp;| macro **`span_FEATURE_WITH_CONTAINER_TO_STD`**|
+| **Macro**          |&nbsp;| macro **`span_FEATURE_WITH_CONTAINER`**<br>macro **`span_FEATURE_WITH_CONTAINER_TO_STD`** |
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
 | **Objects**        |&nbsp;| **with_container** value to disambiguate below constructors |
 | **Constructors**   |&nbsp;| macro **`span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE`**|
@@ -159,7 +159,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | >= C++11  | template&lt;index_t Offset, extent_t Count = dynamic_extent, class T><br>constexpr auto<br>**subspan**(T & t) ->... |
 | &nbsp; | >= C++11  | template&lt;class T><br>constexpr auto<br>**subspan**(T & t, index_t offset, extent_t count = dynamic_extent) ->... |
 | &nbsp; | &nbsp;    | &nbsp; |
-| **Free functions** |&nbsp;| macro **`span_FEATURE_MAKE_SPAN_TO_STD`** |
+| **Free functions** |&nbsp;| macro **`span_FEATURE_MAKE_SPAN`**<br>macro **`span_FEATURE_MAKE_SPAN_TO_STD`** |
 | &nbsp; | &nbsp;    | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* first, T \* last) noexcept |
 | &nbsp; | &nbsp;    | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(T \* ptr, index_t count) noexcept |
 | &nbsp; | &nbsp;    | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(T (&arr)[N]) noexcept |
