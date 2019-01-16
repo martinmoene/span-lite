@@ -787,7 +787,7 @@ public:
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
-#if span_FEATURE_WITH_CONTAINER
+#if span_FEATURE( WITH_CONTAINER )
 
     template< class Container >
     span_constexpr span( with_container_t, Container & cont )
@@ -1325,7 +1325,7 @@ make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 
 #endif // span_USES_STD_SPAN || ( ... )
 
-#if ! span_USES_STD_SPAN && span_FEATURE_WITH_CONTAINER
+#if ! span_USES_STD_SPAN && span_FEATURE( WITH_CONTAINER )
 
 template< class Container >
 inline span_constexpr span<typename Container::value_type>
