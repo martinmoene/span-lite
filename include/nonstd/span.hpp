@@ -136,7 +136,7 @@
 
 #define span_CPLUSPLUS_V  ( span_CPLUSPLUS / 100 - (span_CPLUSPLUS > 200000 ? 2000 : 1994) )
 
-#define span_IN_STD( v )  ( (v) == 98 || (v) >= span_CPLUSPLUS_V )
+#define span_IN_STD( v )  ( ((v) == 98 ? 3 : (v)) >= span_CPLUSPLUS_V )
 
 #define span_CONFIG(         feature )  ( span_CONFIG_##feature )
 #define span_FEATURE(        feature )  ( span_FEATURE_##feature )
