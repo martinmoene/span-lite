@@ -200,56 +200,56 @@ Define this to `std::size_t` to use the unsigned type as generally used in the s
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Disabling exceptions will force contract violation to use termination, see [contract violation macros](#contract-violation-response-macros). Default is undefined.
 
 ### Provide construction using `with_container_t`
--D<b>span_FEATURE_WITH_CONTAINER</b>=1  
+-D<b>span_FEATURE_WITH_CONTAINER</b>=0  
 Define this to 1 to enable constructing a span using `with_container_t`. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
--D<b>span_FEATURE_WITH_CONTAINER_TO_STD</b>=14  
+-D<b>span_FEATURE_WITH_CONTAINER_TO_STD</b>=*n*  
 Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
 ### Provide construction from `std::array` with const data
--D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  
+-D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=0  
 Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
 
 ### Provide `operator()` member function
--D<b>span_FEATURE_MEMBER_CALL_OPERATOR</b>=1  
+-D<b>span_FEATURE_MEMBER_CALL_OPERATOR</b>=0  
 Define this to 1 to provide member function `operator()`for element access. It is equivalent to `operator[]` and has been marked `[[deprecated]]`. Its main purpose is to provide a migration path. Default is undefined.
 
 ### Provide `at()` member function
--D<b>span_FEATURE_MEMBER_AT</b>=1  
+-D<b>span_FEATURE_MEMBER_AT</b>=0  
 Define this to 1 to provide member function `at()`. Define this to 2 to include index and size in message of std::out_of_range exception. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
--D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=1  
+-D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=0  
 Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
 
 ### Provide `swap()` member function
--D<b>span_FEATURE_MEMBER_SWAP</b>=1  
+-D<b>span_FEATURE_MEMBER_SWAP</b>=0  
 Define this to 1 to provide member function `swap()`. Default is undefined.
 
 ### Provide `same()` function
--D<b>span_FEATURE_SAME</b>=1  
+-D<b>span_FEATURE_SAME</b>=0  
 Define this to 1 to provide function `same()` to test if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. Default is undefined.
 
 ### Provide `first()`, `last()` and `subspan()` functions
--D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB</b>=1  
+-D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB</b>=0  
 Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This implies `span_FEATURE_MAKE_SPAN` to provide functions `make_span()` that are required for this feature. Default is undefined.
 
 ### Provide `make_span()` functions
--D<b>span_FEATURE_MAKE_SPAN</b>=1  
+-D<b>span_FEATURE_MAKE_SPAN</b>=0  
 Define this to 1 to provide creator functions `nonstd::make_span()`. This feature is implied by using `span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1`. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
--D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=14  
+-D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=*n*  
 Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`, like 98, 03, 11, 14, 17, 20. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
 ### Provide `byte_span()` functions
--D<b>span_FEATURE_BYTE_SPAN</b>=1  
+-D<b>span_FEATURE_BYTE_SPAN</b>=0  
 Define this to 1 to provide creator functions `nonstd::byte_span()`. Default is undefined.
 
 ### Contract violation response macros
 
 *span-lite* provides contract violation response control as suggested in proposal [N4415](http://wg21.link/n4415).
 
-\-D<b>span\_CONFIG\_CONTRACT\_LEVEL\_ON</b>  
+\-D<b>span\_CONFIG\_CONTRACT\_LEVEL\_ON</b>  (*default*)  
 Define this macro to include both `span_EXPECTS` and `span_ENSURES` in the code. This is the default case.
  
 \-D<b>span\_CONFIG\_CONTRACT\_LEVEL\_OFF</b>  
@@ -261,7 +261,7 @@ Define this macro to include `span_EXPECTS` in the code and exclude `span_ENSURE
 \-D<b>span\_CONFIG\_CONTRACT\_LEVEL\_ENSURES\_ONLY</b>  
 Define this macro to exclude `span_EXPECTS` from the code and include `span_ENSURES` in the code.
 
-\-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_TERMINATES</b>  
+\-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_TERMINATES</b>  (*default*)  
 Define this macro to call `std::terminate()` on a contract violation in `span_EXPECTS`, `span_ENSURES`. This is the default case.
 
 \-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_THROWS</b>  
@@ -400,7 +400,7 @@ span<>: Allows to observe the first element via front() [span_FEATURE_MEMBER_BAC
 span<>: Allows to observe the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]
 span<>: Allows to change an element via array indexing
 span<>: Allows to change an element via call indexing
-span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT=1]
+span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT>0]
 span<>: Allows to change an element via data()
 span<>: Allows to change the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]
 span<>: Allows to change the last element via back() [span_FEATURE_MEMBER_BACK_FRONT=1]
@@ -438,6 +438,10 @@ make_span(): Allows building from a const container (std::vector<>)
 make_span(): Allows building from a container (with_container_t, std::vector<>)
 make_span(): Allows building from a const container (with_container_t, std::vector<>)
 byte_span() [span_FEATURE_BYTE_SPAN=1]
-byte_span(): Allows building a span of std::byte from a single object (C++17)
-byte_span(): Allows building a span of const std::byte from a single const object (C++17)
+byte_span(): Allows building a span of std::byte from a single object (C++17, byte-lite)
+byte_span(): Allows building a span of const std::byte from a single const object (C++17, byte-lite)
+first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]
+first(): Allows to create a sub span of the first n elements
+last(): Allows to create a sub span of the last n elements
+subspan(): Allows to create a sub span starting at a given offset
 ```
