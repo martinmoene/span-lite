@@ -51,6 +51,7 @@ CASE( "Presence of span library features" "[.span][.config]" )
     std::cout << "(Note: Followig configuration has no effect: using std::span)\n";
 #endif
     span_PRESENT( span_FEATURE_BYTE_SPAN  );
+    span_PRESENT( span_FEATURE_MAKE_SPAN );
     span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
     span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
     span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );

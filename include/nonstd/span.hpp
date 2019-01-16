@@ -68,8 +68,12 @@
 # define span_FEATURE_SAME  0
 #endif
 
-#ifndef  span_FEATURE_MAKE_SPAN_TO_STD
-# define span_FEATURE_MAKE_SPAN_TO_STD  0
+#ifndef  span_FEATURE_MAKE_SPAN
+#ifdef   span_FEATURE_MAKE_SPAN_TO_STD
+# define span_FEATURE_MAKE_SPAN  span_IN_STD( span_FEATURE_MAKE_SPAN_TO_STD )
+#else
+# define span_FEATURE_MAKE_SPAN  0
+#endif
 #endif
 
 #ifndef  span_FEATURE_BYTE_SPAN
@@ -1157,8 +1161,8 @@ as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 
 #if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_CPP11_120
 
-#if ! span_FEATURE_TO_STD( MAKE_SPAN )
-# error nonstd::span: non-member first(), last() and subspan() require make_span(), see span_FEATURE_MAKE_SPAN_TO_STD
+#if ! span_FEATURE( MAKE_SPAN )
+# error nonstd::span: non-member first(), last() and subspan() require make_span(), see span_FEATURE_MAKE_SPAN
 #endif
 
 template< extent_t Count, class T >
@@ -1239,7 +1243,7 @@ using span_lite::same;
 
 // make_span() [span-lite extension]:
 
-#if span_FEATURE_TO_STD( MAKE_SPAN )
+#if span_FEATURE( MAKE_SPAN )
 
 namespace nonstd {
 namespace span_lite {
