@@ -204,7 +204,7 @@ Define this to 1 if you want to compile without exceptions. If not defined, the 
 Define this to 1 to enable constructing a span using `with_container_t`. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
 -D<b>span_FEATURE_WITH_CONTAINER_TO_STD</b>=*n*  
-Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
+Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. You can use 99 for inclusion with any standard, but prefer to use `span_FEATURE_WITH_CONTAINER` for this. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
 ### Provide construction from `std::array` with const data
 -D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=0  
@@ -239,7 +239,7 @@ Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This 
 Define this to 1 to provide creator functions `nonstd::make_span()`. This feature is implied by using `span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1`. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
 -D<b>span_FEATURE_MAKE_SPAN_TO_STD</b>=*n*  
-Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`, like 98, 03, 11, 14, 17, 20. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
+Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`, like 98, 03, 11, 14, 17, 20. You can use 99 for inclusion with any standard, but prefer to use `span_FEATURE_MAKE_SPAN` for this. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
 ### Provide `byte_span()` functions
 -D<b>span_FEATURE_BYTE_SPAN</b>=0  
