@@ -36,8 +36,12 @@
 
 // span configuration (features):
 
-#ifndef  span_FEATURE_WITH_CONTAINER_TO_STD
-# define span_FEATURE_WITH_CONTAINER_TO_STD  0
+#ifndef  span_FEATURE_WITH_CONTAINER
+#ifdef   span_FEATURE_WITH_CONTAINER_TO_STD
+# define span_FEATURE_WITH_CONTAINER  span_IN_STD( span_FEATURE_WITH_CONTAINER_TO_STD )
+#else
+# define span_FEATURE_WITH_CONTAINER  0
+#endif
 #endif
 
 #ifndef  span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE
@@ -783,7 +787,7 @@ public:
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
-#if span_FEATURE_TO_STD( WITH_CONTAINER )
+#if span_FEATURE_WITH_CONTAINER
 
     template< class Container >
     span_constexpr span( with_container_t, Container & cont )
@@ -1321,7 +1325,7 @@ make_span( std::vector<T, Allocator> const & cont ) span_noexcept
 
 #endif // span_USES_STD_SPAN || ( ... )
 
-#if ! span_USES_STD_SPAN && span_FEATURE_TO_STD( WITH_CONTAINER )
+#if ! span_USES_STD_SPAN && span_FEATURE_WITH_CONTAINER
 
 template< class Container >
 inline span_constexpr span<typename Container::value_type>

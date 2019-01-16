@@ -28,7 +28,8 @@ set unit_contract=^
     -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
 
 :: Alternative flags:
-:: -Dspan_FEATURE_MAKE_SPAN=1 takes precedence over span_FEATURE_MAKE_SPAN_TO_STD
+:: -Dspan_FEATURE_WITH_CONTAINER=1 takes precedence over span_FEATURE_WITH_CONTAINER_TO_STD
+:: -Dspan_FEATURE_MAKE_SPAN=1      takes precedence over span_FEATURE_MAKE_SPAN_TO_STD
 
 set unit_config=^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^

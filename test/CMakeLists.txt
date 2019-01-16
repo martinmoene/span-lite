@@ -27,6 +27,7 @@ set( SPAN_CONFIG
     -Dspan_FEATURE_SAME=1
     -Dspan_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1
+#   -Dspan_FEATURE_WITH_CONTAINER=1 # instead use more involved ..._TO_STD below:
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99
 #   -Dspan_FEATURE_MAKE_SPAN=1      # instead use more involved ..._TO_STD below:
     -Dspan_FEATURE_MAKE_SPAN_TO_STD=99

@@ -200,8 +200,11 @@ Define this to `std::size_t` to use the unsigned type as generally used in the s
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Disabling exceptions will force contract violation to use termination, see [contract violation macros](#contract-violation-response-macros). Default is undefined.
 
 ### Provide construction using `with_container_t`
+-D<b>span_FEATURE_WITH_CONTAINER</b>=1  
+Define this to 1 to enable constructing a span using `with_container_t`. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
+
 -D<b>span_FEATURE_WITH_CONTAINER_TO_STD</b>=14  
-Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Default is undefined.
+Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
 ### Provide construction from `std::array` with const data
 -D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=1  

@@ -53,6 +53,7 @@ CASE( "Presence of span library features" "[.span][.config]" )
     span_PRESENT( span_FEATURE_BYTE_SPAN  );
     span_PRESENT( span_FEATURE_MAKE_SPAN );
     span_PRESENT( span_FEATURE_MAKE_SPAN_TO_STD );
+    span_PRESENT( span_FEATURE_WITH_CONTAINER );
     span_PRESENT( span_FEATURE_WITH_CONTAINER_TO_STD );
     span_PRESENT( span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE );
     span_PRESENT( span_FEATURE_MEMBER_CALL_OPERATOR );
