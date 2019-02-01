@@ -719,7 +719,7 @@ public:
     template< size_t N
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == N) &&
+            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N)) &&
             std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >::type
 #endif
@@ -734,7 +734,7 @@ public:
     template< size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == N) &&
+            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N)) &&
             std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >::type
 # endif
@@ -751,7 +751,7 @@ public:
     template< size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == N) &&
+            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N)) &&
             std::is_convertible<value_type(*)[], element_type(*)[] >::value
         >::type
 # endif
