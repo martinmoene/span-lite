@@ -35,6 +35,10 @@ table = (
 #        , r'\span_lite_version\s+=\s+"([0-9]+\.[0-9]+\.[0-9]+)"\s*$'
 #        , 'span_lite_version = "{major}.{minor}.{patch}"\n' )
 
+    , ( 'conanfile.py'
+        , r'version\s+=\s+"([0-9]+\.[0-9]+\.[0-9]+)"\s*$'
+        , 'version = "{major}.{minor}.{patch}"' )
+
     , ( 'include/nonstd/span.hpp'
         , r'\#define\s+span_lite_MAJOR\s+[0-9]+\s*$'
         , '#define span_lite_MAJOR  {major}' )
