@@ -342,6 +342,7 @@ Notes and references
 *Proposals*
 - [p0122 - span: bounds-safe views for sequences of objects](http://wg21.link/p0122).
 - [p1024 - Usability Enhancements for std::span](http://wg21.link/p1024).
+- [p1419 - A SFINAE-friendly trait to determine the extent of statically sized containers](http://wg21.link/p1419).  
 - [p1428 - Subscripts and sizes should be signed](http://wg21.link/p1428).
 - [p1089 - Sizes Should Only span Unsigned](http://wg21.link/p1089).
 - [p0805 - Comparing Containers](http://wg21.link/p0805).
