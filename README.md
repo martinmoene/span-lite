@@ -355,7 +355,12 @@ Notes and references
 
 Appendix
 --------
-### A.1 span lite test specification
+
+### A.1 Compile-time information
+
+The version of *span lite* is available via tag `[.version]`. The following tags are available for information on the compiler and on the C++ standard library used: `[.compiler]`, `[.stdc++]`, `[.stdlanguage]` and `[.stdlibrary]`.
+
+### A.2 Span lite test specification
 
 ```
 span<>: Terminates construction from a nullptr and a non-zero size (C++11)
