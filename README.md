@@ -182,7 +182,7 @@ Configuration
 
 ### Standard selection macro
 
-\-D<b>span\_CPLUSPLUS</b>=199711L
+\-D<b>span\_CPLUSPLUS</b>=199711L  
 Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cplusplus` macro correctly.
 
 ### Select `std::span` or `nonstd::span`
