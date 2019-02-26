@@ -913,6 +913,11 @@ public:
         return size_;
     }
 
+    span_constexpr std::ptrdiff_t ssize() const span_noexcept
+    {
+        return static_cast<std::ptrdiff_t>( size_ );
+    }
+
     span_constexpr index_type size_bytes() const span_noexcept
     {
         return size() * to_size( sizeof( element_type ) );
@@ -1210,6 +1215,20 @@ subspan( T & t, index_t offset, extent_t count = dynamic_extent ) -> decltype( m
 
 #endif // span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
 
+// 27.8 Container and view access [iterator.container]
+
+template< class T, extent_t Extent /*= dynamic_extent*/ >
+span_constexpr std::size_t size( span<T,Extent> const & spn )
+{
+    return static_cast<std::size_t>( spn.size() );
+}
+
+template< class T, extent_t Extent /*= dynamic_extent*/ >
+span_constexpr std::ptrdiff_t ssize( span<T,Extent> const & spn )
+{
+    return static_cast<std::ptrdiff_t>( spn.size() );
+}
+
 }  // namespace span_lite
 }  // namespace nonstd
 
@@ -1238,6 +1257,10 @@ using span_lite::as_writeable_bytes;
 #if span_FEATURE( SAME )
 using span_lite::same;
 #endif
+
+using span_lite::size;
+using span_lite::ssize;
+
 }  // namespace nonstd
 
 #endif  // span_USES_STD_SPAN

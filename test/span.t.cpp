@@ -973,6 +973,20 @@ CASE( "span<>: Allows to obtain the number of elements via size()" )
     EXPECT(  z.size() == index_type( 0 ) );
 }
 
+CASE( "span<>: Allows to obtain the number of elements via ssize()" )
+{
+    int a[] = { 1, 2, 3, };
+    int b[] = { 1, 2, 3, 4, 5, };
+
+    span<int> z;
+    span<int> va( a );
+    span<int> vb( b );
+
+    EXPECT( va.ssize() == DIMENSION_OF( a ) );
+    EXPECT( vb.ssize() == DIMENSION_OF( b ) );
+    EXPECT(  z.ssize() == 0 );
+}
+
 CASE( "span<>: Allows to obtain the number of bytes via size_bytes()" )
 {
     int a[] = { 1, 2, 3, };
@@ -1388,6 +1402,34 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 #else
     EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
 #endif
+}
+
+CASE( "size(): Allows to obtain the number of elements via size()" )
+{
+    int a[] = { 1, 2, 3, };
+    int b[] = { 1, 2, 3, 4, 5, };
+
+    span<int> z;
+    span<int> va( a );
+    span<int> vb( b );
+
+    EXPECT( size( va ) == index_type( DIMENSION_OF( a ) ) );
+    EXPECT( size( vb ) == index_type( DIMENSION_OF( b ) ) );
+    EXPECT( size( z  ) == index_type( 0 ) );
+}
+
+CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
+{
+    int a[] = { 1, 2, 3, };
+    int b[] = { 1, 2, 3, 4, 5, };
+
+    span<int> z;
+    span<int> va( a );
+    span<int> vb( b );
+
+    EXPECT( ssize( va ) == DIMENSION_OF( a ) );
+    EXPECT( ssize( vb ) == DIMENSION_OF( b ) );
+    EXPECT( ssize( z  ) == 0 );
 }
 
 // Issues
