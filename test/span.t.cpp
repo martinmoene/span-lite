@@ -15,6 +15,7 @@
 using namespace nonstd;
 
 typedef span<int>::index_type index_type;
+typedef std::ptrdiff_t        size_type;
 
 CASE( "span<>: Terminates construction from a nullptr and a non-zero size (C++11)" )
 {
@@ -982,8 +983,8 @@ CASE( "span<>: Allows to obtain the number of elements via ssize()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( va.ssize() == DIMENSION_OF( a ) );
-    EXPECT( vb.ssize() == DIMENSION_OF( b ) );
+    EXPECT( va.ssize() == size_type( DIMENSION_OF( a ) ) );
+    EXPECT( vb.ssize() == size_type( DIMENSION_OF( b ) ) );
     EXPECT(  z.ssize() == 0 );
 }
 
@@ -1413,9 +1414,9 @@ CASE( "size(): Allows to obtain the number of elements via size()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( size( va ) == index_type( DIMENSION_OF( a ) ) );
-    EXPECT( size( vb ) == index_type( DIMENSION_OF( b ) ) );
-    EXPECT( size( z  ) == index_type( 0 ) );
+    EXPECT( size( va ) == DIMENSION_OF( a ) );
+    EXPECT( size( vb ) == DIMENSION_OF( b ) );
+    EXPECT( size( z  ) == size_t( 0 ) );
 }
 
 CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
@@ -1427,8 +1428,8 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( ssize( va ) == DIMENSION_OF( a ) );
-    EXPECT( ssize( vb ) == DIMENSION_OF( b ) );
+    EXPECT( ssize( va ) == size_type( DIMENSION_OF( a ) ) );
+    EXPECT( ssize( vb ) == size_type( DIMENSION_OF( b ) ) );
     EXPECT( ssize( z  ) == 0 );
 }
 
