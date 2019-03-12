@@ -463,6 +463,20 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 # define span_LOCATION( file, line )  file "(" span_STRINGIFY( line ) ")"
 #endif
 
+// Method enabling
+
+#define span_REQUIRES_0(VA) \
+    template< bool B = (VA), typename std::enable_if<B, int>::type = 0 >
+
+#define span_REQUIRES_T(VA) \
+    , typename = typename std::enable_if< (VA), nonstd::span_lite::detail::enabler >::type
+
+#define span_REQUIRES_R(R, VA) \
+    typename std::enable_if< (VA), R>::type
+
+#define span_REQUIRES_A(VA) \
+    , typename std::enable_if< (VA), void*>::type = nullptr
+
 namespace nonstd {
 namespace span_lite {
 
@@ -485,6 +499,8 @@ const  span_constexpr   with_container_t with_container;
 // Implementation details:
 
 namespace detail {
+
+/*enum*/ struct enabler{};
 
 #if span_HAVE( BYTE )
 using std::byte;
@@ -636,12 +652,12 @@ inline span_constexpr index_t to_size( T size )
 
 template<
     class Container, class ElementType
-    , class = typename std::enable_if<
-        ! detail::is_span< Container >::value &&
-        ! detail::is_array< Container >::value &&
-        ! detail::is_std_array< Container >::value &&
-          std::is_convertible<typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], ElementType(*)[] >::value
-    >::type
+        span_REQUIRES_T((
+            ! detail::is_span< Container >::value
+            && ! detail::is_array< Container >::value
+            && ! detail::is_std_array< Container >::value
+            && (std::is_convertible< typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], ElementType(*)[] >::value)
+        ))
 #if span_HAVE( DATA )
       // data(cont) and size(cont) well-formed:
     , class = decltype( std::data( std::declval<Container>() ) )
@@ -686,8 +702,7 @@ public:
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-    template< bool Dependent = false
-        , class = typename std::enable_if< (Dependent || Extent <= 0) >::type >
+    span_REQUIRES_0(( Extent <= 0 ))
 #endif
     span_constexpr span() span_noexcept
         : data_( span_nullptr )
@@ -718,10 +733,10 @@ public:
 
     template< size_t N
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-        , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N)) &&
-            std::is_convertible<value_type(*)[], element_type(*)[] >::value
-        >::type
+        span_REQUIRES_T((
+            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
+            && std::is_convertible< value_type(*)[], element_type(*)[] >::value
+        ))
 #endif
     >
     span_constexpr span( element_type ( &arr )[ N ] ) span_noexcept
@@ -733,10 +748,10 @@ public:
 
     template< size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-        , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N)) &&
-            std::is_convertible<value_type(*)[], element_type(*)[] >::value
-        >::type
+        span_REQUIRES_T((
+            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
+            && std::is_convertible< value_type(*)[], element_type(*)[] >::value
+        ))
 # endif
     >
 # if span_FEATURE( CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE )
@@ -750,10 +765,10 @@ public:
 
     template< size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-        , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N)) &&
-            std::is_convertible<value_type(*)[], element_type(*)[] >::value
-        >::type
+        span_REQUIRES_T((
+            (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
+            && std::is_convertible< value_type(*)[], element_type(*)[] >::value
+        ))
 # endif
     >
     span_constexpr span( std::array< value_type, N> const & arr ) span_noexcept
@@ -765,9 +780,9 @@ public:
 
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     template< class Container
-        , class = typename std::enable_if<
+        span_REQUIRES_T((
             can_construct_from< Container, element_type >::value
-        >::type
+        ))
     >
     span_constexpr span( Container & cont )
         : data_( cont.data() )
@@ -775,10 +790,10 @@ public:
     {}
 
     template< class Container
-        , class = typename std::enable_if<
-            std::is_const< element_type >::value &&
-            can_construct_from< Container, element_type >::value
-        >::type
+        span_REQUIRES_T((
+            std::is_const< element_type >::value
+            && can_construct_from< Container, element_type >::value
+        ))
     >
     span_constexpr span( Container const & cont )
         : data_( cont.data() )
@@ -828,10 +843,10 @@ public:
 
     template< class OtherElementType, extent_type OtherExtent
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-        , class = typename std::enable_if<
-            (Extent == dynamic_extent || Extent == OtherExtent) &&
-            std::is_convertible<OtherElementType(*)[], element_type(*)[]>::value
-        >::type
+        span_REQUIRES_T((
+            (Extent == dynamic_extent || Extent == OtherExtent)
+            && std::is_convertible<OtherElementType(*)[], element_type(*)[]>::value
+        ))
 #endif
     >
     span_constexpr_exp span( span<OtherElementType, OtherExtent> const & other ) span_noexcept
