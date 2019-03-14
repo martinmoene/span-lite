@@ -343,14 +343,16 @@ Notes and references
 - [p0122 - span: bounds-safe views for sequences of objects](http://wg21.link/p0122).
 - [p1024 - Usability Enhancements for std::span](http://wg21.link/p1024).
 - [p1419 - A SFINAE-friendly trait to determine the extent of statically sized containers](http://wg21.link/p1419).  
-- [p1428 - Subscripts and sizes should be signed](http://wg21.link/p1428).
-- [p1089 - Sizes Should Only span Unsigned](http://wg21.link/p1089).
 - [p0805 - Comparing Containers](http://wg21.link/p0805).
+- [p1085 - Should Span be Regular?](http://wg21.link/p0805).
 - [p0091 - Template argument deduction for class templates](http://wg21.link/p0091).
 - [p0856 - Restrict Access Property for mdspan and span](http://wg21.link/p0856).
+- [p1428 - Subscripts and sizes should be signed](http://wg21.link/p1428).
+- [p1089 - Sizes Should Only span Unsigned](http://wg21.link/p1089).
 - [p1227 - Signed size() functions](http://wg21.link/p1227).
 - [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
 - [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
+- [Reddit - 2019-02 Kona ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/au0c4x/201902_kona_iso_c_committee_trip_report_c20/).
 - Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
 
 
