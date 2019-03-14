@@ -332,7 +332,7 @@ Other implementations of span
 Notes and references
 --------------------
 *Interface and specification*
-- [span on cppreference](http://en.cppreference.com/w/cpp/string/span).
+- [span on cppreference](https://en.cppreference.com/w/cpp/container/span).
 - [p0122 - C++20 Proposal](http://wg21.link/p0122).
 - [span in C++20 Working Draft](http://eel.is/c++draft/views).
 
@@ -351,6 +351,7 @@ Notes and references
 - [p1227 - Signed size() functions](http://wg21.link/p1227).
 - [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
 - [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
+- Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
 
 
 Appendix
