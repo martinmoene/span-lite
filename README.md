@@ -109,6 +109,10 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide a `swap()`member function. See the table below and section [configuration](#configuration).
 
+### `operator==()` and other comparison functions
+
+*span lite* can provide functions to compare the content of two spans. However, C++20's span will not provide comparison and _span lite_ will omit comparison at default in the near future. See the table below and section [configuration](#configuration). See also [Revisiting Regular Types](#regtyp).
+
 ### `same()`
 
 *span lite* can provide function `same()` to determine if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. See the table below and section [configuration](#configuration).
@@ -360,7 +364,7 @@ Notes and references
 - [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
 - [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
 - [Reddit - 2019-02 Kona ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/au0c4x/201902_kona_iso_c_committee_trip_report_c20/).
-- Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
+- <a id="regtyp"></a>Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
 
 
 Appendix
