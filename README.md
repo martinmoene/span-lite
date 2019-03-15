@@ -76,12 +76,20 @@ Synopsis
 
 **Contents**  
 [Documentation of `std::span`](#documentation-of-stdspan)  
+[Later additions](#later-additions)  
 [Non-standard extensions](#non-standard-extensions)  
 [Configuration](#configuration)    
 
 Documentation of `std::span`
 ----------------------------
 Depending on the compiler and C++-standard used, `nonstd::span` behaves less or more like `std::span`. To get an idea of the capabilities of `nonstd::span` with your configuration, look at the output of the [tests](test/span.t.cpp), issuing `span-main.t --pass @`. For `std::span`, see its [documentation at cppreference](http://en.cppreference.com/w/cpp/container/span).  
+
+Later additions
+---------------
+
+### `back()` and `front()` (
+
+*span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
 Non-standard extensions
 -----------------------
@@ -100,10 +108,6 @@ To construct a span from a container with compilers that cannot constrain such a
 ### `at()`
 
 *span lite* can provide member function `at()` for element access. Unless exceptions have been disabled, `at()` throws std::out_of_range if the index falls outside the span. With exceptions disabled, `at(index_t)` delegates bounds checking to `operator[](index_t)`. See the table below and sections [configuration](#configuration) and [disable exceptions](#disable-exceptions).
-
-### `back()` and `front()`
-
-*span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
 ### `swap()`
 
@@ -145,7 +149,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_AT`** |
 | &nbsp;             |&nbsp;| constexpr reference **at**(index_t idx) const<br>May throw std::out_of_range exception |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_BACK_FRONT`** |
+| **Methods**        |&nbsp;| macro **`span_FEATURE_MEMBER_BACK_FRONT`** (on since v0.5.0) |
 | &nbsp;             |&nbsp;| constexpr reference **back()** const noexcept  |
 | &nbsp;             |&nbsp;| constexpr reference **front()** const noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
@@ -226,8 +230,8 @@ Define this to 1 to provide member function `operator()`for element access. It i
 Define this to 1 to provide member function `at()`. Define this to 2 to include index and size in message of std::out_of_range exception. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
--D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=0  
-Define this to 1 to provide member functions `back()` and `front()`. Default is undefined.
+-D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=1  _(on since v0.5.0)_  
+Define this to 0 to omit member functions `back()` and `front()`. Default is undefined.
 
 ### Provide `swap()` member function
 -D<b>span_FEATURE_MEMBER_SWAP</b>=0  

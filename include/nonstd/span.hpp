@@ -53,7 +53,7 @@
 #endif
 
 #ifndef  span_FEATURE_MEMBER_BACK_FRONT
-# define span_FEATURE_MEMBER_BACK_FRONT  0
+# define span_FEATURE_MEMBER_BACK_FRONT  1
 #endif
 
 #ifndef  span_FEATURE_MEMBER_CALL_OPERATOR
