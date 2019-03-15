@@ -61,6 +61,7 @@ CASE( "Presence of span library features" "[.span][.config]" )
     span_PRESENT( span_FEATURE_MEMBER_BACK_FRONT );
     span_PRESENT( span_FEATURE_MEMBER_SWAP );
     span_PRESENT( span_FEATURE_NON_MEMBER_FIRST_LAST_SUB );
+    span_PRESENT( span_FEATURE_COMPARISON );
     span_PRESENT( span_FEATURE_SAME );
 }
 

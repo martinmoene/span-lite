@@ -68,6 +68,10 @@
 # define span_FEATURE_NON_MEMBER_FIRST_LAST_SUB  0
 #endif
 
+#ifndef  span_FEATURE_COMPARISON
+# define span_FEATURE_COMPARISON  1  // Note: C++20 does not provide comparison
+#endif
+
 #ifndef  span_FEATURE_SAME
 # define span_FEATURE_SAME  0
 #endif
@@ -176,12 +180,13 @@ namespace nonstd {
 
 using std::span;
 
-using std::operator==;
-using std::operator!=;
-using std::operator<;
-using std::operator<=;
-using std::operator>;
-using std::operator>=;
+// Note: C++20 does not provide comparison
+// using std::operator==;
+// using std::operator!=;
+// using std::operator<;
+// using std::operator<=;
+// using std::operator>;
+// using std::operator>=;
 }  // namespace nonstd
 
 #else  // span_USES_STD_SPAN
@@ -1099,6 +1104,7 @@ span( Container const & ) -> span<const typename Container::value_type>;
 
 // 26.7.3.7 Comparison operators [span.comparison]
 
+#if span_FEATURE( COMPARISON )
 #if span_FEATURE( SAME )
 
 template< class T1, extent_t E1, class T2, extent_t E2  >
@@ -1150,6 +1156,8 @@ inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const 
 {
     return !( l < r );
 }
+
+#endif // span_FEATURE( COMPARISON )
 
 // 26.7.2.6 views of object representation [span.objectrep]
 
@@ -1257,20 +1265,22 @@ using span_lite::span;
 
 using span_lite::with_container;
 
+#if span_FEATURE( COMPARISON )
+#if span_FEATURE( SAME )
+using span_lite::same;
+#endif
+
 using span_lite::operator==;
 using span_lite::operator!=;
 using span_lite::operator<;
 using span_lite::operator<=;
 using span_lite::operator>;
 using span_lite::operator>=;
+#endif
 
 #if span_HAVE( BYTE )
 using span_lite::as_bytes;
 using span_lite::as_writeable_bytes;
-#endif
-
-#if span_FEATURE( SAME )
-using span_lite::same;
 #endif
 
 using span_lite::size;

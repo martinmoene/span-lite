@@ -148,6 +148,9 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Method**         |&nbsp;| macro **`span_FEATURE_MEMBER_SWAP`** |
 | &nbsp;             |&nbsp;| constexpr void **swap**(span & other) noexcept  |
 | &nbsp;             |&nbsp;| &nbsp; |
+| **Free functions** |&nbsp;| macro **`span_FEATURE_COMPARISON`** |
+|<br><br>== != < > <= >= |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**operator==**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
+| &nbsp;             |&nbsp;| &nbsp; |
 | **Free function**  |&nbsp;| macro **`span_FEATURE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
@@ -225,6 +228,10 @@ Define this to 1 to provide member functions `back()` and `front()`. Default is 
 ### Provide `swap()` member function
 -D<b>span_FEATURE_MEMBER_SWAP</b>=0  
 Define this to 1 to provide member function `swap()`. Default is undefined.
+
+### Provide `operator==()` and other comparison functions
+-D<b>span_FEATURE_COMPARISON</b>=1  
+Define this to 0 to omit the comparison functions to compare the content of two spans. C++20's span will not provide comparison and _span lite_ will omit comparison at default in the near future. Default is undefined.
 
 ### Provide `same()` function
 -D<b>span_FEATURE_SAME</b>=0  
@@ -420,17 +427,18 @@ span<>: Allows const forward iteration
 span<>: Allows reverse iteration
 span<>: Allows const reverse iteration
 span<>: Allows to identify if a span is the same as another span [span_FEATURE_SAME=1]
-span<>: Allows to compare equal to another span of the same type
-span<>: Allows to compare unequal to another span of the same type
-span<>: Allows to compare less than another span of the same type
-span<>: Allows to compare less than or equal to another span of the same type
-span<>: Allows to compare greater than another span of the same type
-span<>: Allows to compare greater than or equal to another span of the same type
+span<>: Allows to compare equal to another span of the same type [span_FEATURE_COMPARISON=1]
+span<>: Allows to compare unequal to another span of the same type [span_FEATURE_COMPARISON=1]
+span<>: Allows to compare less than another span of the same type [span_FEATURE_COMPARISON=1]
+span<>: Allows to compare less than or equal to another span of the same type [span_FEATURE_COMPARISON=1]
+span<>: Allows to compare greater than another span of the same type [span_FEATURE_COMPARISON=1]
+span<>: Allows to compare greater than or equal to another span of the same type [span_FEATURE_COMPARISON=1]
 span<>: Allows to compare to another span of the same type and different cv-ness [span_FEATURE_SAME=0]
-span<>: Allows to compare empty spans as equal
+span<>: Allows to compare empty spans as equal [span_FEATURE_COMPARISON=1]
 span<>: Allows to test for empty span via empty(), empty case
 span<>: Allows to test for empty span via empty(), non-empty case
 span<>: Allows to obtain the number of elements via size()
+span<>: Allows to obtain the number of elements via ssize()
 span<>: Allows to obtain the number of bytes via size_bytes()
 span<>: Allows to view the elements as read-only bytes
 span<>: Allows to view and change the elements as writable bytes
@@ -454,4 +462,6 @@ first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]
 first(): Allows to create a sub span of the first n elements
 last(): Allows to create a sub span of the last n elements
 subspan(): Allows to create a sub span starting at a given offset
+size(): Allows to obtain the number of elements via size()
+ssize(): Allows to obtain the number of elements via ssize()
 ```

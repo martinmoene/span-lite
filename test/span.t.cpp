@@ -798,6 +798,7 @@ CASE( "span<>: Allows const reverse iteration" )
 
 CASE( "span<>: Allows to identify if a span is the same as another span [span_FEATURE_SAME=1]" )
 {
+#if span_FEATURE( COMPARISON )
 #if span_FEATURE( SAME )
     int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };
     char x[] = { '\x1' };
@@ -822,10 +823,14 @@ CASE( "span<>: Allows to identify if a span is the same as another span [span_FE
 #else
     EXPECT( !!"same() is not available (span_FEATURE_SAME=0)" );
 #endif
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare equal to another span of the same type" )
+CASE( "span<>: Allows to compare equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -836,10 +841,14 @@ CASE( "span<>: Allows to compare equal to another span of the same type" )
     EXPECT(     vb == va );
     EXPECT_NOT( vc == va );
     EXPECT_NOT( vd == va );
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare unequal to another span of the same type" )
+CASE( "span<>: Allows to compare unequal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -850,10 +859,14 @@ CASE( "span<>: Allows to compare unequal to another span of the same type" )
     EXPECT_NOT( vb != va );
     EXPECT(     vc != va );
     EXPECT(     vd != va );
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare less than another span of the same type" )
+CASE( "span<>: Allows to compare less than another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -862,10 +875,14 @@ CASE( "span<>: Allows to compare less than another span of the same type" )
     EXPECT_NOT( va < va );
     EXPECT(     va < vb );
     EXPECT(     va < vc );
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare less than or equal to another span of the same type" )
+CASE( "span<>: Allows to compare less than or equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -874,10 +891,14 @@ CASE( "span<>: Allows to compare less than or equal to another span of the same 
     EXPECT_NOT( vb <= va );
     EXPECT(     va <= vb );
     EXPECT(     va <= vc );
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare greater than another span of the same type" )
+CASE( "span<>: Allows to compare greater than another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -886,10 +907,14 @@ CASE( "span<>: Allows to compare greater than another span of the same type" )
     EXPECT_NOT( va > va );
     EXPECT(     vb > va );
     EXPECT(     vc > va );
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare greater than or equal to another span of the same type" )
+CASE( "span<>: Allows to compare greater than or equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -898,10 +923,14 @@ CASE( "span<>: Allows to compare greater than or equal to another span of the sa
     EXPECT_NOT( va >= vb );
     EXPECT(     vb >= va );
     EXPECT(     vc >= va );
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
 CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_FEATURE_SAME=0]" )
 {
+#if span_FEATURE( COMPARISON )
 #if span_FEATURE( SAME )
     EXPECT( !!"skipped as same() is provided via span_FEATURE_SAME=1" );
 #else
@@ -922,10 +951,14 @@ CASE( "span<>: Allows to compare to another span of the same type and different 
     EXPECT(  b >= ca );
     EXPECT(  b >  ca );
 #endif
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+#endif
 }
 
-CASE( "span<>: Allows to compare empty spans as equal" )
+CASE( "span<>: Allows to compare empty spans as equal [span_FEATURE_COMPARISON=1]" )
 {
+#if span_FEATURE( COMPARISON )
     int a;
 
     span<int> p;
@@ -942,6 +975,9 @@ CASE( "span<>: Allows to compare empty spans as equal" )
     EXPECT( s == p );
     EXPECT( s == r );
     EXPECT( s == t );
+#endif
+#else
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
 #endif
 }
 
