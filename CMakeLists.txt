@@ -94,11 +94,8 @@ configure_package_config_file(
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
 )
 
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/${package_config_version}"
-    VERSION       ${package_version}
-    COMPATIBILITY SameMajorVersion
-)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/span-lite-config-version.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/${package_config_version}" @ONLY)
 
 # Installation:
 
