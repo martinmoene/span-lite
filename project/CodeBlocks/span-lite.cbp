@@ -29,6 +29,7 @@ Stephan T. Lavavej <stl@microsoft.com>
 		<Unit filename="../../LICENSE.txt" />
 		<Unit filename="../../README.md" />
 		<Unit filename="../../appveyor.yml" />
+		<Unit filename="../../cmake/span-lite-config-version.cmake.in" />
 		<Unit filename="../../cmake/span-lite-config.cmake.in" />
 		<Unit filename="../../conanfile.py" />
 		<Unit filename="../../example/01-basic.cpp" />
