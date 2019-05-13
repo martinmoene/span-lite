@@ -1257,7 +1257,6 @@ CASE( "make_span(): Allows building from a std::initializer_list<> (C++11)" )
     auto il = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span<int const> v = make_span( il );
-//    span<int> v = make_span( il );
 
     EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
 #else
