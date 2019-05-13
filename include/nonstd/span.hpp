@@ -404,8 +404,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // Other features:
 
-#define span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR  \
-    ( span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG && span_HAVE_CONTAINER_DATA_METHOD )
+#define span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR  span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG
 
 // Additional includes:
 
@@ -419,6 +418,10 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #if span_HAVE( BYTE )
 # include <cstddef>
+#endif
+
+#if span_HAVE( DATA )
+# include <iterator> // for std::data(), std::size()
 #endif
 
 #if span_HAVE( TYPE_TRAITS )
@@ -500,6 +503,57 @@ class span;
 
 struct with_container_t { span_constexpr with_container_t() span_noexcept {} };
 const  span_constexpr   with_container_t with_container;
+
+// C++17-specific:
+
+namespace std17 {
+
+#if span_HAVE( DATA )
+
+using std::data;
+using std::size;
+
+#elif span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR
+
+template< typename T, size_t N >
+inline span_constexpr auto size( const T(&)[N] ) span_noexcept -> size_t
+{
+    return N;
+}
+
+template< typename C >
+inline span_constexpr auto size( C const & cont ) -> decltype( cont.size() )
+{
+    return cont.size();
+}
+
+template< typename T, size_t N >
+inline span_constexpr auto data( T(&arr)[N] ) span_noexcept -> T*
+{
+    return &arr[0];
+}
+
+template< typename C >
+inline span_constexpr auto data( C & cont ) -> decltype( cont.data() )
+{
+    return cont.data();
+}
+
+template< typename C >
+inline span_constexpr auto data( C const & cont ) -> decltype( cont.data() )
+{
+    return cont.data();
+}
+
+template< typename E >
+inline span_constexpr auto data( std::initializer_list<E> il ) span_noexcept -> E const *
+{
+    return il.begin();
+}
+
+#endif // span_HAVE( DATA )
+
+}
 
 // Implementation details:
 
@@ -661,13 +715,11 @@ template<
             ! detail::is_span< Container >::value
             && ! detail::is_array< Container >::value
             && ! detail::is_std_array< Container >::value
-            && (std::is_convertible< typename std::remove_pointer<decltype(std::declval<Container>().data())>::type(*)[], ElementType(*)[] >::value)
+            && (std::is_convertible< typename std::remove_pointer<decltype( std17::data( std::declval<Container&>() ) )>::type(*)[], ElementType(*)[] >::value)
         ))
-#if span_HAVE( DATA )
       // data(cont) and size(cont) well-formed:
-    , class = decltype( std::data( std::declval<Container>() ) )
-    , class = decltype( std::size( std::declval<Container>() ) )
-#endif
+    , class = decltype( std17::data( std::declval<Container>() ) )
+    , class = decltype( std17::size( std::declval<Container>() ) )
 >
 struct can_construct_from : detail::true_type{};
 
@@ -790,8 +842,8 @@ public:
         ))
     >
     span_constexpr span( Container & cont )
-        : data_( cont.data() )
-        , size_( to_size( cont.size() ) )
+        : data_( std17::data( cont ) )
+        , size_( to_size( std17::size( cont ) ) )
     {}
 
     template< class Container
@@ -801,8 +853,8 @@ public:
         ))
     >
     span_constexpr span( Container const & cont )
-        : data_( cont.data() )
-        , size_( to_size( cont.size() ) )
+        : data_( std17::data( cont ) )
+        , size_( to_size( std17::size( cont ) ) )
     {}
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
@@ -1338,18 +1390,18 @@ make_span( std::array< T, N > const & arr ) span_noexcept
 
 #if span_USES_STD_SPAN || ( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO ) )
 
-template< class Container, class = decltype(std::declval<Container>().data()) >
+template< class Container, class EP = decltype( std17::data(std::declval<Container&>())) >
 inline span_constexpr auto
-make_span( Container & cont ) span_noexcept -> span< typename Container::value_type >
+make_span( Container & cont ) span_noexcept -> span< typename std::remove_pointer<EP>::type >
 {
-    return span< typename Container::value_type >( cont );
+    return span< typename std::remove_pointer<EP>::type >( cont );
 }
 
-template< class Container, class = decltype(std::declval<Container>().data()) >
+template< class Container, class EP = decltype( std17::data(std::declval<Container&>())) >
 inline span_constexpr auto
-make_span( Container const & cont ) span_noexcept -> span< const typename Container::value_type >
+make_span( Container const & cont ) span_noexcept -> span< const typename std::remove_pointer<EP>::type >
 {
-    return span< const typename Container::value_type >( cont );
+    return span< const typename std::remove_pointer<EP>::type >( cont );
 }
 
 #else
