@@ -504,7 +504,7 @@ class span;
 struct with_container_t { span_constexpr with_container_t() span_noexcept {} };
 const  span_constexpr   with_container_t with_container;
 
-// C++17-specific:
+// C++17 emulation:
 
 namespace std17 {
 
@@ -553,19 +553,17 @@ inline span_constexpr auto data( std::initializer_list<E> il ) span_noexcept -> 
 
 #endif // span_HAVE( DATA )
 
-}
-
-// Implementation details:
-
-namespace detail {
-
-/*enum*/ struct enabler{};
-
 #if span_HAVE( BYTE )
 using std::byte;
 #elif span_HAVE( NONSTD_BYTE )
 using nonstd::byte;
 #endif
+
+} // namespace std17
+
+// C++11 emulation:
+
+namespace std11 {
 
 #if span_HAVE( TYPE_TRAITS )
 using std::is_same;
@@ -590,7 +588,7 @@ template< class T > struct remove_volatile< T volatile > { typedef T type; };
 template< class T >
 struct remove_cv
 {
-    typedef typename detail::remove_volatile< typename detail::remove_const< T >::type >::type type;
+    typedef typename std11::remove_volatile< typename std11::remove_const< T >::type >::type type;
 };
 
 #endif  // span_HAVE( REMOVE_CONST )
@@ -604,6 +602,14 @@ template< class T, class U > struct is_same : false_type{};
 template< class T          > struct is_same<T, T> : true_type{};
 
 #endif
+
+} // namespace std11
+
+// Implementation details:
+
+namespace detail {
+
+/*enum*/ struct enabler{};
 
 #if span_HAVE( TYPE_TRAITS )
 
@@ -721,7 +727,7 @@ template<
     , class = decltype( std17::data( std::declval<Container>() ) )
     , class = decltype( std17::size( std::declval<Container>() ) )
 >
-struct can_construct_from : detail::true_type{};
+struct can_construct_from : std11::true_type{};
 
 #endif
 
@@ -735,7 +741,7 @@ public:
     // constants and types
 
     typedef T element_type;
-    typedef typename detail::remove_cv< T >::type value_type;
+    typedef typename std11::remove_cv< T >::type value_type;
 
     typedef T &       reference;
     typedef T *       pointer;
@@ -1162,7 +1168,7 @@ span( Container const & ) -> span<const typename Container::value_type>;
 template< class T1, extent_t E1, class T2, extent_t E2  >
 inline span_constexpr bool same( span<T1,E1> const & l, span<T2,E2> const & r ) span_noexcept
 {
-    return detail::is_same<T1, T2>::value
+    return std11::is_same<T1, T2>::value
         && l.size() == r.size()
         && static_cast<void const*>( l.data() ) == r.data();
 }
@@ -1216,26 +1222,26 @@ inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const 
 #if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
 template< class T, extent_t Extent >
-inline span_constexpr span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
+inline span_constexpr span< const std17::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
 as_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
-    return { reinterpret_cast< detail::byte const * >( spn.data() ), spn.size_bytes() };
+    return { reinterpret_cast< std17::byte const * >( spn.data() ), spn.size_bytes() };
 #else
-    return span< const detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >(
-        reinterpret_cast< detail::byte const * >( spn.data() ), spn.size_bytes() );  // NOLINT
+    return span< const std17::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >(
+        reinterpret_cast< std17::byte const * >( spn.data() ), spn.size_bytes() );  // NOLINT
 #endif
 }
 
 template< class T, extent_t Extent >
-inline span_constexpr span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
+inline span_constexpr span< std17::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
 as_writeable_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
-    return { reinterpret_cast< detail::byte * >( spn.data() ), spn.size_bytes() };
+    return { reinterpret_cast< std17::byte * >( spn.data() ), spn.size_bytes() };
 #else
-    return span< detail::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >(
-        reinterpret_cast< detail::byte * >( spn.data() ), spn.size_bytes() );  // NOLINT
+    return span< std17::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >(
+        reinterpret_cast< std17::byte * >( spn.data() ), spn.size_bytes() );  // NOLINT
 #endif
 }
 
@@ -1459,16 +1465,16 @@ namespace span_lite {
 
 template< class T >
 inline span_constexpr auto
-byte_span( T & t ) span_noexcept -> span< detail::byte, span_sizeof(T) >
+byte_span( T & t ) span_noexcept -> span< std17::byte, span_sizeof(T) >
 {
-    return span< detail::byte, span_sizeof(t) >( reinterpret_cast< detail::byte * >( &t ), span_sizeof(T) );
+    return span< std17::byte, span_sizeof(t) >( reinterpret_cast< std17::byte * >( &t ), span_sizeof(T) );
 }
 
 template< class T >
 inline span_constexpr auto
-byte_span( T const & t ) span_noexcept -> span< const detail::byte, span_sizeof(T) >
+byte_span( T const & t ) span_noexcept -> span< const std17::byte, span_sizeof(T) >
 {
-    return span< const detail::byte, span_sizeof(t) >( reinterpret_cast< detail::byte const * >( &t ), span_sizeof(T) );
+    return span< const std17::byte, span_sizeof(t) >( reinterpret_cast< std17::byte const * >( &t ), span_sizeof(T) );
 }
 
 }  // namespace span_lite
