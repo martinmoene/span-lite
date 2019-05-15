@@ -504,9 +504,64 @@ class span;
 struct with_container_t { span_constexpr with_container_t() span_noexcept {} };
 const  span_constexpr   with_container_t with_container;
 
+// C++11 emulation:
+
+namespace std11 {
+
+#if span_HAVE( REMOVE_CONST )
+
+using std::remove_cv;
+using std::remove_const;
+using std::remove_volatile;
+
+#else
+
+template< class T > struct remove_const            { typedef T type; };
+template< class T > struct remove_const< T const > { typedef T type; };
+
+template< class T > struct remove_volatile               { typedef T type; };
+template< class T > struct remove_volatile< T volatile > { typedef T type; };
+
+template< class T >
+struct remove_cv
+{
+    typedef typename std11::remove_volatile< typename std11::remove_const< T >::type >::type type;
+};
+
+#endif  // span_HAVE( REMOVE_CONST )
+
+#if span_HAVE( TYPE_TRAITS )
+
+using std::is_same;
+using std::integral_constant;
+using std::true_type;
+using std::false_type;
+
+#else
+
+template< class T, T v > struct integral_constant { enum { value = v }; };
+typedef integral_constant< bool, true  > true_type;
+typedef integral_constant< bool, false > false_type;
+
+template< class T, class U > struct is_same : false_type{};
+template< class T          > struct is_same<T, T> : true_type{};
+
+#endif
+
+} // namespace std11
+
 // C++17 emulation:
 
 namespace std17 {
+
+template< bool v > struct bool_constant : std11::integral_constant<bool, v>{};
+
+#if span_CPP11_120
+
+template< class...>
+using void_t = void;
+
+#endif
 
 #if span_HAVE( DATA )
 
@@ -561,50 +616,6 @@ using nonstd::byte;
 
 } // namespace std17
 
-// C++11 emulation:
-
-namespace std11 {
-
-#if span_HAVE( TYPE_TRAITS )
-using std::is_same;
-using std::true_type;
-using std::false_type;
-#endif
-
-#if span_HAVE( REMOVE_CONST )
-
-using std::remove_cv;
-using std::remove_const;
-using std::remove_volatile;
-
-#else
-
-template< class T > struct remove_const            { typedef T type; };
-template< class T > struct remove_const< T const > { typedef T type; };
-
-template< class T > struct remove_volatile               { typedef T type; };
-template< class T > struct remove_volatile< T volatile > { typedef T type; };
-
-template< class T >
-struct remove_cv
-{
-    typedef typename std11::remove_volatile< typename std11::remove_const< T >::type >::type type;
-};
-
-#endif  // span_HAVE( REMOVE_CONST )
-
-#if ! span_HAVE( TYPE_TRAITS )
-
-struct true_type { enum { value = true }; };
-struct false_type{ enum { value = false }; };
-
-template< class T, class U > struct is_same : false_type{};
-template< class T          > struct is_same<T, T> : true_type{};
-
-#endif
-
-} // namespace std11
-
 // Implementation details:
 
 namespace detail {
@@ -643,6 +654,63 @@ struct is_array<T[]> : std::true_type {};
 
 template< class T, std::size_t N >
 struct is_array<T[N]> : std::true_type {};
+
+#if span_CPP11_140 && ! span_BETWEEN( span_COMPILER_GNUC_VERSION, 1, 500 )
+
+template< class, class = void >
+struct has_size_and_data : std::false_type{};
+
+template< class C >
+struct has_size_and_data
+<
+    C, std17::void_t<
+        decltype( std17::size(std::declval<C>()) ),
+        decltype( std17::data(std::declval<C>()) ) >
+> : std::true_type{};
+
+template< class, class, class = void >
+struct is_compatible_element : std::false_type {};
+
+template< class C, class E >
+struct is_compatible_element
+<
+    C, E, std17::void_t<
+        decltype( std17::data(std::declval<C>()) ) >
+> : std::is_convertible< typename std::remove_pointer<decltype( std17::data( std::declval<C&>() ) )>::type(*)[], E(*)[] >{};
+
+template< class C >
+struct is_container : std17::bool_constant
+<
+    ! is_span< C >::value
+    && ! is_array< C >::value
+    && ! is_std_array< C >::value
+    &&   has_size_and_data< C >::value
+>{};
+
+template< class C, class E >
+struct is_compatible_container : std17::bool_constant
+<
+    is_container<C>::value
+    && is_compatible_element<C,E>::value
+>{};
+
+#else // span_CPP11_140
+
+template<
+    class C, class E
+        span_REQUIRES_T((
+            ! is_span< C >::value
+            && ! is_array< C >::value
+            && ! is_std_array< C >::value
+            && ( std::is_convertible< typename std::remove_pointer<decltype( std17::data( std::declval<C&>() ) )>::type(*)[], E(*)[] >::value)
+        //  &&   has_size_and_data< C >::value
+        ))
+        , class = decltype( std17::size(std::declval<C>()) )
+        , class = decltype( std17::data(std::declval<C>()) )
+>
+struct is_compatible_container : std::true_type{};
+
+#endif // span_CPP11_140
 
 #endif // span_HAVE( TYPE_TRAITS )
 
@@ -710,26 +778,6 @@ inline span_constexpr index_t to_size( T size )
 {
     return static_cast<index_t>( size );
 }
-
-#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
-
-// Can construct from containers that:
-
-template<
-    class Container, class ElementType
-        span_REQUIRES_T((
-            ! detail::is_span< Container >::value
-            && ! detail::is_array< Container >::value
-            && ! detail::is_std_array< Container >::value
-            && (std::is_convertible< typename std::remove_pointer<decltype( std17::data( std::declval<Container&>() ) )>::type(*)[], ElementType(*)[] >::value)
-        ))
-      // data(cont) and size(cont) well-formed:
-    , class = decltype( std17::data( std::declval<Container>() ) )
-    , class = decltype( std17::size( std::declval<Container>() ) )
->
-struct can_construct_from : std11::true_type{};
-
-#endif
 
 //
 // [views.span] - A view over a contiguous, single-dimension sequence of objects
@@ -844,7 +892,7 @@ public:
 #if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     template< class Container
         span_REQUIRES_T((
-            can_construct_from< Container, element_type >::value
+            detail::is_compatible_container< Container, element_type >::value
         ))
     >
     span_constexpr span( Container & cont )
@@ -855,7 +903,7 @@ public:
     template< class Container
         span_REQUIRES_T((
             std::is_const< element_type >::value
-            && can_construct_from< Container, element_type >::value
+            && detail::is_compatible_container< Container, element_type >::value
         ))
     >
     span_constexpr span( Container const & cont )
