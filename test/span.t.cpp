@@ -309,12 +309,16 @@ CASE( "span<>: Allows to construct from a const C-array with size via decay to p
 
 CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 {
-#if span_CPP11_OR_GREATER
+#if span_HAVE( INITIALIZER_LIST )
+#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     auto il = { 1, 2, 3, 4, 5, };
 
     span<int const> v( il );
 
     EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+#else
+    EXPECT( !!"constrained construction from container is not available" );
+#endif
 #else
     EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
 #endif
@@ -363,14 +367,14 @@ CASE( "span<>: Allows to construct from a container (std::vector<>)" )
     std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
 #endif
 
-#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) || span_HAVE( UNCONSTRAINED_SPAN_CONTAINER_CTOR )
+#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     span<      int> v( vec );
     span<const int> w( vec );
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
 #else
-    EXPECT( !!"(un)constrained construction from container is not available" );
+    EXPECT( !!"constrained construction from container is not available" );
 #endif
 }
 
@@ -1253,12 +1257,16 @@ CASE( "make_span(): Allows building from a const C-array" )
 
 CASE( "make_span(): Allows building from a std::initializer_list<> (C++11)" )
 {
-#if span_CPP11_OR_GREATER
+#if span_HAVE( INITIALIZER_LIST )
+#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
     auto il = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span<int const> v = make_span( il );
 
     EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+#else
+    EXPECT( !!"constrained construction from container is not available" );
+#endif
 #else
     EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
 #endif
