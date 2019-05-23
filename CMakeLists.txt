@@ -94,7 +94,7 @@ configure_package_config_file(
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
 )
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/${package_name}-config-version.cmake.in"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/${package_config_version}.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${package_config_version}" @ONLY)
 
 # Installation:
