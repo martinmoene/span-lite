@@ -20,7 +20,7 @@
 Example usage
 -------------
 
-```C++
+```Cpp
 #include "nonstd/span.hpp"
 #include <array>
 #include <vector>
