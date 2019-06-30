@@ -117,6 +117,12 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
 )
 
+export(
+    EXPORT ${package_target}
+    NAMESPACE ${package_name}::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${package_name}-targets.cmake"
+)
+
 install(
     DIRECTORY   "include/"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
