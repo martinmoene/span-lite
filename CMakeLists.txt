@@ -37,7 +37,6 @@ endif()
 
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ${span_IS_TOPLEVEL_PROJECT} )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
-option( SPAN_LITE_EXPORT_PACKAGE     "Export span-lite package globally" ${span_IS_TOPLEVEL_PROJECT} )
 
 option( SPAN_LITE_COLOURISE_TEST     "Colourise test output" OFF )
 
