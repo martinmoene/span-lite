@@ -12,7 +12,7 @@
 #define NONSTD_SPAN_HPP_INCLUDED
 
 #define span_lite_MAJOR  0
-#define span_lite_MINOR  5
+#define span_lite_MINOR  6
 #define span_lite_PATCH  0
 
 #define span_lite_VERSION  span_STRINGIFY(span_lite_MAJOR) "." span_STRINGIFY(span_lite_MINOR) "." span_STRINGIFY(span_lite_PATCH)
