@@ -1283,7 +1283,7 @@ as_bytes( span<T,Extent> spn ) span_noexcept
 
 template< class T, extent_t Extent >
 inline span_constexpr span< std17::byte, ( (Extent == dynamic_extent) ? dynamic_extent : (span_sizeof(T) * Extent) ) >
-as_writeable_bytes( span<T,Extent> spn ) span_noexcept
+as_writable_bytes( span<T,Extent> spn ) span_noexcept
 {
 #if 0
     return { reinterpret_cast< std17::byte * >( spn.data() ), spn.size_bytes() };
@@ -1386,7 +1386,7 @@ using span_lite::operator>=;
 
 #if span_HAVE( BYTE )
 using span_lite::as_bytes;
-using span_lite::as_writeable_bytes;
+using span_lite::as_writable_bytes;
 #endif
 
 using span_lite::size;

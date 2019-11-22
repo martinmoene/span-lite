@@ -50,7 +50,7 @@ C-array:1 array:2 vector:3
 
 In a nutshell
 ---------------
-**span lite** is a single-file header-only library to provide a bounds-safe view for sequences of objects. The library provides a [C++20-like span](http://en.cppreference.com/w/cpp/container/span) for use with C++98 and later. If available, `std::span` is used, unless [configured otherwise](#configuration). *span-lite* can detect the presence of [*byte-lite*](https://github.com/martinmoene/byte-lite) and if present, it provides `as_bytes()` and `as_writeable_bytes()` also for C++14 and earlier. 
+**span lite** is a single-file header-only library to provide a bounds-safe view for sequences of objects. The library provides a [C++20-like span](http://en.cppreference.com/w/cpp/container/span) for use with C++98 and later. If available, `std::span` is used, unless [configured otherwise](#configuration). *span-lite* can detect the presence of [*byte-lite*](https://github.com/martinmoene/byte-lite) and if present, it provides `as_bytes()` and `as_writable_bytes()` also for C++14 and earlier. 
 
 **Features and properties of span lite** are ease of installation (single header), freedom of dependencies other than the standard library. To compensate for the class template argument deduction that is missing from pre-C++17 compilers, `nonstd::span` can provide `make_span` functions. See [configuration](#configuration).
 

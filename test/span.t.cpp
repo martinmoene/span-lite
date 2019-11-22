@@ -1121,7 +1121,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 
     type  a[] = { 0x0, };
     span<type> va( a );
-    span<byte> vb( as_writeable_bytes(va) );
+    span<byte> vb( as_writable_bytes(va) );
 
     for ( index_type i = 0; i < index_type( sizeof(type) ); ++i )
     {
