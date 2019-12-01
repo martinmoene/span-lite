@@ -206,9 +206,9 @@ Define this to `span_SPAN_STD` to select `std::span` as `nonstd::span`. Define t
 -D<b>span_CONFIG_EXTENT_TYPE</b>=std::ptrdiff_t  
 Define this to `std::size_t` to use the unsigned type. The default is `std::ptrdiff_t`, but this will change to `std::size_t` as in C++20 in the near future.
 
-### Select index type
--D<b>span_CONFIG_INDEX_TYPE</b>=std::ptrdiff_t  
-Define this to `std::size_t` to use the unsigned type as generally used in the standard library for indexing and the result of `size()` and prevent many signed-unsigned comparisons. The default is `std::ptrdiff_t`, but this will change to `std::size_t` as in C++20 in the near future.
+### Select size type
+-D<b>span_CONFIG_SIZE_TYPE</b>=std::ptrdiff_t  
+Define this to `std::size_t` to use the unsigned type as generally used in the standard library for indexing and the result of `size()` and prevent many signed-unsigned comparisons. The default is `std::ptrdiff_t`, but this will change to `std::size_t` as in C++20 in the near future. Note `span_CONFIG_SIZE_TYPE` replaces `span_CONFIG_SIZE_TYPE` which is deprecated.
 
 ### Disable exceptions
 -D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  
@@ -369,6 +369,7 @@ Notes and references
 - [p1428 - Subscripts and sizes should be signed](http://wg21.link/p1428).
 - [p1089 - Sizes Should Only span Unsigned](http://wg21.link/p1089).
 - [p1227 - Signed size() functions](http://wg21.link/p1227).
+- [p1872 - span should have size_type, not index_type](http://wg21.link/p1872).
 - [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
 - [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
 - [Reddit - 2019-02 Kona ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/au0c4x/201902_kona_iso_c_committee_trip_report_c20/).

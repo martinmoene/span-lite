@@ -34,8 +34,12 @@
 # define span_CONFIG_EXTENT_TYPE  std::ptrdiff_t
 #endif
 
-#ifndef  span_CONFIG_INDEX_TYPE
-# define span_CONFIG_INDEX_TYPE  std::ptrdiff_t
+#ifndef  span_CONFIG_SIZE_TYPE
+# define span_CONFIG_SIZE_TYPE  std::ptrdiff_t
+#endif
+
+#ifdef span_CONFIG_INDEX_TYPE
+# error `span_CONFIG_INDEX_TYPE` is deprecated since v0.7.0; it is replaced by `span_CONFIG_SIZE_TYPE`.
 #endif
 
 // span configuration (features):
@@ -495,7 +499,7 @@ namespace span_lite {
 // [views.constants], constants
 
 typedef span_CONFIG_EXTENT_TYPE extent_t;
-typedef span_CONFIG_INDEX_TYPE  index_t;
+typedef span_CONFIG_SIZE_TYPE   size_t;
 
 span_constexpr const extent_t dynamic_extent = static_cast<extent_t>( -1 );
 
@@ -729,7 +733,7 @@ struct is_compatible_container : std::true_type{};
 # pragma GCC   diagnostic ignored "-Wlong-long"
 #endif
 
-inline void throw_out_of_range( index_t idx, index_t size )
+inline void throw_out_of_range( size_t idx, size_t size )
 {
     const char fmt[] = "span::at(): index '%lli' is out of range [0..%lli)";
     char buffer[ 2 * 20 + sizeof fmt ];
@@ -740,7 +744,7 @@ inline void throw_out_of_range( index_t idx, index_t size )
 
 #else // MEMBER_AT
 
-inline void throw_out_of_range( index_t /*idx*/, index_t /*size*/ )
+inline void throw_out_of_range( size_t /*idx*/, size_t /*size*/ )
 {
     throw std::out_of_range( "span::at(): index outside span" );
 }
@@ -777,9 +781,9 @@ span_noreturn inline void report_contract_violation( char const * /*msg*/ ) span
 #define span_sizeof(T)  static_cast<extent_t>( sizeof(T) )
 
 template< class T >
-inline span_constexpr index_t to_size( T size )
+inline span_constexpr size_t to_size( T size )
 {
-    return static_cast<index_t>( size );
+    return static_cast<size_t>( size );
 }
 
 //
@@ -799,7 +803,7 @@ public:
     typedef T const * const_pointer;
     typedef T const & const_reference;
 
-    typedef index_t   index_type;
+    typedef size_t    size_type;
     typedef extent_t  extent_type;
 
     typedef pointer        iterator;
@@ -826,7 +830,7 @@ public:
         // span_EXPECTS( size() == 0 );
     }
 
-    span_constexpr_exp span( pointer ptr, index_type count )
+    span_constexpr_exp span( pointer ptr, size_type count )
         : data_( ptr )
         , size_( count )
     {
@@ -991,9 +995,9 @@ public:
     }
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-    template< index_type Offset, extent_type Count = dynamic_extent >
+    template< size_type Offset, extent_type Count = dynamic_extent >
 #else
-    template< index_type Offset, extent_type Count /*= dynamic_extent*/ >
+    template< size_type Offset, extent_type Count /*= dynamic_extent*/ >
 #endif
     span_constexpr_exp span< element_type, Count >
     subspan() const
@@ -1008,7 +1012,7 @@ public:
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
-    first( index_type count ) const
+    first( size_type count ) const
     {
         span_EXPECTS( 0 <= count && count <= size() );
 
@@ -1016,7 +1020,7 @@ public:
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
-    last( index_type count ) const
+    last( size_type count ) const
     {
         span_EXPECTS( 0 <= count && count <= size() );
 
@@ -1024,20 +1028,20 @@ public:
     }
 
     span_constexpr_exp span< element_type, dynamic_extent >
-    subspan( index_type offset, index_type count = static_cast<index_type>(dynamic_extent) ) const
+    subspan( size_type offset, size_type count = static_cast<size_type>(dynamic_extent) ) const
     {
         span_EXPECTS(
             ( ( 0 <= offset  && offset <= size() ) ) &&
-            ( count == static_cast<index_type>(dynamic_extent) || ( 0 <= count && offset + count <= size() ) )
+            ( count == static_cast<size_type>(dynamic_extent) || ( 0 <= count && offset + count <= size() ) )
         );
 
         return span< element_type, dynamic_extent >(
-            data() + offset, count == static_cast<index_type>(dynamic_extent) ? size() - offset : count );
+            data() + offset, count == static_cast<size_type>(dynamic_extent) ? size() - offset : count );
     }
 
     // 26.7.3.4 Observers [span.obs]
 
-    span_constexpr index_type size() const span_noexcept
+    span_constexpr size_type size() const span_noexcept
     {
         return size_;
     }
@@ -1047,7 +1051,7 @@ public:
         return static_cast<std::ptrdiff_t>( size_ );
     }
 
-    span_constexpr index_type size_bytes() const span_noexcept
+    span_constexpr size_type size_bytes() const span_noexcept
     {
         return size() * to_size( sizeof( element_type ) );
     }
@@ -1059,7 +1063,7 @@ public:
 
     // 26.7.3.5 Element access [span.elem]
 
-    span_constexpr_exp reference operator[]( index_type idx ) const
+    span_constexpr_exp reference operator[]( size_type idx ) const
     {
         span_EXPECTS( 0 <= idx && idx < size() );
 
@@ -1069,7 +1073,7 @@ public:
 #if span_FEATURE( MEMBER_CALL_OPERATOR )
     span_deprecated("replace operator() with operator[]")
 
-    span_constexpr_exp reference operator()( index_type idx ) const
+    span_constexpr_exp reference operator()( size_type idx ) const
     {
         span_EXPECTS( 0 <= idx && idx < size() );
 
@@ -1078,7 +1082,7 @@ public:
 #endif
 
 #if span_FEATURE( MEMBER_AT )
-    span_constexpr14 reference at( index_type idx ) const
+    span_constexpr14 reference at( size_type idx ) const
     {
 #if span_CONFIG( NO_EXCEPTIONS )
         return this->operator[]( idx );
@@ -1186,8 +1190,8 @@ public:
     }
 
 private:
-    pointer    data_;
-    index_type size_;
+    pointer   data_;
+    size_type size_;
 };
 
 // class template argument deduction guides:
@@ -1312,7 +1316,7 @@ first( T & t ) -> decltype( make_span(t).template first<Count>() )
 
 template< class T >
 span_constexpr auto
-first( T & t, index_t count ) -> decltype( make_span(t).first(count) )
+first( T & t, size_t count ) -> decltype( make_span(t).first(count) )
 {
     return make_span( t ).first( count );
 }
@@ -1331,7 +1335,7 @@ last( T & t, extent_t count ) -> decltype( make_span(t).last(count) )
     return make_span( t ).last( count );
 }
 
-template< index_t Offset, extent_t Count = dynamic_extent, class T >
+template< size_t Offset, extent_t Count = dynamic_extent, class T >
 span_constexpr auto
 subspan( T & t ) -> decltype( make_span(t).template subspan<Offset, Count>() )
 {
@@ -1340,7 +1344,7 @@ subspan( T & t ) -> decltype( make_span(t).template subspan<Offset, Count>() )
 
 template< class T >
 span_constexpr auto
-subspan( T & t, index_t offset, extent_t count = dynamic_extent ) -> decltype( make_span(t).subspan(offset, count) )
+subspan( T & t, size_t offset, extent_t count = dynamic_extent ) -> decltype( make_span(t).subspan(offset, count) )
 {
     return make_span( t ).subspan( offset, count );
 }
@@ -1408,7 +1412,7 @@ namespace span_lite {
 
 template< class T >
 inline span_constexpr span<T>
-make_span( T * ptr, index_t count ) span_noexcept
+make_span( T * ptr, size_t count ) span_noexcept
 {
     return span<T>( ptr, count );
 }

@@ -14,8 +14,8 @@
 
 using namespace nonstd;
 
-typedef span<int>::index_type index_type;
-typedef std::ptrdiff_t        size_type;
+typedef span<int>::size_type size_type;
+typedef std::ptrdiff_t       ssize_type;
 
 CASE( "span<>: Terminates construction from a nullptr and a non-zero size (C++11)" )
 {
@@ -84,12 +84,12 @@ CASE( "span<>: Terminates creation of a sub span outside the span" )
 CASE( "span<>: Terminates access outside the span" )
 {
     struct F {
-        static void blow_ix(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v[i]; }
+        static void blow_ix(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v[i]; }
 #if span_FEATURE_MEMBER_CALL_OPERATOR
-        static void blow_iv(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v(i); }
+        static void blow_iv(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v(i); }
 #endif
 #if span_FEATURE_MEMBER_AT
-        static void blow_at(index_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
+        static void blow_at(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
 #endif
     };
 
@@ -154,17 +154,17 @@ CASE( "span<>: Allows to default-construct" )
 {
     span<int> v;
 
-    EXPECT( v.size() == index_type( 0 ) );
+    EXPECT( v.size() == size_type( 0 ) );
 }
 
 CASE( "span<>: Allows to construct from a nullptr and a zero size (C++11)" )
 {
 #if span_HAVE( NULLPTR )
-    span<      int> v( nullptr, index_type(0) );
-    span<const int> w( nullptr, index_type(0) );
+    span<      int> v( nullptr, size_type(0) );
+    span<const int> w( nullptr, size_type(0) );
 
-    EXPECT( v.size() == index_type( 0 ) );
-    EXPECT( w.size() == index_type( 0 ) );
+    EXPECT( v.size() == size_type( 0 ) );
+    EXPECT( w.size() == size_type( 0 ) );
 #else
     EXPECT( !!"nullptr is not available (no C++11)" );
 #endif
@@ -234,10 +234,10 @@ CASE( "span<>: Allows to construct from any pointer and a zero size" )
 {
     struct F {
         static void null() {
-            int * p = span_nullptr; span<int> v( p, index_type( 0 ) );
+            int * p = span_nullptr; span<int> v( p, size_type( 0 ) );
         }
         static void nonnull() {
-            int i = 7; int * p = &i; span<int> v( p, index_type( 0 ) );
+            int i = 7; int * p = &i; span<int> v( p, size_type( 0 ) );
         }
     };
 
@@ -487,7 +487,7 @@ CASE( "span<>: Allows to create a sub span of the first n elements" )
 {
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
-    index_type count = 3;
+    size_type count = 3;
 
     span<      int> s = v.first( count );
     span<const int> t = v.first( count );
@@ -502,7 +502,7 @@ CASE( "span<>: Allows to create a sub span of the last n elements" )
 {
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
-    index_type count = 3;
+    size_type count = 3;
 
     span<      int> s = v.last( count );
     span<const int> t = v.last( count );
@@ -517,7 +517,7 @@ CASE( "span<>: Allows to create a sub span starting at a given offset" )
 {
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
-    index_type offset = 1;
+    size_type offset = 1;
 
     span<      int> s = v.subspan( offset );
     span<const int> t = v.subspan( offset );
@@ -532,8 +532,8 @@ CASE( "span<>: Allows to create a sub span starting at a given offset with a giv
 {
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
-    index_type offset = 1;
-    index_type length = 1;
+    size_type offset = 1;
+    size_type length = 1;
 
     span<      int> s = v.subspan( offset, length );
     span<const int> t = v.subspan( offset, length );
@@ -548,7 +548,7 @@ CASE( "span<>: Allows to create a sub span starting at a given offset with a giv
 //{
 //    int arr[] = { 1, 2, 3, };
 //    span<int> v( arr );
-//    index_type offset = v.size() - 1;
+//    size_type offset = v.size() - 1;
 //
 //    span<      int> s = v.subspan( offset );
 //    span<const int> t = v.subspan( offset );
@@ -561,8 +561,8 @@ CASE( "span<>: Allows to create a sub span starting at a given offset with a giv
 //{
 //    int arr[] = { 1, 2, 3, };
 //    span<int> v( arr );
-//    index_type offset = v.size();
-//    index_type length = 0;
+//    size_type offset = v.size();
+//    size_type length = 0;
 //
 //    span<      int> s = v.subspan( offset, length );
 //    span<const int> t = v.subspan( offset, length );
@@ -577,7 +577,7 @@ CASE( "span<>: Allows to observe an element via array indexing" )
     span<int>       v( arr );
     span<int> const w( arr );
 
-    for ( index_type i = 0; i < v.size(); ++i )
+    for ( size_type i = 0; i < v.size(); ++i )
     {
         EXPECT( v[i] == arr[i] );
         EXPECT( w[i] == arr[i] );
@@ -591,7 +591,7 @@ CASE( "span<>: Allows to observe an element via call indexing" )
     span<int>       v( arr );
     span<int> const w( arr );
 
-    for ( index_type i = 0; i < v.size(); ++i )
+    for ( size_type i = 0; i < v.size(); ++i )
     {
         EXPECT( v(i) == arr[i] );
         EXPECT( w(i) == arr[i] );
@@ -608,7 +608,7 @@ CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]"
     span<int>       v( arr );
     span<int> const w( arr );
 
-    for ( index_type i = 0; i < v.size(); ++i )
+    for ( size_type i = 0; i < v.size(); ++i )
     {
         EXPECT( v.at(i) == arr[i] );
         EXPECT( w.at(i) == arr[i] );
@@ -627,7 +627,7 @@ CASE( "span<>: Allows to observe an element via data()" )
     EXPECT( *v.data() == *v.begin() );
     EXPECT( *w.data() == *v.begin() );
 
-    for ( index_type i = 0; i < v.size(); ++i )
+    for ( size_type i = 0; i < v.size(); ++i )
     {
         EXPECT( v.data()[i] == arr[i] );
         EXPECT( w.data()[i] == arr[i] );
@@ -756,8 +756,8 @@ CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
 
     a.swap( b );
 
-    EXPECT( a.size() == index_type(2) );
-    EXPECT( b.size() == index_type(3) );
+    EXPECT( a.size() == size_type(2) );
+    EXPECT( b.size() == size_type(3) );
     EXPECT( a[0]     == 2 );
     EXPECT( b[0]     == 1 );
 #else
@@ -795,7 +795,7 @@ CASE( "span<>: Allows reverse iteration" )
     for ( span<int>::reverse_iterator pos = v.rbegin(); pos != v.rend(); ++pos )
     {
 //        size_t dist = narrow<size_t>( std::distance(v.rbegin(), pos) );
-        index_type dist = static_cast<index_type>( std::distance(v.rbegin(), pos) );
+        size_type dist = static_cast<size_type>( std::distance(v.rbegin(), pos) );
         EXPECT( *pos == arr[ v.size() - 1 - dist ] );
     }
 }
@@ -808,7 +808,7 @@ CASE( "span<>: Allows const reverse iteration" )
     for ( span<int>::const_reverse_iterator pos = v.crbegin(); pos != v.crend(); ++pos )
     {
 //        size_t dist = narrow<size_t>( std::distance(v.crbegin(), pos) );
-        index_type dist = static_cast<index_type>( std::distance(v.crbegin(), pos) );
+        size_type dist = static_cast<size_type>( std::distance(v.crbegin(), pos) );
         EXPECT( *pos == arr[ v.size() - 1 - dist ] );
     }
 }
@@ -980,14 +980,14 @@ CASE( "span<>: Allows to compare empty spans as equal [span_FEATURE_COMPARISON=1
 
     span<int> p;
     span<int> q;
-    span<int> r( &a, index_type( 0 ) );
+    span<int> r( &a, size_type( 0 ) );
 
     EXPECT( p == q );
     EXPECT( p == r );
 
 #if span_HAVE( NULLPTR )
-    span<int> s( nullptr, index_type( 0 ) );
-    span<int> t( nullptr, index_type( 0 ) );
+    span<int> s( nullptr, size_type( 0 ) );
+    span<int> t( nullptr, size_type( 0 ) );
 
     EXPECT( s == p );
     EXPECT( s == r );
@@ -1022,9 +1022,9 @@ CASE( "span<>: Allows to obtain the number of elements via size()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( va.size() == index_type( DIMENSION_OF( a ) ) );
-    EXPECT( vb.size() == index_type( DIMENSION_OF( b ) ) );
-    EXPECT(  z.size() == index_type( 0 ) );
+    EXPECT( va.size() == size_type( DIMENSION_OF( a ) ) );
+    EXPECT( vb.size() == size_type( DIMENSION_OF( b ) ) );
+    EXPECT(  z.size() == size_type( 0 ) );
 }
 
 CASE( "span<>: Allows to obtain the number of elements via ssize()" )
@@ -1036,8 +1036,8 @@ CASE( "span<>: Allows to obtain the number of elements via ssize()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( va.ssize() == size_type( DIMENSION_OF( a ) ) );
-    EXPECT( vb.ssize() == size_type( DIMENSION_OF( b ) ) );
+    EXPECT( va.ssize() == ssize_type( DIMENSION_OF( a ) ) );
+    EXPECT( vb.ssize() == ssize_type( DIMENSION_OF( b ) ) );
     EXPECT(  z.ssize() == 0 );
 }
 
@@ -1050,9 +1050,9 @@ CASE( "span<>: Allows to obtain the number of bytes via size_bytes()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( va.size_bytes() == index_type( DIMENSION_OF( a ) * sizeof(int) ) );
-    EXPECT( vb.size_bytes() == index_type( DIMENSION_OF( b ) * sizeof(int) ) );
-    EXPECT(  z.size_bytes() == index_type( 0 * sizeof(int) ) );
+    EXPECT( va.size_bytes() == size_type( DIMENSION_OF( a ) * sizeof(int) ) );
+    EXPECT( vb.size_bytes() == size_type( DIMENSION_OF( b ) * sizeof(int) ) );
+    EXPECT(  z.size_bytes() == size_type( 0 * sizeof(int) ) );
 }
 
 //CASE( "span<>: Allows to swap with another span of the same type" )
@@ -1123,7 +1123,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
     span<type> va( a );
     span<byte> vb( as_writable_bytes(va) );
 
-    for ( index_type i = 0; i < index_type( sizeof(type) ); ++i )
+    for ( size_type i = 0; i < size_type( sizeof(type) ); ++i )
     {
         EXPECT( vb[i] == byte{0} );
     }
@@ -1131,7 +1131,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
     vb[0] = byte{0x42};
 
     EXPECT( vb[0] == byte{0x42} );
-    for ( index_type i = 1; i < index_type( sizeof(type) ); ++i )
+    for ( size_type i = 1; i < size_type( sizeof(type) ); ++i )
     {
         EXPECT( vb[i] == byte{0} );
     }
@@ -1370,7 +1370,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
 
     span<xstd::byte> spn = byte_span( x );
 
-    EXPECT( spn.size() == index_type( sizeof x ) );
+    EXPECT( spn.size() == size_type( sizeof x ) );
 #if span_HAVE( NONSTD_BYTE )
     EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
@@ -1388,7 +1388,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
 
     span<const xstd::byte> spn = byte_span( x );
 
-    EXPECT( spn.size() == index_type( sizeof x ) );
+    EXPECT( spn.size() == size_type( sizeof x ) );
 #if span_HAVE( NONSTD_BYTE )
     EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
@@ -1412,7 +1412,7 @@ CASE( "first(): Allows to create a sub span of the first n elements" )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
-    index_type count = 3;
+    size_type count = 3;
 
     span<      int> s = first( v, count );
     span<const int> t = first( v, count );
@@ -1435,7 +1435,7 @@ CASE( "last(): Allows to create a sub span of the last n elements" )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
-    index_type count = 3;
+    size_type count = 3;
 
     span<      int> s = last( v, count );
     span<const int> t = last( v, count );
@@ -1458,7 +1458,7 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
-    index_type offset = 1;
+    size_type offset = 1;
 
     span<      int> s = subspan( v, offset );
     span<const int> t = subspan( v, offset );
@@ -1498,8 +1498,8 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( ssize( va ) == size_type( DIMENSION_OF( a ) ) );
-    EXPECT( ssize( vb ) == size_type( DIMENSION_OF( b ) ) );
+    EXPECT( ssize( va ) == ssize_type( DIMENSION_OF( a ) ) );
+    EXPECT( ssize( vb ) == ssize_type( DIMENSION_OF( b ) ) );
     EXPECT( ssize( z  ) == 0 );
 }
 
@@ -1537,7 +1537,7 @@ CASE( "[hide][issue-3: same()]" )
     span<float const> fspan1 = make_span( farray );
 
     assert( fspan1.data() == farray );
-    assert( fspan1.size() == static_cast<index_type>( DIMENSION_OF( farray ) ) );
+    assert( fspan1.size() == static_cast<size_type>( DIMENSION_OF( farray ) ) );
 
 #if span_HAVE( BYTE )
     span<std::byte const> fspan2 = byte_span( farray[0] );
