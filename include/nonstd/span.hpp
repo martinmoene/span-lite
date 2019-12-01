@@ -30,6 +30,10 @@
 # define span_CONFIG_SELECT_SPAN  ( span_HAVE_STD_SPAN ? span_SPAN_STD : span_SPAN_NONSTD )
 #endif
 
+#ifndef  span_CONFIG_EXTENT_TYPE
+# define span_CONFIG_EXTENT_TYPE  std::ptrdiff_t
+#endif
+
 #ifndef  span_CONFIG_INDEX_TYPE
 # define span_CONFIG_INDEX_TYPE  std::ptrdiff_t
 #endif
@@ -490,11 +494,10 @@ namespace span_lite {
 
 // [views.constants], constants
 
-typedef span_CONFIG_INDEX_TYPE index_t;
+typedef span_CONFIG_EXTENT_TYPE extent_t;
+typedef span_CONFIG_INDEX_TYPE  index_t;
 
-typedef std::ptrdiff_t extent_t;
-
-span_constexpr const extent_t dynamic_extent = -1;
+span_constexpr const extent_t dynamic_extent = static_cast<extent_t>( -1 );
 
 template< class T, extent_t Extent = dynamic_extent >
 class span;
@@ -627,7 +630,7 @@ namespace detail {
 template< class Q >
 struct is_span_oracle : std::false_type{};
 
-template< class T, std::ptrdiff_t Extent >
+template< class T, span_CONFIG_EXTENT_TYPE Extent >
 struct is_span_oracle< span<T, Extent> > : std::true_type{};
 
 template< class Q >
@@ -813,7 +816,7 @@ public:
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-    span_REQUIRES_0(( Extent <= 0 ))
+    span_REQUIRES_0(( Extent == dynamic_extent ))
 #endif
     span_constexpr span() span_noexcept
         : data_( span_nullptr )
