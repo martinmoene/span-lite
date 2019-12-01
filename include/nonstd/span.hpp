@@ -31,7 +31,7 @@
 #endif
 
 #ifndef  span_CONFIG_size_type
-# define span_CONFIG_size_type  std::ptrdiff_t
+# define span_CONFIG_size_type  std::size_t
 #endif
 
 // span configuration (features):
@@ -494,7 +494,7 @@ typedef span_CONFIG_size_type index_t;
 
 typedef std::size_t extent_t;
 
-span_constexpr const extent_t dynamic_extent = -1;
+span_constexpr const extent_t dynamic_extent = static_cast<extent_t>(-1);
 
 template< class T, extent_t Extent = dynamic_extent >
 class span;
@@ -627,7 +627,7 @@ namespace detail {
 template< class Q >
 struct is_span_oracle : std::false_type{};
 
-template< class T, std::ptrdiff_t Extent >
+template< class T, extent_t Extent >
 struct is_span_oracle< span<T, Extent> > : std::true_type{};
 
 template< class Q >

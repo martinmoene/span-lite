@@ -15,7 +15,7 @@
 using namespace nonstd;
 
 typedef span<int>::size_type size_type;
-typedef std::ptrdiff_t        size_type;
+typedef span<int>::difference_type difference_type;
 
 CASE( "span<>: Terminates construction from a nullptr and a non-zero size (C++11)" )
 {
@@ -1036,8 +1036,8 @@ CASE( "span<>: Allows to obtain the number of elements via ssize()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( va.ssize() == size_type( DIMENSION_OF( a ) ) );
-    EXPECT( vb.ssize() == size_type( DIMENSION_OF( b ) ) );
+    EXPECT( va.ssize() == difference_type( DIMENSION_OF( a ) ) );
+    EXPECT( vb.ssize() == difference_type( DIMENSION_OF( b ) ) );
     EXPECT(  z.ssize() == 0 );
 }
 
@@ -1498,8 +1498,8 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
     span<int> va( a );
     span<int> vb( b );
 
-    EXPECT( ssize( va ) == size_type( DIMENSION_OF( a ) ) );
-    EXPECT( ssize( vb ) == size_type( DIMENSION_OF( b ) ) );
+    EXPECT( ssize( va ) == difference_type( DIMENSION_OF( a ) ) );
+    EXPECT( ssize( vb ) == difference_type( DIMENSION_OF( b ) ) );
     EXPECT( ssize( z  ) == 0 );
 }
 
