@@ -577,7 +577,7 @@ using std::size;
 
 #elif span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 inline span_constexpr auto size( const T(&)[N] ) span_noexcept -> size_t
 {
     return N;
@@ -589,7 +589,7 @@ inline span_constexpr auto size( C const & cont ) -> decltype( cont.size() )
     return cont.size();
 }
 
-template< typename T, size_t N >
+template< typename T, std::size_t N >
 inline span_constexpr auto data( T(&arr)[N] ) span_noexcept -> T*
 {
     return &arr[0];
@@ -849,7 +849,7 @@ public:
         );
     }
 
-    template< size_t N
+    template< std::size_t N
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         span_REQUIRES_T((
             (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
@@ -864,7 +864,7 @@ public:
 
 #if span_HAVE( ARRAY )
 
-    template< size_t N
+    template< std::size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         span_REQUIRES_T((
             (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
@@ -881,7 +881,7 @@ public:
         , size_( to_size( arr.size() ) )
     {}
 
-    template< size_t N
+    template< std::size_t N
 # if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         span_REQUIRES_T((
             (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
@@ -1424,7 +1424,7 @@ make_span( T * first, T * last ) span_noexcept
     return span<T>( first, last );
 }
 
-template< class T, size_t N >
+template< class T, std::size_t N >
 inline span_constexpr span<T, static_cast<extent_t>(N)>
 make_span( T ( &arr )[ N ] ) span_noexcept
 {
@@ -1433,14 +1433,14 @@ make_span( T ( &arr )[ N ] ) span_noexcept
 
 #if span_USES_STD_SPAN || span_HAVE( ARRAY )
 
-template< class T, size_t N >
+template< class T, std::size_t N >
 inline span_constexpr span<T, static_cast<extent_t>(N)>
 make_span( std::array< T, N > & arr ) span_noexcept
 {
     return span<T, static_cast<extent_t>(N)>( arr );
 }
 
-template< class T, size_t N >
+template< class T, std::size_t N >
 inline span_constexpr span< const T, static_cast<extent_t>(N) >
 make_span( std::array< T, N > const & arr ) span_noexcept
 {
