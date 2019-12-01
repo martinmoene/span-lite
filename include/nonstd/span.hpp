@@ -492,7 +492,7 @@ namespace span_lite {
 
 typedef span_CONFIG_INDEX_TYPE index_t;
 
-typedef std::ptrdiff_t extent_t;
+typedef std::size_t extent_t;
 
 span_constexpr const extent_t dynamic_extent = -1;
 
@@ -813,7 +813,7 @@ public:
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-    span_REQUIRES_0(( Extent <= 0 ))
+    span_REQUIRES_0(( Extent == dynamic_extent ))
 #endif
     span_constexpr span() span_noexcept
         : data_( span_nullptr )
