@@ -42,6 +42,8 @@ CASE( "span configuration" "[.span][.config]" )
     span_PRESENT( span_SPAN_NONSTD );
     span_PRESENT( span_SPAN_STD );
     span_PRESENT( span_CONFIG_SELECT_SPAN );
+//  span_PRESENT( span_CONFIG_EXTENT_TYPE );
+//  span_PRESENT( span_CONFIG_SIZE_TYPE );
     span_PRESENT( span_CONFIG_NO_EXCEPTIONS );
 }
 

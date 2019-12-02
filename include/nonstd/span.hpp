@@ -31,11 +31,11 @@
 #endif
 
 #ifndef  span_CONFIG_EXTENT_TYPE
-# define span_CONFIG_EXTENT_TYPE  std::ptrdiff_t
+# define span_CONFIG_EXTENT_TYPE  std::size_t
 #endif
 
 #ifndef  span_CONFIG_SIZE_TYPE
-# define span_CONFIG_SIZE_TYPE  std::ptrdiff_t
+# define span_CONFIG_SIZE_TYPE  std::size_t
 #endif
 
 #ifdef span_CONFIG_INDEX_TYPE

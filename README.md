@@ -203,12 +203,12 @@ At default, *span lite* uses `std::span` if it is available and lets you use it 
 Define this to `span_SPAN_STD` to select `std::span` as `nonstd::span`. Define this to `span_SPAN_NONSTD` to select `nonstd::span` as `nonstd::span`. Default is undefined, which has the same effect as defining to `span_SPAN_DEFAULT`.
 
 ### Select extent type
--D<b>span_CONFIG_EXTENT_TYPE</b>=std::ptrdiff_t  
-Define this to `std::size_t` to use the unsigned type. The default is `std::ptrdiff_t`, but this will change to `std::size_t` as in C++20 in the near future.
+-D<b>span_CONFIG_EXTENT_TYPE</b>=std::size_t  
+Define this to `std::ptrdiff_t` to use the signed type. The default is `std::size_t`, as in C++20 (since v0.7.0).
 
 ### Select size type
--D<b>span_CONFIG_SIZE_TYPE</b>=std::ptrdiff_t  
-Define this to `std::size_t` to use the unsigned type as generally used in the standard library for indexing and the result of `size()` and prevent many signed-unsigned comparisons. The default is `std::ptrdiff_t`, but this will change to `std::size_t` as in C++20 in the near future. Note `span_CONFIG_SIZE_TYPE` replaces `span_CONFIG_SIZE_TYPE` which is deprecated.
+-D<b>span_CONFIG_SIZE_TYPE</b>=std::size_t  
+Define this to `std::ptrdiff_t` to use the signed type. The default is `std::size_t`, as in C++20 (since v0.7.0). Note `span_CONFIG_SIZE_TYPE` replaces `span_CONFIG_SIZE_TYPE` which is deprecated.
 
 ### Disable exceptions
 -D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  
