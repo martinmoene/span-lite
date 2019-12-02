@@ -1,9 +1,11 @@
 <a id="top"></a>
-# span lite: A single-file header-only version of a C++20-like span for C++98, C++11 and later
+span lite: A single-file header-only version of a C++20-like span for C++98, C++11 and later
+============================================================================================
 
 [![Language](https://img.shields.io/badge/C%2B%2B-98/11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/span-lite.svg?branch=master)](https://travis-ci.org/martinmoene/span-lite) [![Build status](https://ci.appveyor.com/api/projects/status/1ha3wnxtam547m8p?svg=true)](https://ci.appveyor.com/project/martinmoene/span-lite) [![Version](https://badge.fury.io/gh/martinmoene%2Fspan-lite.svg)](https://github.com/martinmoene/span-lite/releases) [![download](https://img.shields.io/badge/latest-download-blue.svg)](https://github.com/martinmoene/span-lite/blob/master/include/nonstd/span.hpp) [![Conan](https://img.shields.io/badge/on-conan-blue.svg)](https://bintray.com/conan/conan-center/span-lite%3A_) [![Try it on wandbox](https://img.shields.io/badge/on-wandbox-blue.svg)](https://wandbox.org/permlink/venR3Ko2Q4tlvcVk) [![Try it on godbolt online](https://img.shields.io/badge/on-godbolt-blue.svg)](https://godbolt.org/z/_-FEIZ)
 
 **Contents**  
+
 - [Example usage](#example-usage)
 - [In a nutshell](#in-a-nutshell)
 - [License](#license)
@@ -16,11 +18,10 @@
 - [Notes and references](#notes-and-references)
 - [Appendix](#appendix)
 
-
 Example usage
 -------------
 
-```Cpp
+```cpp
 #include "nonstd/span.hpp"
 #include <array>
 #include <vector>
@@ -34,7 +35,7 @@ std::ptrdiff_t size( nonstd::span<const int> spn )
 int main()
 {
     int arr[] = { 1, };
-    
+
     std::cout << 
         "C-array:" << size( arr ) <<
         " array:"  << size( std::array <int, 2>{ 1, 2, } ) <<
@@ -43,33 +44,33 @@ int main()
 ```
 
 ### Compile and run
-```
+
+```bash
 prompt> g++ -std=c++11 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-basic.exe
 C-array:1 array:2 vector:3
 ```
 
 In a nutshell
 ---------------
+
 **span lite** is a single-file header-only library to provide a bounds-safe view for sequences of objects. The library provides a [C++20-like span](http://en.cppreference.com/w/cpp/container/span) for use with C++98 and later. If available, `std::span` is used, unless [configured otherwise](#configuration). *span-lite* can detect the presence of [*byte-lite*](https://github.com/martinmoene/byte-lite) and if present, it provides `as_bytes()` and `as_writable_bytes()` also for C++14 and earlier. 
 
 **Features and properties of span lite** are ease of installation (single header), freedom of dependencies other than the standard library. To compensate for the class template argument deduction that is missing from pre-C++17 compilers, `nonstd::span` can provide `make_span` functions. See [configuration](#configuration).
 
-
 License
 -------
+
 *span lite* is distributed under the [Boost Software License](https://github.com/martinmoene/span-lite/blob/master/LICENSE.txt).
- 
 
 Dependencies
 ------------
-*span lite* has no other dependencies than the [C++ standard library](http://en.cppreference.com/w/cpp/header).
 
+*span lite* has no other dependencies than the [C++ standard library](http://en.cppreference.com/w/cpp/header).
 
 Installation and use
 --------------------
 
 *span lite* is a single-file header-only library. Put `span.hpp` in the [include](include) folder directly into the project source tree or somewhere reachable from your project.
-
 
 Synopsis
 --------
@@ -78,21 +79,23 @@ Synopsis
 [Documentation of `std::span`](#documentation-of-stdspan)  
 [Later additions](#later-additions)  
 [Non-standard extensions](#non-standard-extensions)  
-[Configuration](#configuration)    
+[Configuration](#configuration)  
 
 Documentation of `std::span`
 ----------------------------
+
 Depending on the compiler and C++-standard used, `nonstd::span` behaves less or more like `std::span`. To get an idea of the capabilities of `nonstd::span` with your configuration, look at the output of the [tests](test/span.t.cpp), issuing `span-main.t --pass @`. For `std::span`, see its [documentation at cppreference](http://en.cppreference.com/w/cpp/container/span).  
 
 Later additions
 ---------------
 
-### `back()` and `front()` (
+### `back()` and `front()`
 
 *span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
 Non-standard extensions
 -----------------------
+
 ### Construct from container
 
 To construct a span from a container with compilers that cannot constrain such a single-parameter constructor to containers, *span lite* provides a constructor that takes an additional parameter of type `with_container_t`. Use `with_container` as value for this parameter. See the table below and section [configuration](#configuration).
@@ -133,8 +136,7 @@ To construct a span from a container with compilers that cannot constrain such a
 
 *span lite* can provide `byte_span()` creator functions to represent an object as a span of bytes. This requires the C++17 type `std::byte` to be available. See the table below and section [configuration](#configuration).
 
-
-| Kind               | std  | Function or method |                                       
+| Kind               | std  | Function or method |
 |--------------------|------|--------------------|
 | **Macro**          |&nbsp;| macro **`span_FEATURE_WITH_CONTAINER`**<br>macro **`span_FEATURE_WITH_CONTAINER_TO_STD`** |
 | **Types**          |&nbsp;| **with_container_t** type to disambiguate below constructors |
@@ -187,7 +189,6 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | >= C++11  | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
 | &nbsp; | >= C++11  | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
 
-
 Configuration
 -------------
 
@@ -197,24 +198,29 @@ Configuration
 Define this macro to override the auto-detection of the supported C++ standard, if your compiler does not set the `__cplusplus` macro correctly.
 
 ### Select `std::span` or `nonstd::span`
+
 At default, *span lite* uses `std::span` if it is available and lets you use it via namespace `nonstd`. You can however override this default and explicitly request to use `std::span` or span lite's `nonstd::span` as `nonstd::span` via the following macros.
 
 -D<b>span\_CONFIG\_SELECT\_SPAN</b>=span_SPAN_DEFAULT  
 Define this to `span_SPAN_STD` to select `std::span` as `nonstd::span`. Define this to `span_SPAN_NONSTD` to select `nonstd::span` as `nonstd::span`. Default is undefined, which has the same effect as defining to `span_SPAN_DEFAULT`.
 
 ### Select extent type
+
 -D<b>span_CONFIG_EXTENT_TYPE</b>=std::size_t  
 Define this to `std::ptrdiff_t` to use the signed type. The default is `std::size_t`, as in C++20 (since v0.7.0).
 
 ### Select size type
+
 -D<b>span_CONFIG_SIZE_TYPE</b>=std::size_t  
 Define this to `std::ptrdiff_t` to use the signed type. The default is `std::size_t`, as in C++20 (since v0.7.0). Note `span_CONFIG_SIZE_TYPE` replaces `span_CONFIG_SIZE_TYPE` which is deprecated.
 
 ### Disable exceptions
+
 -D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Disabling exceptions will force contract violation to use termination, see [contract violation macros](#contract-violation-response-macros). Default is undefined.
 
 ### Provide construction using `with_container_t`
+
 -D<b>span_FEATURE_WITH_CONTAINER</b>=0  
 Define this to 1 to enable constructing a span using `with_container_t`. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
@@ -222,38 +228,47 @@ Define this to 1 to enable constructing a span using `with_container_t`. Note th
 Define this to the highest C++ language version for which to enable constructing a span using `with_container_t`, like 98, 03, 11, 14, 17, 20. You can use 99 for inclusion with any standard, but prefer to use `span_FEATURE_WITH_CONTAINER` for this. Note that `span_FEATURE_WITH_CONTAINER` takes precedence over `span_FEATURE_WITH_CONTAINER_TO_STD`. Default is undefined.
 
 ### Provide construction from `std::array` with const data
+
 -D<b>span_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE</b>=0  
 Define this to 1 to enable constructing a span from a std::array with const data. Default is undefined.
 
 ### Provide `operator()` member function
+
 -D<b>span_FEATURE_MEMBER_CALL_OPERATOR</b>=0  
 Define this to 1 to provide member function `operator()`for element access. It is equivalent to `operator[]` and has been marked `[[deprecated]]`. Its main purpose is to provide a migration path. Default is undefined.
 
 ### Provide `at()` member function
+
 -D<b>span_FEATURE_MEMBER_AT</b>=0  
 Define this to 1 to provide member function `at()`. Define this to 2 to include index and size in message of std::out_of_range exception. Default is undefined.
 
 ### Provide `back()` and `front()` member functions
+
 -D<b>span_FEATURE_MEMBER_BACK_FRONT</b>=1  _(on since v0.5.0)_  
 Define this to 0 to omit member functions `back()` and `front()`. Default is undefined.
 
 ### Provide `swap()` member function
+
 -D<b>span_FEATURE_MEMBER_SWAP</b>=0  
 Define this to 1 to provide member function `swap()`. Default is undefined.
 
 ### Provide `operator==()` and other comparison functions
+
 -D<b>span_FEATURE_COMPARISON</b>=0  
 Define this to 1 to include the comparison functions to compare the content of two spans. C++20's span does not provide comparison and _span lite_ omits comparison from v0.7.0. Default is undefined.
 
 ### Provide `same()` function
+
 -D<b>span_FEATURE_SAME</b>=0  
 Define this to 1 to provide function `same()` to test if two spans refer as identical spans to the same data via the same type. If `same()` is enabled, `operator==()` incorporates it in its comparison. Default is undefined.
 
 ### Provide `first()`, `last()` and `subspan()` functions
+
 -D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB</b>=0  
 Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This implies `span_FEATURE_MAKE_SPAN` to provide functions `make_span()` that are required for this feature. Default is undefined.
 
 ### Provide `make_span()` functions
+
 -D<b>span_FEATURE_MAKE_SPAN</b>=0  
 Define this to 1 to provide creator functions `nonstd::make_span()`. This feature is implied by using `span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1`. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
@@ -261,6 +276,7 @@ Define this to 1 to provide creator functions `nonstd::make_span()`. This featur
 Define this to the highest C++ language version for which to provide creator functions `nonstd::make_span()`, like 98, 03, 11, 14, 17, 20. You can use 99 for inclusion with any standard, but prefer to use `span_FEATURE_MAKE_SPAN` for this. Note that `span_FEATURE_MAKE_SPAN` takes precedence over `span_FEATURE_MAKE_SPAN_TO_STD`. Default is undefined.
 
 ### Provide `byte_span()` functions
+
 -D<b>span_FEATURE_BYTE_SPAN</b>=0  
 Define this to 1 to provide creator functions `nonstd::byte_span()`. Default is undefined.
 
@@ -270,7 +286,7 @@ Define this to 1 to provide creator functions `nonstd::byte_span()`. Default is 
 
 \-D<b>span\_CONFIG\_CONTRACT\_LEVEL\_ON</b>  (*default*)  
 Define this macro to include both `span_EXPECTS` and `span_ENSURES` in the code. This is the default case.
- 
+
 \-D<b>span\_CONFIG\_CONTRACT\_LEVEL\_OFF</b>  
 Define this macro to exclude both `span_EXPECTS` and `span_ENSURES` from the code.
 
@@ -286,9 +302,8 @@ Define this macro to call `std::terminate()` on a contract violation in `span_EX
 \-D<b>span\_CONFIG\_CONTRACT\_VIOLATION\_THROWS</b>  
 Define this macro to throw an exception of implementation-defined type that is derived from `std::runtime_exception` instead of calling `std::terminate()` on a contract violation in `span_EXPECTS` and `span_ENSURES`. See also [disable exceptions](#disable-exceptions).
 
-
 Reported to work with
----------------------
+--------------------
 The table below mentions the compiler versions *span lite* is reported to work with.
 
 OS           | Compiler   | Where   | Versions |
@@ -301,9 +316,9 @@ OS           | Compiler   | Where   | Versions |
 &nbsp;       | Visual C++<br>(Visual Studio)| Local | 8 (2005), 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 &nbsp;       | Visual C++<br>(Visual Studio)| AppVeyor | 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 
-
 Building the tests
 ------------------
+
 To build the tests you need:
 
 - [CMake](http://cmake.org), version 3.0 or later to be installed and in your PATH.
@@ -327,11 +342,11 @@ The following steps assume that the [*span lite* source code](https://github.com
     `-DSPAN_LITE_OPT_BUILD_TESTS=ON`: build the tests for span, default off  
     `-DSPAN_LITE_OPT_BUILD_EXAMPLES=OFF`: build the examples, default off  
 
-4. Build the test suite.    
+4. Build the test suite.
 
         cmake --build .
 
-5. Run the test suite.    
+5. Run the test suite.
 
         ctest -V
 
@@ -339,7 +354,8 @@ All tests should pass, indicating your platform is supported and you are ready t
 
 
 Other implementations of span
-------------------------------------
+-----------------------------
+
 - *gsl-lite* [span](https://github.com/martinmoene/gsl-lite/blob/73c4f16f2b35fc174fc2f09d44d5ab13e5c638c3/include/gsl/gsl-lite.hpp#L1221).
 - Microsoft GSL [span](https://github.com/Microsoft/GSL/blob/master/include/gsl/span).
 - Google Abseil [span](https://github.com/abseil/abseil-cpp/blob/master/absl/types/span.h).
@@ -350,15 +366,19 @@ Other implementations of span
 
 Notes and references
 --------------------
+
 *Interface and specification*
+
 - [span on cppreference](https://en.cppreference.com/w/cpp/container/span).
 - [p0122 - C++20 Proposal](http://wg21.link/p0122).
 - [span in C++20 Working Draft](http://eel.is/c++draft/views).
 
 *Presentations*
+
 - TBD
 
 *Proposals*
+
 - [p0122 - span: bounds-safe views for sequences of objects](http://wg21.link/p0122).
 - [p1024 - Usability Enhancements for std::span](http://wg21.link/p1024).
 - [p1419 - A SFINAE-friendly trait to determine the extent of statically sized containers](http://wg21.link/p1419).  
@@ -374,7 +394,6 @@ Notes and references
 - [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
 - [Reddit - 2019-02 Kona ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/au0c4x/201902_kona_iso_c_committee_trip_report_c20/).
 - <a id="regtyp"></a>Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
-
 
 Appendix
 --------
