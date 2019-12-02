@@ -242,8 +242,8 @@ Define this to 0 to omit member functions `back()` and `front()`. Default is und
 Define this to 1 to provide member function `swap()`. Default is undefined.
 
 ### Provide `operator==()` and other comparison functions
--D<b>span_FEATURE_COMPARISON</b>=1  
-Define this to 0 to omit the comparison functions to compare the content of two spans. C++20's span will not provide comparison and _span lite_ will omit comparison at default in the near future. Default is undefined.
+-D<b>span_FEATURE_COMPARISON</b>=0  
+Define this to 1 to include the comparison functions to compare the content of two spans. C++20's span does not provide comparison and _span lite_ omits comparison from v0.7.0. Default is undefined.
 
 ### Provide `same()` function
 -D<b>span_FEATURE_SAME</b>=0  

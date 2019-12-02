@@ -1510,6 +1510,7 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
 CASE( "[hide][issue-3: heterogeneous comparison]" )
 {
 #if span_FEATURE_TO_STD( MAKE_SPAN )
+#if span_FEATURE( COMPARISON )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span< const int > spn( data );
@@ -1518,6 +1519,9 @@ CASE( "[hide][issue-3: heterogeneous comparison]" )
 
     assert( make_span( data ) == make_span(data) ); // Ok, non-heterogeneous comparison
     assert( make_span( data ) == spn             ); // Compile error: comparing fixed with dynamic extension
+#else
+    EXPECT( !!"test is unavailable as comparison of span is not provided via span_FEATURE_COMPARISON=1" );
+#endif // span_FEATURE( COMPARISON )
 #else
     EXPECT( !!"test is unavailable as make_span() is not provided via span_FEATURE_MAKE_SPAN_TO_STD=99" );
 #endif // span_FEATURE_TO_STD( MAKE_SPAN )

@@ -77,11 +77,15 @@
 #endif
 
 #ifndef  span_FEATURE_COMPARISON
-# define span_FEATURE_COMPARISON  1  // Note: C++20 does not provide comparison
+# define span_FEATURE_COMPARISON  0  // Note: C++20 does not provide comparison
 #endif
 
 #ifndef  span_FEATURE_SAME
 # define span_FEATURE_SAME  0
+#endif
+
+#if span_FEATURE_SAME && !span_FEATURE_COMPARISON
+# error `span_FEATURE_SAME` requires `span_FEATURE_COMPARISON`
 #endif
 
 #ifndef  span_FEATURE_MAKE_SPAN
