@@ -391,8 +391,11 @@ Notes and references
 - [p1227 - Signed size() functions](http://wg21.link/p1227).
 - [p1872 - span should have size_type, not index_type](http://wg21.link/p1872).
 - [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
-- [Reddit - 2018 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
+- [Reddit - 2018-06 Rapperswil ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/8prqzm/2018_rapperswil_iso_c_committee_trip_report/)
+- [Reddit - 2018-11 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
 - [Reddit - 2019-02 Kona ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/au0c4x/201902_kona_iso_c_committee_trip_report_c20/).
+- [Reddit - 2019-07 Cologne ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/cfk9de/201907_cologne_iso_c_committee_trip_report_the/)
+- [Reddit - 2019-11 Belfast ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/dtuov8/201911_belfast_iso_c_committee_trip_report/)
 - <a id="regtyp"></a>Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
 
 Appendix
