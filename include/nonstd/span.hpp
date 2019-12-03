@@ -1576,25 +1576,25 @@ struct tuple_element< I, nonstd::span<ElementType, Extent> >
 // std::get<>(), 4 variants:
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-constexpr ElementType& get( nonstd::span<ElementType, Extent> & spn ) noexcept
+span_constexpr ElementType& get( nonstd::span<ElementType, Extent> & spn ) span_noexcept
 {
     return spn[I];
 }
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-constexpr ElementType&& get( nonstd::span<ElementType, Extent> && spn ) noexcept
+span_constexpr ElementType&& get( nonstd::span<ElementType, Extent> && spn ) span_noexcept
 {
     return spn[I];
 }
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-constexpr ElementType const & get( nonstd::span<ElementType, Extent> const & spn ) noexcept
+span_constexpr ElementType const & get( nonstd::span<ElementType, Extent> const & spn ) span_noexcept
 {
     return spn[I];
 }
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-constexpr ElementType /*const &&*/ get( nonstd::span<ElementType, Extent> const && spn ) noexcept
+span_constexpr ElementType /*const &&*/ get( nonstd::span<ElementType, Extent> const && spn ) span_noexcept
 {
     return spn[I];
 }
