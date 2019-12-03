@@ -190,6 +190,7 @@ CASE( "Presence of C++ library features" "[.stdlibrary]" )
     span_PRESENT( span_HAVE_NONSTD_BYTE );
     span_PRESENT( span_HAVE_REMOVE_CONST );
     span_PRESENT( span_HAVE_SNPRINTF );
+    span_PRESENT( span_HAVE_STRUCT_BINDING );
     span_PRESENT( span_HAVE_TYPE_TRAITS );
 #endif
 }

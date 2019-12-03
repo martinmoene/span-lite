@@ -336,6 +336,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #define span_HAVE_LONGLONG                  span_CPP11_80
 #define span_HAVE_REMOVE_CONST              span_CPP11_110
 #define span_HAVE_SNPRINTF                  span_CPP11_140
+#define span_HAVE_STRUCT_BINDING            span_CPP11_120
 #define span_HAVE_TYPE_TRAITS               span_CPP11_90
 
 // Presence of byte-lite:
@@ -1546,6 +1547,61 @@ using span_lite::byte_span;
 }  // namespace nonstd
 
 #endif // span_FEATURE( BYTE_SPAN )
+
+#if span_HAVE( STRUCT_BINDING )
+
+namespace std {
+
+// 26.7.X Tuple interface
+
+// std::tuple_size<>:
+
+template< typename ElementType, nonstd::span_lite::extent_t Extent >
+struct tuple_size< nonstd::span<ElementType, Extent> > : public integral_constant<size_t, static_cast<size_t>(Extent)> {};
+
+// std::tuple_size<>: Leave undefined for dynamic extent:
+
+template< typename ElementType >
+struct tuple_size< nonstd::span<ElementType, nonstd::dynamic_extent> >;
+
+// std::tuple_element<>:
+
+template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
+struct tuple_element< I, nonstd::span<ElementType, Extent> >
+{
+    static_assert( Extent != nonstd::dynamic_extent && I < Extent, "span: dynamic extent or index out of range" );
+    using type = ElementType;
+};
+
+// std::get<>(), 4 variants:
+
+template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
+constexpr ElementType& get( nonstd::span<ElementType, Extent> & spn ) noexcept
+{
+    return spn[I];
+}
+
+template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
+constexpr ElementType&& get( nonstd::span<ElementType, Extent> && spn ) noexcept
+{
+    return spn[I];
+}
+
+template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
+constexpr ElementType const & get( nonstd::span<ElementType, Extent> const & spn ) noexcept
+{
+    return spn[I];
+}
+
+template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
+constexpr ElementType /*const &&*/ get( nonstd::span<ElementType, Extent> const && spn ) noexcept
+{
+    return spn[I];
+}
+
+} // end namespace std
+
+#endif // span_HAVE( STRUCT_BINDING )
 
 #if ! span_USES_STD_SPAN
 span_RESTORE_WARNINGS()

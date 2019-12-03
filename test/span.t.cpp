@@ -1503,6 +1503,81 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
     EXPECT( ssize( z  ) == 0 );
 }
 
+CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size<>" )
+{
+#if span_HAVE( STRUCT_BINDING )
+    const auto N = 3u;
+    using T = span<int, N>;
+
+    int a[N] = { 1, 2, 3, };
+
+    T v( a );
+
+    EXPECT(           ssize( v )        == N );
+    EXPECT( std::tuple_size< T >::value == N );
+
+    static_assert( std::tuple_size< T >::value == N, "std::tuple_size< span<> > fails" );
+#else
+    EXPECT( !!"std::tuple_size<> is not available (no C++11)" );
+#endif
+}
+
+CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<>" )
+{
+#if span_HAVE( STRUCT_BINDING )
+    using S = span<int,3>;
+    using T = std::tuple_element<0, S>::type;
+ 
+    EXPECT( (std::is_same<T, int>::value) );
+
+   static_assert( std::is_same<T, int>::value, "std::tuple_element<0, S>::type fails" );
+#else
+    EXPECT( !!"std::tuple_element<> is not available (no C++11)" );
+#endif
+}
+
+CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
+{
+#if span_HAVE( STRUCT_BINDING )
+    SETUP("") {
+        const auto N = 3u;
+
+        using T = span<int, N>;
+        using U = span<const int, N>;
+
+              int a[N] = { 1, 2, 3, };
+        const int b[N] = { 1, 2, 3, };
+
+              T vna( a );
+              U vnb( b );
+        const T vca( a );
+        const U vcb( b );
+
+    SECTION("lvalue")
+    {
+
+        EXPECT( std::get< 1 >( vna ) == a[1] );
+        EXPECT( std::get< 1 >( vnb ) == a[1] );
+        EXPECT( std::get< 1 >( vca ) == a[1] );
+        EXPECT( std::get< 1 >( vcb ) == a[1] );
+
+        std::get< 1 >( vna ) = 7;
+
+        EXPECT( std::get< 1 >( vna ) == 7 );
+
+        // static_assert( std::get< 1 >( vc ) == 2, "std::tuple_element<I>(spn) fails" );
+    }
+   
+    SECTION("rvalue")
+    {    
+        EXPECT( std::get< 1 >( std::move(vca) ) == 2 );
+        EXPECT( std::get< 1 >( std::move(vcb) ) == 2 );
+    }}
+#else
+    EXPECT( !!"std::get<>(spn) is not available (no C++11)" );
+#endif
+}
+
 // Issues
 
 #include <cassert>
