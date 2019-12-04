@@ -255,7 +255,7 @@ using std::span;
 # pragma GCC   diagnostic ignored "-Wundef"
 # define span_RESTORE_WARNINGS()   _Pragma( "GCC diagnostic pop" )
 
-#elif span_COMPILER_MSVC_VERSION >= 140
+#elif span_COMPILER_MSVC_VER >= 1900
 # define span_DISABLE_MSVC_WARNINGS(codes)  __pragma(warning(push))  __pragma(warning(disable: codes))
 # define span_RESTORE_WARNINGS()            __pragma(warning(pop ))
 
@@ -323,7 +323,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // MSVC: template parameter deduction guides since Visual Studio 2017 v15.7
 
-#define span_HAVE_DEDUCTION_GUIDES         (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VERSION, 1, 999 ))
+#define span_HAVE_DEDUCTION_GUIDES         (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VER, 1, 1913 ))
 
 // Presence of C++ library features:
 
@@ -331,7 +331,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #define span_HAVE_ARRAY                     span_CPP11_110
 #define span_HAVE_BYTE                      span_CPP17_000
 #define span_HAVE_CONDITIONAL               span_CPP11_120
-#define span_HAVE_CONTAINER_DATA_METHOD    (span_CPP11_140 || ( span_COMPILER_MSVC_VERSION >= 90 && span_HAS_CPP0X ))
+#define span_HAVE_CONTAINER_DATA_METHOD    (span_CPP11_140 || ( span_COMPILER_MSVC_VER >= 1500 && span_HAS_CPP0X ))
 #define span_HAVE_DATA                      span_CPP17_000
 #define span_HAVE_LONGLONG                  span_CPP11_80
 #define span_HAVE_REMOVE_CONST              span_CPP11_110

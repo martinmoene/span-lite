@@ -162,6 +162,7 @@ CASE( "Presence of C++ language features" "[.stdlanguage]" )
     span_PRESENT( span_HAVE_AUTO );
     span_PRESENT( span_HAVE_CONSTEXPR_11 );
     span_PRESENT( span_HAVE_CONSTEXPR_14 );
+    span_PRESENT( span_HAVE_DEDUCTION_GUIDES );
     span_PRESENT( span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG );
     span_PRESENT( span_HAVE_DEPRECATED );
     span_PRESENT( span_HAVE_EXPLICIT_CONVERSION );
