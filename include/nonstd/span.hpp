@@ -1550,6 +1550,18 @@ using span_lite::byte_span;
 
 #if span_HAVE( STRUCT_BINDING )
 
+#if span_CPP11_OR_GREATER
+# include <tuple>
+#else
+namespace std {
+    template< typename T >
+    struct tuple_size; /*undefined*/
+
+    template< std::size_t I, typename T >
+    struct tuple_element; /* undefined */
+}
+#endif // span_CPP20_OR_GREATER
+
 namespace std {
 
 // 26.7.X Tuple interface
@@ -1569,33 +1581,29 @@ struct tuple_size< nonstd::span<ElementType, nonstd::dynamic_extent> >;
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
 struct tuple_element< I, nonstd::span<ElementType, Extent> >
 {
-    static_assert( Extent != nonstd::dynamic_extent && I < Extent, "span: dynamic extent or index out of range" );
+#if span_HAVE( STATIC_ASSERT )
+    static_assert( Extent != nonstd::dynamic_extent && I < Extent, "tuple_element<I,span>: dynamic extent or index out of range" );
+#endif
     using type = ElementType;
 };
 
-// std::get<>(), 4 variants:
+// std::get<>(), 2 variants:
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-span_constexpr ElementType& get( nonstd::span<ElementType, Extent> & spn ) span_noexcept
+span_constexpr ElementType & get( nonstd::span<ElementType, Extent> & spn ) span_noexcept
 {
-    return spn[I];
-}
-
-template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-span_constexpr ElementType&& get( nonstd::span<ElementType, Extent> && spn ) span_noexcept
-{
+#if span_HAVE( STATIC_ASSERT )
+    static_assert( Extent != nonstd::dynamic_extent && I < Extent, "get<>(span): dynamic extent or index out of range" );
+#endif
     return spn[I];
 }
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
 span_constexpr ElementType const & get( nonstd::span<ElementType, Extent> const & spn ) span_noexcept
 {
-    return spn[I];
-}
-
-template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-span_constexpr ElementType /*const &&*/ get( nonstd::span<ElementType, Extent> const && spn ) span_noexcept
-{
+#if span_HAVE( STATIC_ASSERT )
+    static_assert( Extent != nonstd::dynamic_extent && I < Extent, "get<>(span): dynamic extent or index out of range" );
+#endif
     return spn[I];
 }
 

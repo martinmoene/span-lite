@@ -1562,6 +1562,7 @@ CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
         EXPECT( std::get< 1 >( vcb ) == a[1] );
 
         std::get< 1 >( vna ) = 7;
+//      std::get< 1 >( vca ) = 7; // read-only
 
         EXPECT( std::get< 1 >( vna ) == 7 );
 
@@ -1570,6 +1571,8 @@ CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
    
     SECTION("rvalue")
     {    
+        EXPECT( std::get< 1 >( std::move(vna) ) == 2 );
+        EXPECT( std::get< 1 >( std::move(vnb) ) == 2 );
         EXPECT( std::get< 1 >( std::move(vca) ) == 2 );
         EXPECT( std::get< 1 >( std::move(vcb) ) == 2 );
     }}
