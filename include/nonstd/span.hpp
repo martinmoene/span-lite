@@ -1555,10 +1555,10 @@ using span_lite::byte_span;
 #else
 namespace std {
     template< typename T >
-    struct tuple_size; /*undefined*/
+    class tuple_size; /*undefined*/
 
     template< std::size_t I, typename T >
-    struct tuple_element; /* undefined */
+    class tuple_element; /* undefined */
 }
 #endif // span_CPP20_OR_GREATER
 
@@ -1569,18 +1569,19 @@ namespace std {
 // std::tuple_size<>:
 
 template< typename ElementType, nonstd::span_lite::extent_t Extent >
-struct tuple_size< nonstd::span<ElementType, Extent> > : public integral_constant<size_t, static_cast<size_t>(Extent)> {};
+class tuple_size< nonstd::span<ElementType, Extent> > : public integral_constant<size_t, static_cast<size_t>(Extent)> {};
 
 // std::tuple_size<>: Leave undefined for dynamic extent:
 
 template< typename ElementType >
-struct tuple_size< nonstd::span<ElementType, nonstd::dynamic_extent> >;
+class tuple_size< nonstd::span<ElementType, nonstd::dynamic_extent> >;
 
 // std::tuple_element<>:
 
 template< size_t I, typename ElementType, nonstd::span_lite::extent_t Extent >
-struct tuple_element< I, nonstd::span<ElementType, Extent> >
+class tuple_element< I, nonstd::span<ElementType, Extent> >
 {
+public:
 #if span_HAVE( STATIC_ASSERT )
     static_assert( Extent != nonstd::dynamic_extent && I < Extent, "tuple_element<I,span>: dynamic extent or index out of range" );
 #endif
