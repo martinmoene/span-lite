@@ -1551,8 +1551,14 @@ using span_lite::byte_span;
 
 #if span_HAVE( STRUCT_BINDING )
 
-#if span_CPP11_OR_GREATER
+#if   span_CPP14_OR_GREATER
 # include <tuple>
+#elif span_CPP11_OR_GREATER
+# include <tuple>
+namespace std {
+    template< std::size_t I, typename T >
+    using tuple_element_t = typename tuple_element<I, T>::type;
+}
 #else
 namespace std {
     template< typename T >
@@ -1561,7 +1567,7 @@ namespace std {
     template< std::size_t I, typename T >
     class tuple_element; /* undefined */
 }
-#endif // span_CPP20_OR_GREATER
+#endif // span_CPP14_OR_GREATER
 
 namespace std {
 

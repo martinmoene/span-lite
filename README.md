@@ -501,7 +501,8 @@ last(): Allows to create a sub span of the last n elements
 subspan(): Allows to create a sub span starting at a given offset
 size(): Allows to obtain the number of elements via size()
 ssize(): Allows to obtain the number of elements via ssize()
-tuple_size<>: Allows to obtain the number of elements via std::tuple_size<>
-tuple_element<>: Allows to obtain an element via std::tuple_element<>
+tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++11)
+tuple_element<>: Allows to obtain an element via std::tuple_element<> (C++11)
+tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)
 get<I>(spn): Allows to access an element via std::get<>()
 ```

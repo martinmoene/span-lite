@@ -1503,7 +1503,7 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
     EXPECT( ssize( z  ) == 0 );
 }
 
-CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size<>" )
+CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++11)" )
 {
 #if span_HAVE( STRUCT_BINDING )
     const auto N = 3u;
@@ -1522,7 +1522,7 @@ CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size
 #endif
 }
 
-CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<>" )
+CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C++11)" )
 {
 #if span_HAVE( STRUCT_BINDING )
     using S = span<int,3>;
@@ -1531,6 +1531,20 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<>" )
     EXPECT( (std::is_same<T, int>::value) );
 
    static_assert( std::is_same<T, int>::value, "std::tuple_element<0, S>::type fails" );
+#else
+    EXPECT( !!"std::tuple_element<> is not available (no C++11)" );
+#endif
+}
+
+CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)" )
+{
+#if span_HAVE( STRUCT_BINDING )
+    using S = span<int,3>;
+    using T = std::tuple_element_t<0, S>;
+ 
+    EXPECT( (std::is_same<T, int>::value) );
+
+   static_assert( std::is_same<T, int>::value, "std::tuple_element_t<0, S> fails" );
 #else
     EXPECT( !!"std::tuple_element<> is not available (no C++11)" );
 #endif
