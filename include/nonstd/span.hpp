@@ -248,6 +248,7 @@ using std::span;
 #if defined(__clang__)
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wundef"
+# pragma clang diagnostic ignored "-Wmismatched-tags"
 # define span_RESTORE_WARNINGS()   _Pragma( "clang diagnostic pop" )
 
 #elif defined __GNUC__
