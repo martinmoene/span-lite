@@ -1538,7 +1538,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C+
 
 CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)" )
 {
-#if span_HAVE( STRUCT_BINDING )
+#if span_HAVE( STRUCT_BINDING ) && span_CPP11_140
     using S = span<int,3>;
     using T = std::tuple_element_t<0, S>;
  
