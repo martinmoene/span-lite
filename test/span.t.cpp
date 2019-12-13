@@ -8,6 +8,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#include <ciso646>
 #include "span-main.t.hpp"
 
 #define DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
@@ -437,9 +438,15 @@ CASE( "span<>: Allows to copy-construct from another span of a compatible type" 
 
     span<const volatile int> x( v );
     span<const volatile int> y( v );
-
+#ifndef _LIBCPP_VERSION
     EXPECT( std::equal( x.begin(), x.end(), arr ) );
     EXPECT( std::equal( y.begin(), y.end(), arr ) );
+#else
+    for(size_t i = 0; i < x.size(); ++i)
+        EXPECT(x[i] == arr[i]);
+    for(size_t i = 0; i < y.size(); ++i)
+        EXPECT(y[i] == arr[i]);
+#endif
 }
 
 CASE( "span<>: Allows to copy-construct from a temporary span of the same type (C++11)" )

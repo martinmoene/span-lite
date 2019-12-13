@@ -17,6 +17,7 @@ addons:
       - llvm-toolchain-trusty-4.0
       - llvm-toolchain-trusty-5.0
       - llvm-toolchain-trusty-6.0
+      - llvm-toolchain-trusty-8
 
 matrix:
   include:
@@ -130,6 +131,14 @@ matrix:
       addons: &clang6_0
         apt:
           packages: ["clang-6.0", "g++-7", "python3-pip", "lcov"]
+          sources: *apt_sources
+
+    - os: linux
+      env: COMPILER=clang++-8 CXXFLAGS=-stdlib=libc++
+      compiler: clang
+      addons: &clang8
+        apt:
+          packages: ["clang-8", "g++-7", "python3-pip", "lcov", 'libc++-8-dev', 'libc++abi-8-dev']
           sources: *apt_sources
 
     - os: osx
