@@ -212,7 +212,7 @@ Define this to `std::ptrdiff_t` to use the signed type. The default is `std::siz
 ### Select size type
 
 -D<b>span_CONFIG_SIZE_TYPE</b>=std::size_t  
-Define this to `std::ptrdiff_t` to use the signed type. The default is `std::size_t`, as in C++20 (since v0.7.0). Note `span_CONFIG_SIZE_TYPE` replaces `span_CONFIG_SIZE_TYPE` which is deprecated.
+Define this to `std::ptrdiff_t` to use the signed type. The default is `std::size_t`, as in C++20 (since v0.7.0). Note `span_CONFIG_SIZE_TYPE` replaces `span_CONFIG_INDEX_TYPE` which is deprecated.
 
 ### Disable exceptions
 
