@@ -492,7 +492,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
     template< bool B = (VA), typename std::enable_if<B, int>::type = 0 >
 
 #define span_REQUIRES_T(VA) \
-    , typename = typename std::enable_if< (VA), nonstd::span_lite::detail::enabler >::type
+    , typename std::enable_if< (VA), int >::type = 0
 
 #define span_REQUIRES_R(R, VA) \
     typename std::enable_if< (VA), R>::type
@@ -633,8 +633,6 @@ using nonstd::byte;
 // Implementation details:
 
 namespace detail {
-
-/*enum*/ struct enabler{};
 
 #if span_HAVE( TYPE_TRAITS )
 
