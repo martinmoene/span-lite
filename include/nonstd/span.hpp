@@ -26,6 +26,8 @@
 #define span_SPAN_NONSTD   1
 #define span_SPAN_STD      2
 
+#define span_HAVE( feature )  ( span_HAVE_##feature )
+
 #ifndef  span_CONFIG_SELECT_SPAN
 # define span_CONFIG_SELECT_SPAN  ( span_HAVE_STD_SPAN ? span_SPAN_STD : span_SPAN_NONSTD )
 #endif
@@ -277,8 +279,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #endif
 
 // Presence of language and library features:
-
-#define span_HAVE( feature )  ( span_HAVE_##feature )
 
 #ifdef _HAS_CPP0X
 # define span_HAS_CPP0X  _HAS_CPP0X
