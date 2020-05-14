@@ -154,8 +154,10 @@ CASE( "span<>: Termination throws std::logic_error-derived exception [span_CONFI
 CASE( "span<>: Allows to default-construct" )
 {
     span<int> v;
+    span<int, 0> w;
 
     EXPECT( v.size() == size_type( 0 ) );
+    EXPECT( w.size() == size_type( 0 ) );
 }
 
 CASE( "span<>: Allows to construct from a nullptr and a zero size (C++11)" )

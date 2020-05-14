@@ -833,7 +833,10 @@ public:
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
 #if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
-    span_REQUIRES_0(( Extent == dynamic_extent ))
+    span_REQUIRES_0(
+        ( Extent == 0 ) ||
+        ( Extent == dynamic_extent )
+    )
 #endif
     span_constexpr span() span_noexcept
         : data_( span_nullptr )
