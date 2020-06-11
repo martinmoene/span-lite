@@ -361,6 +361,21 @@ CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, s
 #endif
 }
 
+CASE( "span<>: Allows to construct from an empty std::array<> (C++11)" )
+{
+#if span_HAVE( ARRAY )
+    std::array<int,0> arr;
+
+    span<      int> v( arr );
+    span<const int> w( arr );
+
+    EXPECT( std::equal( v.begin(), v.end(), arr.begin() ) );
+    EXPECT( std::equal( w.begin(), w.end(), arr.begin() ) );
+#else
+    EXPECT( !!"std::array<> is not available (no C++11)" );
+#endif
+}
+
 CASE( "span<>: Allows to construct from a container (std::vector<>)" )
 {
 #if span_HAVE( INITIALIZER_LIST )
