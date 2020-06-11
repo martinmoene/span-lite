@@ -893,7 +893,7 @@ public:
 # else
         span_constexpr span( std::array< value_type, N > & arr ) span_noexcept
 # endif
-        : data_( span_ADDRESSOF( arr[0] ) )
+        : data_( arr.data() )
         , size_( to_size( arr.size() ) )
     {}
 
@@ -906,7 +906,7 @@ public:
 # endif
     >
     span_constexpr span( std::array< value_type, N> const & arr ) span_noexcept
-        : data_( span_ADDRESSOF( arr[0] ) )
+        : data_( arr.data() )
         , size_( to_size( arr.size() ) )
     {}
 
