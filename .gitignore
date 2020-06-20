@@ -34,6 +34,9 @@
 .buckconfig.local
 BUCKAROO_DEPS
 
+# Build folder
+/build/
+
 # CodeBlocks IDE files
 *.layout
 
