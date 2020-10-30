@@ -556,6 +556,7 @@ using std::is_same;
 using std::integral_constant;
 using std::true_type;
 using std::false_type;
+using std::remove_reference;
 
 #else
 
@@ -635,6 +636,15 @@ using nonstd::byte;
 #endif
 
 } // namespace std17
+
+// C++20 emulation:
+
+namespace std20 {
+
+template< class T >
+struct iter_reference { typedef T type; };
+
+} // namespace std20
 
 // Implementation details:
 
@@ -1228,6 +1238,11 @@ span( Container& ) -> span<typename Container::value_type>;
 
 template< class Container >
 span( Container const & ) -> span<const typename Container::value_type>;
+
+// iterator: constraints: It satisfies contiguous_­iterator.
+
+template< class It, class EndOrSize >
+span( It, EndOrSize ) -> span< typename std11::remove_reference< typename std20::iter_reference<It>::type >::type >;
 
 #endif // span_HAVE( DEDUCTION_GUIDES )
 
