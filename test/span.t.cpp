@@ -1551,7 +1551,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C+
 #if span_HAVE( STRUCT_BINDING )
     using S = span<int,3>;
     using T = std::tuple_element<0, S>::type;
- 
+
     EXPECT( (std::is_same<T, int>::value) );
 
    static_assert( std::is_same<T, int>::value, "std::tuple_element<0, S>::type fails" );
@@ -1565,7 +1565,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (
 #if span_HAVE( STRUCT_BINDING ) && span_CPP11_140
     using S = span<int,3>;
     using T = std::tuple_element_t<0, S>;
- 
+
     EXPECT( (std::is_same<T, int>::value) );
 
    static_assert( std::is_same<T, int>::value, "std::tuple_element_t<0, S> fails" );
@@ -1606,9 +1606,9 @@ CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
 
         // static_assert( std::get< 1 >( vc ) == 2, "std::tuple_element<I>(spn) fails" );
     }
-   
+
     SECTION("rvalue")
-    {    
+    {
         EXPECT( std::get< 1 >( std::move(vna) ) == 2 );
         EXPECT( std::get< 1 >( std::move(vnb) ) == 2 );
         EXPECT( std::get< 1 >( std::move(vca) ) == 2 );
@@ -1713,6 +1713,15 @@ CASE( "[hide][issue-3: same()]" )
 #else
     EXPECT( !!"test is unavailable as make_span is not provided via span_FEATURE_MAKE_SPAN_TO_STD=99" );
 #endif // span_FEATURE_TO_STD( MAKE_SPAN )
+}
+
+CASE( "tweak header: reads tweak header if supported " "[tweak]" )
+{
+#if span_HAVE_TWEAK_HEADER
+    EXPECT( SPAN_TWEAK_VALUE == 42 );
+#else
+    EXPECT( !!"Tweak header is not available (span_HAVE_TWEAK_HEADER: 0)." );
+#endif
 }
 
 // end of file

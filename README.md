@@ -192,6 +192,10 @@ To construct a span from a container with compilers that cannot constrain such a
 Configuration
 -------------
 
+### Tweak header
+
+If the compiler supports [`__has_include()`](https://en.cppreference.com/w/cpp/preprocessor/include), *span lite* supports the [tweak header](https://vector-of-bool.github.io/2020/10/04/lib-configuration.html) mechanism. Provide your *tweak header* as `nonstd/span.tweak.hpp` in a folder in the include-search-path. In the tweak header, provide definitions as documented below, like `#define span_CONFIG_NO_EXCEPTIONS 1`.
+
 ### Standard selection macro
 
 \-D<b>span\_CPLUSPLUS</b>=199711L  
@@ -433,6 +437,7 @@ span<>: Allows to construct from a const C-array with size via decay to pointer 
 span<>: Allows to construct from a std::initializer_list<> (C++11)
 span<>: Allows to construct from a std::array<> (C++11)
 span<>: Allows to construct from a std::array<> with const data (C++11, span_FEATURE_CONSTR..._ELEMENT_TYPE=1)
+span<>: Allows to construct from an empty std::array<> (C++11)
 span<>: Allows to construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a const container (std::vector<>)
@@ -505,4 +510,5 @@ tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++
 tuple_element<>: Allows to obtain an element via std::tuple_element<> (C++11)
 tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)
 get<I>(spn): Allows to access an element via std::get<>()
+tweak header: reads tweak header if supported [tweak]
 ```

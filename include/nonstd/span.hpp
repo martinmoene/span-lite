@@ -26,6 +26,20 @@
 #define span_SPAN_NONSTD   1
 #define span_SPAN_STD      2
 
+// tweak header support:
+
+#ifdef __has_include
+# if __has_include(<nonstd/span.tweak.hpp>)
+#  include <nonstd/span.tweak.hpp>
+# endif
+#define span_HAVE_TWEAK_HEADER  1
+#else
+#define span_HAVE_TWEAK_HEADER  0
+//# pragma message("span.hpp: Note: Tweak header not supported.")
+#endif
+
+// span selection and configuration:
+
 #define span_HAVE( feature )  ( span_HAVE_##feature )
 
 #ifndef  span_CONFIG_SELECT_SPAN
