@@ -553,6 +553,7 @@ struct remove_cv
 #if span_HAVE( TYPE_TRAITS )
 
 using std::is_same;
+using std::is_signed;
 using std::integral_constant;
 using std::true_type;
 using std::false_type;
@@ -566,6 +567,11 @@ typedef integral_constant< bool, false > false_type;
 
 template< class T, class U > struct is_same : false_type{};
 template< class T          > struct is_same<T, T> : true_type{};
+
+template< typename T >  struct is_signed : false_type {};
+template<> struct is_signed<signed char> : true_type {};
+template<> struct is_signed<signed int > : true_type {};
+template<> struct is_signed<signed long> : true_type {};
 
 #endif
 
@@ -651,6 +657,12 @@ struct iter_reference { typedef T type; };
 namespace detail {
 
 /*enum*/ struct enabler{};
+
+template< typename T >
+bool is_positive( T x )
+{
+    return std11::is_signed<T>::value ? x >= 0 : true;
+}
 
 #if span_HAVE( TYPE_TRAITS )
 
@@ -1091,7 +1103,7 @@ public:
 
     span_constexpr_exp reference operator[]( size_type idx ) const
     {
-        span_EXPECTS( 0 <= idx && idx < size() );
+        span_EXPECTS( detail::is_positive( idx ) && idx < size() );
 
         return *( data() + idx );
     }
@@ -1101,7 +1113,7 @@ public:
 
     span_constexpr_exp reference operator()( size_type idx ) const
     {
-        span_EXPECTS( 0 <= idx && idx < size() );
+        span_EXPECTS( detail::is_positive( idx ) && idx < size() );
 
         return *( data() + idx );
     }
