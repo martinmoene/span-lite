@@ -874,7 +874,7 @@ public:
     {
         span_EXPECTS(
             ( ptr == span_nullptr && count == 0 ) ||
-            ( ptr != span_nullptr && count >= 0 )
+            ( ptr != span_nullptr && detail::is_positive( count ) )
         );
     }
 
@@ -1018,7 +1018,7 @@ public:
     span_constexpr_exp span< element_type, Count >
     first() const
     {
-        span_EXPECTS( 0 <= Count && Count <= size() );
+        span_EXPECTS( detail::is_positive( Count ) && Count <= size() );
 
         return span< element_type, Count >( data(), Count );
     }
@@ -1027,7 +1027,7 @@ public:
     span_constexpr_exp span< element_type, Count >
     last() const
     {
-        span_EXPECTS( 0 <= Count && Count <= size() );
+        span_EXPECTS( detail::is_positive( Count ) && Count <= size() );
 
         return span< element_type, Count >( data() + (size() - Count), Count );
     }
@@ -1041,8 +1041,8 @@ public:
     subspan() const
     {
         span_EXPECTS(
-            ( 0 <= Offset && Offset <= size() ) &&
-            ( Count == dynamic_extent || (0 <= Count && Count + Offset <= size()) )
+            ( detail::is_positive( Offset ) && Offset <= size() ) &&
+            ( Count == dynamic_extent || (detail::is_positive( Count ) && Count + Offset <= size()) )
         );
 
         return span< element_type, Count >(
@@ -1052,7 +1052,7 @@ public:
     span_constexpr_exp span< element_type, dynamic_extent >
     first( size_type count ) const
     {
-        span_EXPECTS( 0 <= count && count <= size() );
+        span_EXPECTS( detail::is_positive( count ) && count <= size() );
 
         return span< element_type, dynamic_extent >( data(), count );
     }
@@ -1060,7 +1060,7 @@ public:
     span_constexpr_exp span< element_type, dynamic_extent >
     last( size_type count ) const
     {
-        span_EXPECTS( 0 <= count && count <= size() );
+        span_EXPECTS( detail::is_positive( count ) && count <= size() );
 
         return span< element_type, dynamic_extent >( data() + ( size() - count ), count );
     }
@@ -1069,8 +1069,8 @@ public:
     subspan( size_type offset, size_type count = static_cast<size_type>(dynamic_extent) ) const
     {
         span_EXPECTS(
-            ( ( 0 <= offset  && offset <= size() ) ) &&
-            ( count == static_cast<size_type>(dynamic_extent) || ( 0 <= count && offset + count <= size() ) )
+            ( ( detail::is_positive( offset ) && offset <= size() ) ) &&
+            ( count == static_cast<size_type>(dynamic_extent) || ( detail::is_positive( count ) && offset + count <= size() ) )
         );
 
         return span< element_type, dynamic_extent >(
@@ -1125,7 +1125,7 @@ public:
 #if span_CONFIG( NO_EXCEPTIONS )
         return this->operator[]( idx );
 #else
-        if ( idx < 0 || size() <= idx )
+        if ( !detail::is_positive( idx ) || size() <= idx )
         {
             detail::throw_out_of_range( idx, size() );
         }
