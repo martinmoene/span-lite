@@ -661,8 +661,10 @@ using nonstd::byte;
 
 namespace std20 {
 
+#if span_HAVE( DEDUCTION_GUIDES )
 template< class T >
-struct iter_reference { typedef T type; };
+using iter_reference_t = decltype( *std::declval<T&>() );
+#endif
 
 } // namespace std20
 
@@ -1268,7 +1270,7 @@ span( Container const & ) -> span<const typename Container::value_type>;
 // iterator: constraints: It satisfies contiguous_­iterator.
 
 template< class It, class EndOrSize >
-span( It, EndOrSize ) -> span< typename std11::remove_reference< typename std20::iter_reference<It>::type >::type >;
+span( It, EndOrSize ) -> span< typename std11::remove_reference< typename std20::iter_reference_t<It> >::type >;
 
 #endif // span_HAVE( DEDUCTION_GUIDES )
 

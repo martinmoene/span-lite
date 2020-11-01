@@ -430,6 +430,7 @@ span<>: Allows to construct from a non-null pointer to const and a size
 span<>: Allows to construct from a temporary pointer and a size
 span<>: Allows to construct from a temporary pointer to const and a size
 span<>: Allows to construct from any pointer and a zero size
+span<>: Allows to construct from an iterator and a size via an iterator deduction guide (C++17)
 span<>: Allows to construct from a C-array
 span<>: Allows to construct from a const C-array
 span<>: Allows to construct from a C-array with size via decay to pointer (potentially dangerous)

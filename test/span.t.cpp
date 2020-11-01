@@ -248,6 +248,20 @@ CASE( "span<>: Allows to construct from any pointer and a zero size" )
     EXPECT_NO_THROW( F::nonnull() );
 }
 
+CASE( "span<>: Allows to construct from an iterator and a size via an iterator deduction guide (C++17)" )
+{
+#if span_HAVE( DEDUCTION_GUIDES )
+    char const * argv[] = { "prog", "arg1", "arg2" };
+    int  const   argc   = DIMENSION_OF( argv );
+
+    span args(argv, argc);
+
+    EXPECT( args.size() == DIMENSION_OF( argv ) );
+#else
+    EXPECT( !!"iterator deduction guide is not available (no C++17)" );
+#endif
+}
+
 CASE( "span<>: Allows to construct from a C-array" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
