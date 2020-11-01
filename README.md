@@ -430,16 +430,19 @@ span<>: Allows to construct from a non-null pointer to const and a size
 span<>: Allows to construct from a temporary pointer and a size
 span<>: Allows to construct from a temporary pointer to const and a size
 span<>: Allows to construct from any pointer and a zero size
-span<>: Allows to construct from an iterator and a size via an iterator deduction guide (C++17)
+span<>: Allows to construct from an iterator and a size via a deduction guide (C++17)
 span<>: Allows to construct from a C-array
+span<>: Allows to construct from a C-array via a deduction guide (C++17)
 span<>: Allows to construct from a const C-array
 span<>: Allows to construct from a C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a const C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a std::initializer_list<> (C++11)
 span<>: Allows to construct from a std::array<> (C++11)
+span<>: Allows to construct from a std::array via a deduction guide (C++17)
 span<>: Allows to construct from a std::array<> with const data (C++11, span_FEATURE_CONSTR..._ELEMENT_TYPE=1)
 span<>: Allows to construct from an empty std::array<> (C++11)
 span<>: Allows to construct from a container (std::vector<>)
+span<>: Allows to construct from a container via a deduction guide (std::vector<>, C++17)
 span<>: Allows to tag-construct from a container (std::vector<>)
 span<>: Allows to tag-construct from a const container (std::vector<>)
 span<>: Allows to copy-construct from another span of the same type

@@ -248,7 +248,7 @@ CASE( "span<>: Allows to construct from any pointer and a zero size" )
     EXPECT_NO_THROW( F::nonnull() );
 }
 
-CASE( "span<>: Allows to construct from an iterator and a size via an iterator deduction guide (C++17)" )
+CASE( "span<>: Allows to construct from an iterator and a size via a deduction guide (C++17)" )
 {
 #if span_HAVE( DEDUCTION_GUIDES )
     char const * argv[] = { "prog", "arg1", "arg2" };
@@ -258,7 +258,7 @@ CASE( "span<>: Allows to construct from an iterator and a size via an iterator d
 
     EXPECT( args.size() == DIMENSION_OF( argv ) );
 #else
-    EXPECT( !!"iterator deduction guide is not available (no C++17)" );
+    EXPECT( !!"deduction guide is not available (no C++17)" );
 #endif
 }
 
@@ -271,6 +271,19 @@ CASE( "span<>: Allows to construct from a C-array" )
 
     EXPECT( std::equal( v.begin(), v.end(), arr ) );
     EXPECT( std::equal( w.begin(), w.end(), arr ) );
+}
+
+CASE( "span<>: Allows to construct from a C-array via a deduction guide (C++17)" )
+{
+#if span_HAVE( DEDUCTION_GUIDES ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
+    int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+
+    span v( arr );
+
+    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+#else
+    EXPECT( !!"deduction guide is not available (no C++17)" );
+#endif
 }
 
 CASE( "span<>: Allows to construct from a const C-array" )
@@ -356,6 +369,19 @@ CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 #endif
 }
 
+CASE( "span<>: Allows to construct from a std::array via a deduction guide (C++17)" )
+{
+#if span_HAVE( DEDUCTION_GUIDES ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
+    std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
+
+    span v( arr );
+
+    EXPECT( std::equal( v.begin(), v.end(), arr.begin() ) );
+#else
+    EXPECT( !!"deduction guide is not available (no C++17)" );
+#endif
+}
+
 CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, span_FEATURE_CONSTR..._ELEMENT_TYPE=1)" )
 {
 #if span_FEATURE( CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE )
@@ -407,6 +433,19 @@ CASE( "span<>: Allows to construct from a container (std::vector<>)" )
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
 #else
     EXPECT( !!"constrained construction from container is not available" );
+#endif
+}
+
+CASE( "span<>: Allows to construct from a container via a deduction guide (std::vector<>, C++17)" )
+{
+#if span_HAVE( DEDUCTION_GUIDES ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
+    std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+
+    span v( vec );
+
+    EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
+#else
+    EXPECT( !!"deduction guide is not available (no C++17)" );
 #endif
 }
 
