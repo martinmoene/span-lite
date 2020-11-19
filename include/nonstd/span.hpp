@@ -120,7 +120,7 @@
 
 #ifndef span_CONFIG_NO_EXCEPTIONS
 # if _MSC_VER
-# include <cstddef>     // for _HAS_EXCEPTIONS
+#  include <cstddef>    // for _HAS_EXCEPTIONS
 # endif
 # if defined(__cpp_exceptions) || defined(__EXCEPTIONS) || (_HAS_EXCEPTIONS)
 #  define span_CONFIG_NO_EXCEPTIONS  0
@@ -1343,13 +1343,21 @@ inline span_constexpr bool operator>=( span<T1,E1> const & l, span<T2,E2> const 
 template< typename T, extent_t Extent >
 struct BytesExtent
 {
+#if span_CPP11_OR_GREATER
     enum ET : extent_t { value = span_sizeof(T) * Extent };
+#else
+    enum ET { value = span_sizeof(T) * Extent };
+#endif
 };
 
 template< typename T >
 struct BytesExtent< T, dynamic_extent >
 {
+#if span_CPP11_OR_GREATER
     enum ET : extent_t { value = dynamic_extent };
+#else
+    enum ET { value = dynamic_extent };
+#endif
 };
 
 template< class T, extent_t Extent >
