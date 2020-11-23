@@ -1,6 +1,5 @@
 <a id="top"></a>
-span lite: A single-file header-only version of a C++20-like span for C++98, C++11 and later
-============================================================================================
+# span lite: A single-file header-only version of a C++20-like span for C++98, C++11 and later
 
 [![Language](https://img.shields.io/badge/C%2B%2B-98/11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/span-lite.svg?branch=master)](https://travis-ci.org/martinmoene/span-lite) [![Build status](https://ci.appveyor.com/api/projects/status/1ha3wnxtam547m8p?svg=true)](https://ci.appveyor.com/project/martinmoene/span-lite) [![Version](https://badge.fury.io/gh/martinmoene%2Fspan-lite.svg)](https://github.com/martinmoene/span-lite/releases) [![download](https://img.shields.io/badge/latest-download-blue.svg)](https://github.com/martinmoene/span-lite/blob/master/include/nonstd/span.hpp) [![Conan](https://img.shields.io/badge/on-conan-blue.svg)](https://conan.io/center/span-lite) [![Try it on wandbox](https://img.shields.io/badge/on-wandbox-blue.svg)](https://wandbox.org/permlink/venR3Ko2Q4tlvcVk) [![Try it on godbolt online](https://img.shields.io/badge/on-godbolt-blue.svg)](https://godbolt.org/z/htwpnb)
 
@@ -18,8 +17,7 @@ span lite: A single-file header-only version of a C++20-like span for C++98, C++
 - [Notes and references](#notes-and-references)
 - [Appendix](#appendix)
 
-Example usage
--------------
+## Example usage
 
 ```cpp
 #include "nonstd/span.hpp"
@@ -50,30 +48,25 @@ prompt> g++ -std=c++11 -Wall -I../include -o 01-basic.exe 01-basic.cpp && 01-bas
 C-array:1 array:2 vector:3
 ```
 
-In a nutshell
----------------
+## In a nutshell
 
 **span lite** is a single-file header-only library to provide a bounds-safe view for sequences of objects. The library provides a [C++20-like span](http://en.cppreference.com/w/cpp/container/span) for use with C++98 and later. If available, `std::span` is used, unless [configured otherwise](#configuration). *span-lite* can detect the presence of [*byte-lite*](https://github.com/martinmoene/byte-lite) and if present, it provides `as_bytes()` and `as_writable_bytes()` also for C++14 and earlier. 
 
 **Features and properties of span lite** are ease of installation (single header), freedom of dependencies other than the standard library. To compensate for the class template argument deduction that is missing from pre-C++17 compilers, `nonstd::span` can provide `make_span` functions. See [configuration](#configuration).
 
-License
--------
+## License
 
 *span lite* is distributed under the [Boost Software License](https://github.com/martinmoene/span-lite/blob/master/LICENSE.txt).
 
-Dependencies
-------------
+## Dependencies
 
 *span lite* has no other dependencies than the [C++ standard library](http://en.cppreference.com/w/cpp/header).
 
-Installation and use
---------------------
+## Installation and use
 
 *span lite* is a single-file header-only library. Put `span.hpp` in the [include](include) folder directly into the project source tree or somewhere reachable from your project.
 
-Synopsis
---------
+## Synopsis
 
 **Contents**  
 [Documentation of `std::span`](#documentation-of-stdspan)  
@@ -81,20 +74,17 @@ Synopsis
 [Non-standard extensions](#non-standard-extensions)  
 [Configuration](#configuration)  
 
-Documentation of `std::span`
-----------------------------
+## Documentation of `std::span`
 
 Depending on the compiler and C++-standard used, `nonstd::span` behaves less or more like `std::span`. To get an idea of the capabilities of `nonstd::span` with your configuration, look at the output of the [tests](test/span.t.cpp), issuing `span-main.t --pass @`. For `std::span`, see its [documentation at cppreference](http://en.cppreference.com/w/cpp/container/span).  
 
-Later additions
----------------
+## Later additions
 
 ### `back()` and `front()`
 
 *span lite* can provide `back()` and `front()` member functions for element access. See the table below and section [configuration](#configuration).
 
-Non-standard extensions
------------------------
+## Non-standard extensions
 
 ### Construct from container
 
@@ -189,8 +179,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | >= C++11  | template&lt;class T><br>span&lt;T, sizeof(T)><br>**byte_span**(T & t) |
 | &nbsp; | >= C++11  | template&lt;class T><br>span&lt;const T, sizeof(T)><br>**byte_span**(T const & t) |
 
-Configuration
--------------
+## Configuration
 
 ### Tweak header
 
@@ -320,8 +309,7 @@ OS           | Compiler   | Where   | Versions |
 &nbsp;       | Visual C++<br>(Visual Studio)| Local | 8 (2005), 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 &nbsp;       | Visual C++<br>(Visual Studio)| AppVeyor | 10 (2010), 11 (2012),<br>12 (2013), 14 (2015), 15 (2017) |
 
-Building the tests
-------------------
+## Building the tests
 
 To build the tests you need:
 
@@ -356,9 +344,7 @@ The following steps assume that the [*span lite* source code](https://github.com
 
 All tests should pass, indicating your platform is supported and you are ready to use *span lite*.
 
-
-Other implementations of span
------------------------------
+## Other implementations of span
 
 - *gsl-lite* [span](https://github.com/martinmoene/gsl-lite/blob/73c4f16f2b35fc174fc2f09d44d5ab13e5c638c3/include/gsl/gsl-lite.hpp#L1221).
 - Microsoft GSL [span](https://github.com/Microsoft/GSL/blob/master/include/gsl/span).
@@ -367,9 +353,7 @@ Other implementations of span
 - Tristan Brindle's [Implementation of C++20's std::span for older compilers](https://github.com/tcbrindle/span).
 - [Search _span c++_ on GitHub](https://github.com/search?l=C%2B%2B&q=span+c%2B%2B&type=Repositories&utf8=%E2%9C%93).
 
-
-Notes and references
---------------------
+## Notes and references
 
 *Interface and specification*
 
@@ -402,8 +386,7 @@ Notes and references
 - [Reddit - 2019-11 Belfast ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/dtuov8/201911_belfast_iso_c_committee_trip_report/)
 - <a id="regtyp"></a>Titus Winters. [Revisiting Regular Types](https://abseil.io/blog/20180531-regular-types). Abseil Blog. 31 May 2018.
 
-Appendix
---------
+## Appendix
 
 ### A.1 Compile-time information
 
@@ -411,7 +394,7 @@ The version of *span lite* is available via tag `[.version]`. The following tags
 
 ### A.2 Span lite test specification
 
-```
+```Text
 span<>: Terminates construction from a nullptr and a non-zero size (C++11)
 span<>: Terminates construction from two pointers in the wrong order
 span<>: Terminates construction from a null pointer and a non-zero size
