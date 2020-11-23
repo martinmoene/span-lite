@@ -13,8 +13,8 @@
 
 #define DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
 
-#define span_STD_OR(    expr )  ( span_USES_STD_SPAN) || ( expr )
-#define span_NONSTD_OR( expr )  (!span_USES_STD_SPAN) && ( expr )
+#define span_STD_OR(     expr )  ( span_USES_STD_SPAN) || ( expr )
+#define span_NONSTD_AND( expr )  (!span_USES_STD_SPAN) && ( expr )
 
 using namespace nonstd;
 
@@ -23,7 +23,7 @@ typedef std::ptrdiff_t       ssize_type;
 
 CASE( "span<>: Terminates construction from a nullptr and a non-zero size (C++11)" )
 {
-#if span_NONSTD_OR( span_HAVE( NULLPTR ) )
+#if span_NONSTD_AND( span_HAVE( NULLPTR ) )
     struct F { static void blow() { span<int> v( nullptr, 42 ); } };
 
     EXPECT_THROWS( F::blow() );
@@ -110,10 +110,10 @@ CASE( "span<>: Terminates access outside the span" )
 #if !span_USES_STD_SPAN
     struct F {
         static void blow_ix(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v[i]; }
-#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_CALL_OPERATOR ) )
         static void blow_iv(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v(i); }
 #endif
-#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_AT ) )
         static void blow_at(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
 #endif
     };
@@ -121,11 +121,11 @@ CASE( "span<>: Terminates access outside the span" )
     EXPECT_NO_THROW( F::blow_ix(2) );
     EXPECT_THROWS(   F::blow_ix(3) );
 
-#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_CALL_OPERATOR ) )
     EXPECT_NO_THROW( F::blow_iv(2) );
     EXPECT_THROWS(   F::blow_iv(3) );
 #endif
-#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_AT ) )
     EXPECT_NO_THROW( F::blow_at(2) );
     EXPECT_THROWS(   F::blow_at(3) );
 #endif
@@ -136,7 +136,7 @@ CASE( "span<>: Terminates access outside the span" )
 
 CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [span_FEATURE_MEMBER_AT>0][span_CONFIG_NO_EXCEPTIONS=0]" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_AT ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -167,7 +167,7 @@ CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [s
 
 CASE( "span<>: Termination throws std::logic_error-derived exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
 {
-#if span_NONSTD_OR( span_CONFIG( CONTRACT_VIOLATION_THROWS ) )
+#if span_NONSTD_AND( span_CONFIG( CONTRACT_VIOLATION_THROWS ) )
     struct F {
         static void blow() { int arr[] = { 1, }; span<int> v( arr ); (void) v[1]; }
     };
@@ -189,7 +189,7 @@ CASE( "span<>: Allows to default-construct" )
 
 CASE( "span<>: Allows to construct from a nullptr and a zero size (C++11)" )
 {
-#if span_NONSTD_OR( span_HAVE(  NULLPTR ) )
+#if span_NONSTD_AND( span_HAVE(  NULLPTR ) )
     span<      int> v( nullptr, size_type(0) );
     span<const int> w( nullptr, size_type(0) );
 
@@ -530,7 +530,7 @@ CASE( "span<>: Allows to construct from a container via a deduction guide (std::
 
 CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
 {
-#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
+#if span_NONSTD_AND( span_FEATURE_TO_STD( WITH_CONTAINER ) )
 # if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
@@ -549,7 +549,7 @@ CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
 
 CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
 {
-#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
+#if span_NONSTD_AND( span_FEATURE_TO_STD( WITH_CONTAINER ) )
 # if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
@@ -742,7 +742,7 @@ CASE( "span<>: Allows to observe an element via array indexing" )
 
 CASE( "span<>: Allows to observe an element via call indexing" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_CALL_OPERATOR ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -759,7 +759,7 @@ CASE( "span<>: Allows to observe an element via call indexing" )
 
 CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_AT ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -792,7 +792,7 @@ CASE( "span<>: Allows to observe an element via data()" )
 
 CASE( "span<>: Allows to observe the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_BACK_FRONT ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_BACK_FRONT ) )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -829,7 +829,7 @@ CASE( "span<>: Allows to change an element via array indexing" )
 
 CASE( "span<>: Allows to change an element via call indexing" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_CALL_OPERATOR ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -846,7 +846,7 @@ CASE( "span<>: Allows to change an element via call indexing" )
 
 CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT>0]" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_AT ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -905,7 +905,7 @@ CASE( "span<>: Allows to change the last element via back() [span_FEATURE_MEMBER
 
 CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( MEMBER_SWAP ) )
+#if span_NONSTD_AND( span_FEATURE( MEMBER_SWAP ) )
     int arr[] = { 1, 2, 3, };
     span<int> a( arr );
     span<int> b = a.subspan( 1 );
@@ -987,7 +987,7 @@ CASE( "span<>: Allows const reverse iteration" )
 
 CASE( "span<>: Allows to identify if a span is the same as another span [span_FEATURE_SAME=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ) )
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ) )
 #if span_FEATURE( SAME )
     int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };
     char x[] = { '\x1' };
@@ -1019,7 +1019,7 @@ CASE( "span<>: Allows to identify if a span is the same as another span [span_FE
 
 CASE( "span<>: Allows to compare equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ) )
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ) )
     int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1037,7 +1037,7 @@ CASE( "span<>: Allows to compare equal to another span of the same type [span_FE
 
 CASE( "span<>: Allows to compare unequal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1055,7 +1055,7 @@ CASE( "span<>: Allows to compare unequal to another span of the same type [span_
 
 CASE( "span<>: Allows to compare less than another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1071,7 +1071,7 @@ CASE( "span<>: Allows to compare less than another span of the same type [span_F
 
 CASE( "span<>: Allows to compare less than or equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1087,7 +1087,7 @@ CASE( "span<>: Allows to compare less than or equal to another span of the same 
 
 CASE( "span<>: Allows to compare greater than another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1103,7 +1103,7 @@ CASE( "span<>: Allows to compare greater than another span of the same type [spa
 
 CASE( "span<>: Allows to compare greater than or equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1119,7 +1119,7 @@ CASE( "span<>: Allows to compare greater than or equal to another span of the sa
 
 CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_FEATURE_SAME=0]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
 #if span_FEATURE( SAME )
     EXPECT( !!"skipped as same() is provided via span_FEATURE_SAME=1" );
 #else
@@ -1147,7 +1147,7 @@ CASE( "span<>: Allows to compare to another span of the same type and different 
 
 CASE( "span<>: Allows to compare empty spans as equal [span_FEATURE_COMPARISON=1]" )
 {
-#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
+#if span_NONSTD_AND( span_FEATURE( COMPARISON ))
     int a;
 
     span<int> p;
@@ -1500,7 +1500,7 @@ CASE( "make_span(): Allows building from a const container (std::vector<>)" )
 
 CASE( "make_span(): Allows building from a container (with_container_t, std::vector<>)" )
 {
-#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
+#if span_NONSTD_AND( span_FEATURE_TO_STD( WITH_CONTAINER ) )
 #if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
@@ -1516,7 +1516,7 @@ CASE( "make_span(): Allows building from a container (with_container_t, std::vec
 
 CASE( "make_span(): Allows building from a const container (with_container_t, std::vector<>)" )
 {
-#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
+#if span_NONSTD_AND( span_FEATURE_TO_STD( WITH_CONTAINER ) )
 #if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
@@ -1584,7 +1584,7 @@ CASE( "first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]" )
 
 CASE( "first(): Allows to create a sub span of the first n elements" )
 {
-#if span_NONSTD_OR( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
@@ -1607,7 +1607,7 @@ CASE( "first(): Allows to create a sub span of the first n elements" )
 
 CASE( "last(): Allows to create a sub span of the last n elements" )
 {
-#if span_NONSTD_OR( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
@@ -1630,7 +1630,7 @@ CASE( "last(): Allows to create a sub span of the last n elements" )
 
 CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 {
-#if span_NONSTD_OR( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
@@ -1681,7 +1681,7 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
 
 CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++11)" )
 {
-#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) )
+#if span_NONSTD_AND( span_HAVE( STRUCT_BINDING ) )
     const auto N = 3u;
     using T = span<int, N>;
 
@@ -1700,7 +1700,7 @@ CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size
 
 CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C++11)" )
 {
-#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) )
+#if span_NONSTD_AND( span_HAVE( STRUCT_BINDING ) )
     using S = span<int,3>;
     using T = std::tuple_element<0, S>::type;
 
@@ -1714,7 +1714,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C+
 
 CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)" )
 {
-#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) ) && span_CPP11_140
+#if span_NONSTD_AND( span_HAVE( STRUCT_BINDING ) ) && span_CPP11_140
     using S = span<int,3>;
     using T = std::tuple_element_t<0, S>;
 
@@ -1728,7 +1728,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (
 
 CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
 {
-#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) )
+#if span_NONSTD_AND( span_HAVE( STRUCT_BINDING ) )
     SETUP("") {
         const auto N = 3u;
 
@@ -1777,7 +1777,7 @@ CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
 
 CASE( "[hide][issue-3: heterogeneous comparison]" )
 {
-#if span_NONSTD_OR( span_FEATURE_TO_STD( MAKE_SPAN ) )
+#if span_NONSTD_AND( span_FEATURE_TO_STD( MAKE_SPAN ) )
 #if span_FEATURE( COMPARISON )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
@@ -1797,7 +1797,7 @@ CASE( "[hide][issue-3: heterogeneous comparison]" )
 
 CASE( "[hide][issue-3: same()]" )
 {
-#if span_NONSTD_OR( span_FEATURE_TO_STD( MAKE_SPAN ) )
+#if span_NONSTD_AND( span_FEATURE_TO_STD( MAKE_SPAN ) )
 #if span_FEATURE( SAME )
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 
