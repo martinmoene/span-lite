@@ -424,13 +424,17 @@ span<>: Termination throws std::logic_error-derived exception [span_CONFIG_CONTR
 span<>: Allows to default-construct
 span<>: Allows to construct from a nullptr and a zero size (C++11)
 span<>: Allows to construct from two pointers
+span<>: Allows to construct from two iterators
+span<>: Allows to construct from an iterator and a size
 span<>: Allows to construct from two pointers to const
 span<>: Allows to construct from a non-null pointer and a size
 span<>: Allows to construct from a non-null pointer to const and a size
 span<>: Allows to construct from a temporary pointer and a size
 span<>: Allows to construct from a temporary pointer to const and a size
 span<>: Allows to construct from any pointer and a zero size
+span<>: Allows to construct from a pointer and a size via a deduction guide (C++17)
 span<>: Allows to construct from an iterator and a size via a deduction guide (C++17)
+span<>: Allows to construct from two iterators via a deduction guide (C++17)
 span<>: Allows to construct from a C-array
 span<>: Allows to construct from a C-array via a deduction guide (C++17)
 span<>: Allows to construct from a const C-array
