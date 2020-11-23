@@ -50,7 +50,7 @@ CASE( "span configuration" "[.span][.config]" )
 CASE( "Presence of span library features" "[.span][.config]" )
 {
 #if span_USES_STD_SPAN
-    std::cout << "(Note: Followig configuration has no effect: using std::span)\n";
+    std::cout << "(Note: library feature configuration has no effect: using std::span)\n";
 #endif
     span_PRESENT( span_FEATURE_BYTE_SPAN  );
     span_PRESENT( span_FEATURE_MAKE_SPAN );
@@ -70,7 +70,7 @@ CASE( "Presence of span library features" "[.span][.config]" )
 CASE( "span configuration, contract level" "[.span][.config][.contract]" )
 {
 #if span_USES_STD_SPAN
-    std::cout << "(Note: Following configuration has no effect: using std::span)\n";
+    std::cout << "(Note: contract level configuration has no effect: using std::span)\n";
 #endif
 
 #ifdef span_CONFIG_CONTRACT_LEVEL_ON
@@ -156,7 +156,7 @@ CASE( "Presence of C++ language features" "[.stdlanguage]" )
 #endif
 
 #if span_USES_STD_SPAN
-    std::cout << "(Presence of following C++ language features not available: using std::span)\n";
+    std::cout << "(Presence of C++ language features not available: using std::span)\n";
 #else
     span_PRESENT( span_HAVE_ALIAS_TEMPLATE );
     span_PRESENT( span_HAVE_AUTO );

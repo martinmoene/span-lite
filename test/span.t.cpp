@@ -13,6 +13,9 @@
 
 #define DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
 
+#define span_STD_OR(    expr )  ( span_USES_STD_SPAN) || ( expr )
+#define span_NONSTD_OR( expr )  (!span_USES_STD_SPAN) && ( expr )
+
 using namespace nonstd;
 
 typedef span<int>::size_type size_type;
@@ -20,31 +23,40 @@ typedef std::ptrdiff_t       ssize_type;
 
 CASE( "span<>: Terminates construction from a nullptr and a non-zero size (C++11)" )
 {
-#if span_HAVE( NULLPTR )
+#if span_NONSTD_OR( span_HAVE( NULLPTR ) )
     struct F { static void blow() { span<int> v( nullptr, 42 ); } };
 
     EXPECT_THROWS( F::blow() );
 #else
-    EXPECT( !!"nullptr is not available (no C++11)" );
+    EXPECT( !!"nullptr is not available (no C++11), or no exception, using std::span)" );
 #endif
 }
 
 CASE( "span<>: Terminates construction from two pointers in the wrong order" )
 {
+#if !span_USES_STD_SPAN
     struct F { static void blow() { int a[2]; span<int> v( &a[1], &a[0] ); } };
 
     EXPECT_THROWS( F::blow() );
+#else
+    EXPECT( !!"No exception, using std::span" );
+#endif
 }
 
 CASE( "span<>: Terminates construction from a null pointer and a non-zero size" )
 {
+#if !span_USES_STD_SPAN
     struct F { static void blow() { int * p = span_nullptr; span<int> v( p, 42 ); } };
 
     EXPECT_THROWS( F::blow() );
+#else
+    EXPECT( !!"No exception, using std::span" );
+#endif
 }
 
 CASE( "span<>: Terminates creation of a sub span of the first n elements for n exceeding the span" )
 {
+#if !span_USES_STD_SPAN
     struct F {
     static void blow()
     {
@@ -55,10 +67,14 @@ CASE( "span<>: Terminates creation of a sub span of the first n elements for n e
     }};
 
     EXPECT_THROWS( F::blow() );
+#else
+    EXPECT( !!"No exception, using std::span" );
+#endif
 }
 
 CASE( "span<>: Terminates creation of a sub span of the last n elements for n exceeding the span" )
 {
+#if !span_USES_STD_SPAN
     struct F {
     static void blow()
     {
@@ -69,10 +85,14 @@ CASE( "span<>: Terminates creation of a sub span of the last n elements for n ex
     }};
 
     EXPECT_THROWS( F::blow() );
+#else
+    EXPECT( !!"No exception, using std::span" );
+#endif
 }
 
 CASE( "span<>: Terminates creation of a sub span outside the span" )
 {
+#if !span_USES_STD_SPAN
     struct F {
         static void blow_offset() { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.subspan( 4 ); }
         static void blow_count()  { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.subspan( 1, 3 ); }
@@ -80,16 +100,20 @@ CASE( "span<>: Terminates creation of a sub span outside the span" )
 
     EXPECT_THROWS( F::blow_offset() );
     EXPECT_THROWS( F::blow_count()  );
+#else
+    EXPECT( !!"No exception, using std::span" );
+#endif
 }
 
 CASE( "span<>: Terminates access outside the span" )
 {
+#if !span_USES_STD_SPAN
     struct F {
         static void blow_ix(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v[i]; }
-#if span_FEATURE_MEMBER_CALL_OPERATOR
+#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
         static void blow_iv(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v(i); }
 #endif
-#if span_FEATURE_MEMBER_AT
+#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
         static void blow_at(size_type i) { int arr[] = { 1, 2, 3, }; span<int> v( arr ); (void) v.at(i); }
 #endif
     };
@@ -97,19 +121,22 @@ CASE( "span<>: Terminates access outside the span" )
     EXPECT_NO_THROW( F::blow_ix(2) );
     EXPECT_THROWS(   F::blow_ix(3) );
 
-#if span_FEATURE_MEMBER_CALL_OPERATOR
+#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
     EXPECT_NO_THROW( F::blow_iv(2) );
     EXPECT_THROWS(   F::blow_iv(3) );
 #endif
-#if span_FEATURE_MEMBER_AT
+#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
     EXPECT_NO_THROW( F::blow_at(2) );
     EXPECT_THROWS(   F::blow_at(3) );
+#endif
+#else
+    EXPECT( !!"No exception, using std::span" );
 #endif
 }
 
 CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [span_FEATURE_MEMBER_AT>0][span_CONFIG_NO_EXCEPTIONS=0]" )
 {
-#if span_FEATURE( MEMBER_AT )
+#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -134,20 +161,20 @@ CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [s
     EXPECT( std::string::npos != os.str().find("index outside span") );
 #endif
 #else
-    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
+    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0, or using std::span)" );
 #endif
 }
 
 CASE( "span<>: Termination throws std::logic_error-derived exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
 {
-#if span_CONFIG( CONTRACT_VIOLATION_THROWS )
+#if span_NONSTD_OR( span_CONFIG( CONTRACT_VIOLATION_THROWS ) )
     struct F {
         static void blow() { int arr[] = { 1, }; span<int> v( arr ); (void) v[1]; }
     };
 
     EXPECT_THROWS_AS( F::blow(), nonstd::span_lite::detail::contract_violation );
 #else
-    EXPECT( !!"exception contract_violation is not available (non-throwing contract violation)" );
+    EXPECT( !!"exception contract_violation is not available (non-throwing contract violation, or using std::span)" );
 #endif
 }
 
@@ -162,7 +189,7 @@ CASE( "span<>: Allows to default-construct" )
 
 CASE( "span<>: Allows to construct from a nullptr and a zero size (C++11)" )
 {
-#if span_HAVE( NULLPTR )
+#if span_NONSTD_OR( span_HAVE(  NULLPTR ) )
     span<      int> v( nullptr, size_type(0) );
     span<const int> w( nullptr, size_type(0) );
 
@@ -182,6 +209,30 @@ CASE( "span<>: Allows to construct from two pointers" )
 
     EXPECT( std::equal( v.begin(), v.end(), arr ) );
     EXPECT( std::equal( w.begin(), w.end(), arr ) );
+}
+
+// TODO
+CASE( "span<>: Allows to construct from two iterators" )
+{
+#if span_USES_STD_SPAN
+    std::vector<int> v( 5, 123 );
+
+    span<int> s( v.begin(), v.end() );
+
+    EXPECT( std::equal( s.begin(), s.end(), v.begin() ) );
+#endif
+}
+
+// TODO
+CASE( "span<>: Allows to construct from an iterator and a size" )
+{
+#if span_USES_STD_SPAN
+    std::vector<int> v( 5, 123 );
+
+    span<int> s( v.begin(), v.size() );
+
+    EXPECT( std::equal( s.begin(), s.end(), v.begin() ) );
+#endif
 }
 
 CASE( "span<>: Allows to construct from two pointers to const" )
@@ -248,15 +299,43 @@ CASE( "span<>: Allows to construct from any pointer and a zero size" )
     EXPECT_NO_THROW( F::nonnull() );
 }
 
-CASE( "span<>: Allows to construct from an iterator and a size via a deduction guide (C++17)" )
+CASE( "span<>: Allows to construct from a pointer and a size via a deduction guide (C++17)" )
 {
-#if span_HAVE( DEDUCTION_GUIDES )
+#if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) )
     char const * argv[] = { "prog", "arg1", "arg2" };
     int  const   argc   = DIMENSION_OF( argv );
 
-    span args(argv, argc);
+    span args( argv, argc );
 
     EXPECT( args.size() == DIMENSION_OF( argv ) );
+#else
+    EXPECT( !!"deduction guide is not available (no C++17)" );
+#endif
+}
+
+// TODO
+CASE( "span<>: Allows to construct from an iterator and a size via a deduction guide (C++17)" )
+{
+#if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) )
+    std::vector<int> v( 5, 123 );
+
+    // span spn( v.begin(), v.size() );
+
+    // EXPECT( spn.size() == v.size() );
+#else
+    EXPECT( !!"deduction guide is not available (no C++17)" );
+#endif
+}
+
+// TODO
+CASE( "span<>: Allows to construct from two iterators via a deduction guide (C++17)" )
+{
+#if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) )
+    std::vector<int> v( 5, 123 );
+
+//    span spn( v.begin(), v.end() );
+
+//    EXPECT( spn.size() == v.size() );
 #else
     EXPECT( !!"deduction guide is not available (no C++17)" );
 #endif
@@ -275,7 +354,7 @@ CASE( "span<>: Allows to construct from a C-array" )
 
 CASE( "span<>: Allows to construct from a C-array via a deduction guide (C++17)" )
 {
-#if span_HAVE( DEDUCTION_GUIDES ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
+#if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span v( arr );
@@ -339,8 +418,8 @@ CASE( "span<>: Allows to construct from a const C-array with size via decay to p
 
 CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 {
-#if span_HAVE( INITIALIZER_LIST )
-#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
+#if span_STD_OR( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) )
     auto il = { 1, 2, 3, 4, 5, };
 
     span<int const> v( il );
@@ -356,7 +435,7 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 
 CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 {
-#if span_HAVE( ARRAY )
+#if span_STD_OR( span_HAVE( ARRAY ) )
     std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<      int> v( arr );
@@ -371,7 +450,7 @@ CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 
 CASE( "span<>: Allows to construct from a std::array via a deduction guide (C++17)" )
 {
-#if span_HAVE( DEDUCTION_GUIDES ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
+#if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
     std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span v( arr );
@@ -403,7 +482,7 @@ CASE( "span<>: Allows to construct from a std::array<> with const data (C++11, s
 
 CASE( "span<>: Allows to construct from an empty std::array<> (C++11)" )
 {
-#if span_HAVE( ARRAY )
+#if span_STD_OR( span_HAVE( ARRAY ) )
     std::array<int,0> arr;
 
     span<      int> v( arr );
@@ -418,14 +497,14 @@ CASE( "span<>: Allows to construct from an empty std::array<> (C++11)" )
 
 CASE( "span<>: Allows to construct from a container (std::vector<>)" )
 {
-#if span_HAVE( INITIALIZER_LIST )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
     std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
 #endif
 
-#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
+#if span_STD_OR( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) )
     span<      int> v( vec );
     span<const int> w( vec );
 
@@ -438,7 +517,7 @@ CASE( "span<>: Allows to construct from a container (std::vector<>)" )
 
 CASE( "span<>: Allows to construct from a container via a deduction guide (std::vector<>, C++17)" )
 {
-#if span_HAVE( DEDUCTION_GUIDES ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
+#if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) ) && !span_BETWEEN( _MSC_VER, 1, 1920 )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span v( vec );
@@ -451,7 +530,7 @@ CASE( "span<>: Allows to construct from a container via a deduction guide (std::
 
 CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
 {
-#if span_FEATURE_TO_STD( WITH_CONTAINER )
+#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
 # if span_HAVE( INITIALIZER_LIST )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
@@ -464,13 +543,13 @@ CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
 #else
-    EXPECT( !!"with_container is not available (span_FEATURE_WITH_CONTAINER_TO_STD)" );
+    EXPECT( !!"with_container is not available (span_FEATURE_WITH_CONTAINER_TO_STD, or using std::span)" );
 #endif
 }
 
 CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
 {
-#if span_FEATURE_TO_STD( WITH_CONTAINER )
+#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
 # if span_HAVE( INITIALIZER_LIST )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
@@ -483,7 +562,7 @@ CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
     EXPECT( std::equal( w.begin(), w.end(), vec.begin() ) );
 #else
-    EXPECT( !!"with_container is not available (span_FEATURE_WITH_CONTAINER_TO_STD)" );
+    EXPECT( !!"with_container is not available (span_FEATURE_WITH_CONTAINER_TO_STD, or using std::span)" );
 #endif
 }
 
@@ -663,7 +742,7 @@ CASE( "span<>: Allows to observe an element via array indexing" )
 
 CASE( "span<>: Allows to observe an element via call indexing" )
 {
-#if span_FEATURE_MEMBER_CALL_OPERATOR
+#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -674,13 +753,13 @@ CASE( "span<>: Allows to observe an element via call indexing" )
         EXPECT( w(i) == arr[i] );
     }
 #else
-    EXPECT( !!"member () is not available (span_FEATURE_MEMBER_CALL_OPERATOR=0)" );
+    EXPECT( !!"member () is not available (span_FEATURE_MEMBER_CALL_OPERATOR=0, or using std::span)" );
 #endif
 }
 
 CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]" )
 {
-#if span_FEATURE( MEMBER_AT )
+#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -691,7 +770,7 @@ CASE( "span<>: Allows to observe an element via at() [span_FEATURE_MEMBER_AT>0]"
         EXPECT( w.at(i) == arr[i] );
     }
 #else
-    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
+    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0, or using std::span)" );
 #endif
 }
 
@@ -713,7 +792,7 @@ CASE( "span<>: Allows to observe an element via data()" )
 
 CASE( "span<>: Allows to observe the first element via front() [span_FEATURE_MEMBER_BACK_FRONT=1]" )
 {
-#if span_FEATURE( MEMBER_BACK_FRONT )
+#if span_NONSTD_OR( span_FEATURE( MEMBER_BACK_FRONT ) )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
@@ -750,7 +829,7 @@ CASE( "span<>: Allows to change an element via array indexing" )
 
 CASE( "span<>: Allows to change an element via call indexing" )
 {
-#if span_FEATURE_MEMBER_CALL_OPERATOR
+#if span_NONSTD_OR( span_FEATURE( MEMBER_CALL_OPERATOR ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -761,13 +840,13 @@ CASE( "span<>: Allows to change an element via call indexing" )
     EXPECT( 22 == arr[1] );
     EXPECT( 33 == arr[2] );
 #else
-    EXPECT( !!"member () is not available (span_FEATURE_MEMBER_CALL_OPERATOR=0)" );
+    EXPECT( !!"member () is not available (span_FEATURE_MEMBER_CALL_OPERATOR=0, or using std::span)" );
 #endif
 }
 
 CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT>0]" )
 {
-#if span_FEATURE( MEMBER_AT )
+#if span_NONSTD_OR( span_FEATURE( MEMBER_AT ) )
     int arr[] = { 1, 2, 3, };
     span<int>       v( arr );
     span<int> const w( arr );
@@ -778,7 +857,7 @@ CASE( "span<>: Allows to change an element via at() [span_FEATURE_MEMBER_AT>0]" 
     EXPECT( 22 == arr[1] );
     EXPECT( 33 == arr[2] );
 #else
-    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0)" );
+    EXPECT( !!"member at() is not available (span_FEATURE_MEMBER_AT=0, or using std::span)" );
 #endif
 }
 
@@ -826,7 +905,7 @@ CASE( "span<>: Allows to change the last element via back() [span_FEATURE_MEMBER
 
 CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
 {
-#if span_FEATURE( MEMBER_SWAP )
+#if span_NONSTD_OR( span_FEATURE( MEMBER_SWAP ) )
     int arr[] = { 1, 2, 3, };
     span<int> a( arr );
     span<int> b = a.subspan( 1 );
@@ -838,7 +917,7 @@ CASE( "span<>: Allows to swap with another span [span_FEATURE_MEMBER_SWAP=1]" )
     EXPECT( a[0]     == 2 );
     EXPECT( b[0]     == 1 );
 #else
-    EXPECT( !!"swap()is not available (span_FEATURE_MEMBER_SWAP undefined or 0)" );
+    EXPECT( !!"swap()is not available (span_FEATURE_MEMBER_SWAP undefined or 0, or using std::span)" );
 #endif
 }
 
@@ -858,10 +937,17 @@ CASE( "span<>: Allows const forward iteration" )
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
 
+#if span_USES_STD_SPAN
+    for ( auto pos = std::cbegin(v); pos != std::cend(v); ++pos )
+    {
+        EXPECT( *pos == arr[ std::distance( std::cbegin(v), pos )] );
+    }
+#else
     for ( span<int>::const_iterator pos = v.cbegin(); pos != v.cend(); ++pos )
     {
         EXPECT( *pos == arr[ std::distance( v.cbegin(), pos )] );
     }
+#endif
 }
 
 CASE( "span<>: Allows reverse iteration" )
@@ -882,17 +968,26 @@ CASE( "span<>: Allows const reverse iteration" )
     int arr[] = { 1, 2, 3, };
     const span<int> v( arr );
 
+#if span_USES_STD_SPAN
+    for ( auto pos = std::crbegin(v); pos != std::crend(v); ++pos )
+    {
+//        size_t dist = narrow<size_t>( std::distance(v.crbegin(), pos) );
+        size_type dist = static_cast<size_type>( std::distance(std::crbegin(v), pos) );
+        EXPECT( *pos == arr[ v.size() - 1 - dist ] );
+    }
+#else
     for ( span<int>::const_reverse_iterator pos = v.crbegin(); pos != v.crend(); ++pos )
     {
 //        size_t dist = narrow<size_t>( std::distance(v.crbegin(), pos) );
         size_type dist = static_cast<size_type>( std::distance(v.crbegin(), pos) );
         EXPECT( *pos == arr[ v.size() - 1 - dist ] );
     }
+#endif
 }
 
 CASE( "span<>: Allows to identify if a span is the same as another span [span_FEATURE_SAME=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ) )
 #if span_FEATURE( SAME )
     int  a[] = { 1 }, b[] = { 1 }, c[] = { 1, 2 };
     char x[] = { '\x1' };
@@ -918,13 +1013,13 @@ CASE( "span<>: Allows to identify if a span is the same as another span [span_FE
     EXPECT( !!"same() is not available (span_FEATURE_SAME=0)" );
 #endif
 #else
-    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0)" );
+    EXPECT( !!"comparison is not available (span_FEATURE_COMPARISON=0, or using std::span)" );
 #endif
 }
 
 CASE( "span<>: Allows to compare equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ) )
     int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -942,7 +1037,7 @@ CASE( "span<>: Allows to compare equal to another span of the same type [span_FE
 
 CASE( "span<>: Allows to compare unequal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 1 }, c[] = { 2 }, d[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -960,7 +1055,7 @@ CASE( "span<>: Allows to compare unequal to another span of the same type [span_
 
 CASE( "span<>: Allows to compare less than another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -976,7 +1071,7 @@ CASE( "span<>: Allows to compare less than another span of the same type [span_F
 
 CASE( "span<>: Allows to compare less than or equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -992,7 +1087,7 @@ CASE( "span<>: Allows to compare less than or equal to another span of the same 
 
 CASE( "span<>: Allows to compare greater than another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1008,7 +1103,7 @@ CASE( "span<>: Allows to compare greater than another span of the same type [spa
 
 CASE( "span<>: Allows to compare greater than or equal to another span of the same type [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
     int a[] = { 1 }, b[] = { 2 }, c[] = { 1, 2 };
     span<int> va( a );
     span<int> vb( b );
@@ -1024,7 +1119,7 @@ CASE( "span<>: Allows to compare greater than or equal to another span of the sa
 
 CASE( "span<>: Allows to compare to another span of the same type and different cv-ness [span_FEATURE_SAME=0]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
 #if span_FEATURE( SAME )
     EXPECT( !!"skipped as same() is provided via span_FEATURE_SAME=1" );
 #else
@@ -1052,7 +1147,7 @@ CASE( "span<>: Allows to compare to another span of the same type and different 
 
 CASE( "span<>: Allows to compare empty spans as equal [span_FEATURE_COMPARISON=1]" )
 {
-#if span_FEATURE( COMPARISON )
+#if span_NONSTD_OR( span_FEATURE( COMPARISON ))
     int a;
 
     span<int> p;
@@ -1062,7 +1157,7 @@ CASE( "span<>: Allows to compare empty spans as equal [span_FEATURE_COMPARISON=1
     EXPECT( p == q );
     EXPECT( p == r );
 
-#if span_HAVE( NULLPTR )
+#if span_STD_OR( span_HAVE( NULLPTR ) )
     span<int> s( nullptr, size_type( 0 ) );
     span<int> t( nullptr, size_type( 0 ) );
 
@@ -1106,6 +1201,7 @@ CASE( "span<>: Allows to obtain the number of elements via size()" )
 
 CASE( "span<>: Allows to obtain the number of elements via ssize()" )
 {
+#if !span_USES_STD_SPAN
     int a[] = { 1, 2, 3, };
     int b[] = { 1, 2, 3, 4, 5, };
 
@@ -1116,6 +1212,9 @@ CASE( "span<>: Allows to obtain the number of elements via ssize()" )
     EXPECT( va.ssize() == ssize_type( DIMENSION_OF( a ) ) );
     EXPECT( vb.ssize() == ssize_type( DIMENSION_OF( b ) ) );
     EXPECT(  z.ssize() == 0 );
+#else
+    EXPECT( !!"member ssize() is not available (using std::span)" );
+#endif
 }
 
 CASE( "span<>: Allows to obtain the number of bytes via size_bytes()" )
@@ -1148,7 +1247,7 @@ CASE( "span<>: Allows to obtain the number of bytes via size_bytes()" )
 //    EXPECT( vb == va0 );
 //}
 
-#if span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
+#if span_STD_OR( span_HAVE( BYTE ) ) || span_HAVE( NONSTD_BYTE )
 
 static bool is_little_endian()
 {
@@ -1219,7 +1318,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 
 //CASE( "span<>: Allows to view the elements as a span of another type" )
 //{
-//#if span_HAVE( SIZED_TYPES )
+//#if span_STD_OR( span_HAVE( SIZED_TYPES ) )
 //    typedef int32_t type1;
 //    typedef int16_t type2;
 //#else
@@ -1244,7 +1343,7 @@ CASE( "span<>: Allows to view and change the elements as writable bytes" )
 
 //CASE( "span<>: Allows to change the elements from a span of another type" )
 //{
-//#if span_HAVE( SIZED_TYPES )
+//#if span_STD_OR( span_HAVE( SIZED_TYPES ) )
 //    typedef int32_t type1;
 //    typedef int16_t type2;
 //#else
@@ -1334,8 +1433,8 @@ CASE( "make_span(): Allows building from a const C-array" )
 
 CASE( "make_span(): Allows building from a std::initializer_list<> (C++11)" )
 {
-#if span_HAVE( INITIALIZER_LIST )
-#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
+#if span_STD_OR( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) )
     auto il = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     span<int const> v = make_span( il );
@@ -1351,7 +1450,7 @@ CASE( "make_span(): Allows building from a std::initializer_list<> (C++11)" )
 
 CASE( "make_span(): Allows building from a std::array<> (C++11)" )
 {
-#if span_HAVE( ARRAY )
+#if span_STD_OR( span_HAVE( ARRAY ) )
     std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<int> v = make_span( arr );
@@ -1364,7 +1463,7 @@ CASE( "make_span(): Allows building from a std::array<> (C++11)" )
 
 CASE( "make_span(): Allows building from a const std::array<> (C++11)" )
 {
-#if span_HAVE( ARRAY )
+#if span_STD_OR( span_HAVE( ARRAY ) )
     const std::array<int,9> arr = {{ 1, 2, 3, 4, 5, 6, 7, 8, 9, }};
 
     span<const int> v = make_span( arr );
@@ -1377,7 +1476,7 @@ CASE( "make_span(): Allows building from a const std::array<> (C++11)" )
 
 CASE( "make_span(): Allows building from a container (std::vector<>)" )
 {
-#if span_HAVE( INITIALIZER_LIST )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     std::vector<int> vec; {for ( int i = 1; i < 10; ++i ) vec.push_back(i); }
@@ -1389,7 +1488,7 @@ CASE( "make_span(): Allows building from a container (std::vector<>)" )
 
 CASE( "make_span(): Allows building from a const container (std::vector<>)" )
 {
-#if span_HAVE( INITIALIZER_LIST )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     const std::vector<int> vec( 10, 42 );
@@ -1401,8 +1500,8 @@ CASE( "make_span(): Allows building from a const container (std::vector<>)" )
 
 CASE( "make_span(): Allows building from a container (with_container_t, std::vector<>)" )
 {
-#if span_FEATURE_TO_STD( WITH_CONTAINER )
-#if span_HAVE( INITIALIZER_LIST )
+#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     std::vector<int> vec; {for ( int i = 1; i < 10; ++i ) vec.push_back(i); }
@@ -1411,14 +1510,14 @@ CASE( "make_span(): Allows building from a container (with_container_t, std::vec
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
 #else
-    EXPECT( !!"make_span(with_container,...) is not available (span_PROVIDE_WITH_CONTAINER_TO_STD=0)" );
+    EXPECT( !!"make_span(with_container,...) is not available (span_PROVIDE_WITH_CONTAINER_TO_STD=0, or using std::span)" );
 #endif
 }
 
 CASE( "make_span(): Allows building from a const container (with_container_t, std::vector<>)" )
 {
-#if span_FEATURE_TO_STD( WITH_CONTAINER )
-#if span_HAVE( INITIALIZER_LIST )
+#if span_NONSTD_OR( span_FEATURE_TO_STD( WITH_CONTAINER ) )
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     const std::vector<int> vec( 10, 42 );
@@ -1427,7 +1526,7 @@ CASE( "make_span(): Allows building from a const container (with_container_t, st
 
     EXPECT( std::equal( v.begin(), v.end(), vec.begin() ) );
 #else
-    EXPECT( !!"make_span(with_container,...) is not available (span_PROVIDE_WITH_CONTAINER_TO_STD=0)" );
+    EXPECT( !!"make_span(with_container,...) is not available (span_PROVIDE_WITH_CONTAINER_TO_STD=0, or using std::span)" );
 #endif
 }
 
@@ -1448,7 +1547,7 @@ CASE( "byte_span(): Allows building a span of std::byte from a single object (C+
     span<xstd::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == size_type( sizeof x ) );
-#if span_HAVE( NONSTD_BYTE )
+#if span_STD_OR( span_HAVE( NONSTD_BYTE ) )
     EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
     EXPECT( spn[0]     == xstd::byte( 0xff ) );
@@ -1466,7 +1565,7 @@ CASE( "byte_span(): Allows building a span of const std::byte from a single cons
     span<const xstd::byte> spn = byte_span( x );
 
     EXPECT( spn.size() == size_type( sizeof x ) );
-#if span_HAVE( NONSTD_BYTE )
+#if span_STD_OR( span_HAVE( NONSTD_BYTE ) )
     EXPECT( spn[0]     == to_byte( 0xff ) );
 #else
     EXPECT( spn[0]     == xstd::byte( 0xff ) );
@@ -1485,7 +1584,7 @@ CASE( "first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]" )
 
 CASE( "first(): Allows to create a sub span of the first n elements" )
 {
-#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+#if span_NONSTD_OR( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
@@ -1502,13 +1601,13 @@ CASE( "first(): Allows to create a sub span of the first n elements" )
     EXPECT( !!"first() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
 #endif
 }
 
 CASE( "last(): Allows to create a sub span of the last n elements" )
 {
-#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+#if span_NONSTD_OR( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
     span<int> v( arr );
@@ -1525,13 +1624,13 @@ CASE( "last(): Allows to create a sub span of the last n elements" )
     EXPECT( !!"last() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
 #endif
 }
 
 CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 {
-#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
+#if span_NONSTD_OR( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, };
     span<int> v( arr );
@@ -1548,7 +1647,7 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset" )
     EXPECT( !!"subspan() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0)" );
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
 #endif
 }
 
@@ -1582,7 +1681,7 @@ CASE( "ssize(): Allows to obtain the number of elements via ssize()" )
 
 CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++11)" )
 {
-#if span_HAVE( STRUCT_BINDING )
+#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) )
     const auto N = 3u;
     using T = span<int, N>;
 
@@ -1601,7 +1700,7 @@ CASE( "tuple_size<>: Allows to obtain the number of elements via std::tuple_size
 
 CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C++11)" )
 {
-#if span_HAVE( STRUCT_BINDING )
+#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) )
     using S = span<int,3>;
     using T = std::tuple_element<0, S>::type;
 
@@ -1615,7 +1714,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element<> (C+
 
 CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)" )
 {
-#if span_HAVE( STRUCT_BINDING ) && span_CPP11_140
+#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) ) && span_CPP11_140
     using S = span<int,3>;
     using T = std::tuple_element_t<0, S>;
 
@@ -1629,7 +1728,7 @@ CASE( "tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (
 
 CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
 {
-#if span_HAVE( STRUCT_BINDING )
+#if span_NONSTD_OR( span_HAVE( STRUCT_BINDING ) )
     SETUP("") {
         const auto N = 3u;
 
@@ -1678,7 +1777,7 @@ CASE( "get<I>(spn): Allows to access an element via std::get<>()" )
 
 CASE( "[hide][issue-3: heterogeneous comparison]" )
 {
-#if span_FEATURE_TO_STD( MAKE_SPAN )
+#if span_NONSTD_OR( span_FEATURE_TO_STD( MAKE_SPAN ) )
 #if span_FEATURE( COMPARISON )
     static const int data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
@@ -1698,7 +1797,7 @@ CASE( "[hide][issue-3: heterogeneous comparison]" )
 
 CASE( "[hide][issue-3: same()]" )
 {
-#if span_FEATURE_TO_STD( MAKE_SPAN )
+#if span_NONSTD_OR( span_FEATURE_TO_STD( MAKE_SPAN ) )
 #if span_FEATURE( SAME )
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 
@@ -1712,7 +1811,7 @@ CASE( "[hide][issue-3: same()]" )
     assert( fspan1.data() == farray );
     assert( fspan1.size() == static_cast<size_type>( DIMENSION_OF( farray ) ) );
 
-#if span_HAVE( BYTE )
+#if span_STD_OR( span_HAVE( BYTE ) )
     span<std::byte const> fspan2 = byte_span( farray[0] );
 
     assert( static_cast<void const *>( fspan1.data() ) == fspan2.data() );
@@ -1726,7 +1825,7 @@ CASE( "[hide][issue-3: same()]" )
     assert(        fspan1 == bspan4   );
     assert( !same( fspan1 ,  bspan4 ) );
 
-#if span_HAVE( BYTE )
+#if span_STD_OR( span_HAVE( BYTE ) )
     assert(        as_bytes( fspan1 ) != as_bytes( bspan4 )   );
     assert( !same( as_bytes( fspan1 ) ,  as_bytes( bspan4 ) ) );
 #endif
@@ -1755,7 +1854,7 @@ CASE( "[hide][issue-3: same()]" )
     assert( uspan1 != uspan3 );
     assert( uspan2 != uspan3 );
 
-#if span_HAVE( BYTE )
+#if span_STD_OR( span_HAVE( BYTE ) )
     assert(  same( as_bytes( uspan1 ), as_bytes( uspan2 ) ) );
     assert( !same( as_bytes( uspan1 ), as_bytes( uspan3 ) ) );
     assert( !same( as_bytes( uspan2 ), as_bytes( uspan3 ) ) );
@@ -1770,7 +1869,7 @@ CASE( "[hide][issue-3: same()]" )
 
 CASE( "tweak header: reads tweak header if supported " "[tweak]" )
 {
-#if span_HAVE_TWEAK_HEADER
+#if span_HAVE( TWEAK_HEADER )
     EXPECT( SPAN_TWEAK_VALUE == 42 );
 #else
     EXPECT( !!"Tweak header is not available (span_HAVE_TWEAK_HEADER: 0)." );

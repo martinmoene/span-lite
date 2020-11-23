@@ -18,6 +18,13 @@
 
 #include "nonstd/span.hpp"
 
+#if span_USES_STD_SPAN
+# include <array>
+# include <tuple>
+
+# define span_BETWEEN( v, lo, hi )  ( (lo) <= (v) && (v) < (hi) )
+#endif
+
 // Compiler warning suppression for usage of lest:
 
 #ifdef __clang__
