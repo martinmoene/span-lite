@@ -3,7 +3,7 @@
 // Based on http://wg21.link/p0122r7
 // For more information see https://github.com/martinmoene/span-lite
 //
-// Copyright 2018-2019 Martin Moene
+// Copyright 2018-2020 Martin Moene
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -1278,12 +1278,12 @@ public:
     }
 
 private:
-    #if span_HAVE( NULLPTR )
+
+#if span_HAVE_ITERATOR_CTOR
     static inline span_constexpr pointer to_address( std::nullptr_t ) span_noexcept
     {
         return nullptr;
     }
-    #endif
 
     template< typename U >
     static inline span_constexpr U * to_address( U * p ) span_noexcept
@@ -1298,6 +1298,7 @@ private:
     {
         return to_address( it.operator->() );
     }
+#endif
 
 private:
     pointer   data_;
