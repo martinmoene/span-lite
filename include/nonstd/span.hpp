@@ -342,7 +342,11 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // MSVC: template parameter deduction guides since Visual Studio 2017 v15.7
 
-#define span_HAVE_DEDUCTION_GUIDES         (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VER, 1, 1913 ))
+#if defined(__cpp_deduction_guides)
+# define span_HAVE_DEDUCTION_GUIDES         1
+#else
+# define span_HAVE_DEDUCTION_GUIDES         (span_CPP17_OR_GREATER && ! span_BETWEEN( span_COMPILER_MSVC_VER, 1, 1913 ))
+#endif
 
 // Presence of C++ library features:
 
@@ -624,7 +628,7 @@ using void_t = void;
 using std::data;
 using std::size;
 
-#elif span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR
+#elif span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
 template< typename T, std::size_t N >
 inline span_constexpr auto size( const T(&)[N] ) span_noexcept -> size_t
@@ -897,7 +901,7 @@ public:
         // span_EXPECTS( size() == 0 );
     }
 
-#if span_HAVE_ITERATOR_CTOR
+#if span_HAVE( ITERATOR_CTOR )
     template< typename It >
     span_constexpr_exp span( It first, size_type count )
         : data_( to_address( first ) )
@@ -920,7 +924,7 @@ public:
     }
 #endif
 
-#if span_HAVE_ITERATOR_CTOR
+#if span_HAVE( ITERATOR_CTOR )
     template< typename It, typename End
         span_REQUIRES_T(( ! std::is_convertible<End, std::size_t>::value ))
      >
@@ -1279,7 +1283,7 @@ public:
 
 private:
 
-#if span_HAVE_ITERATOR_CTOR
+#if span_HAVE( ITERATOR_CTOR )
     static inline span_constexpr pointer to_address( std::nullptr_t ) span_noexcept
     {
         return nullptr;
@@ -1298,7 +1302,7 @@ private:
     {
         return to_address( it.operator->() );
     }
-#endif
+#endif // span_HAVE( ITERATOR_CTOR )
 
 private:
     pointer   data_;
@@ -1307,7 +1311,7 @@ private:
 
 // class template argument deduction guides:
 
-#if span_HAVE( DEDUCTION_GUIDES )   // span_CPP17_OR_GREATER
+#if span_HAVE( DEDUCTION_GUIDES )
 
 template< class T, size_t N >
 span( T (&)[N] ) -> span<T, static_cast<extent_t>(N)>;
