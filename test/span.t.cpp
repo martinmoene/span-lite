@@ -1,8 +1,9 @@
 //
-// span-lite is based on GSL: Guideline Support Library.
+// span for C++98 and later.
+// Based on http://wg21.link/p0122r7
 // For more information see https://github.com/martinmoene/span-lite
 //
-// Copyright 2015, 2018-2019 Martin Moene
+// Copyright 2015, 2018-2020 Martin Moene
 // Copyright 2015 Microsoft Corporation. All rights reserved.
 //
 // Distributed under the Boost Software License, Version 1.0.
