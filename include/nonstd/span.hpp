@@ -437,6 +437,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 // Other features:
 
 #define span_HAVE_CONSTRAINED_SPAN_CONTAINER_CTOR  span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG
+#define span_HAVE_ITERATOR_CTOR                    span_HAVE_DEFAULT_FUNCTION_TEMPLATE_ARG
 
 // Additional includes:
 
@@ -505,6 +506,8 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 // Method enabling
 
+#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
+
 #define span_REQUIRES_0(VA) \
     template< bool B = (VA), typename std::enable_if<B, int>::type = 0 >
 
@@ -522,6 +525,15 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #define span_REQUIRES_A(VA) \
     , typename std::enable_if< (VA), void*>::type = nullptr
+
+#else
+
+# define span_REQUIRES_0(VA)    /*empty*/
+# define span_REQUIRES_T(VA)    /*empty*/
+# define span_REQUIRES_R(R, VA) R
+# define span_REQUIRES_A(VA)    /*empty*/
+
+#endif
 
 namespace nonstd {
 namespace span_lite {
@@ -873,12 +885,10 @@ public:
 
     // 26.7.3.2 Constructors, copy, and assignment [span.cons]
 
-#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
     span_REQUIRES_0(
         ( Extent == 0 ) ||
         ( Extent == dynamic_extent )
     )
-#endif
     span_constexpr span() span_noexcept
         : data_( span_nullptr )
         , size_( 0 )
@@ -887,6 +897,18 @@ public:
         // span_EXPECTS( size() == 0 );
     }
 
+#if span_HAVE_ITERATOR_CTOR
+    template< typename It >
+    span_constexpr_exp span( It first, size_type count )
+        : data_( to_address( first ) )
+        , size_( count )
+    {
+        span_EXPECTS(
+            ( data_ == span_nullptr && count == 0 ) ||
+            ( data_ != span_nullptr && detail::is_positive( count ) )
+        );
+    }
+#else
     span_constexpr_exp span( pointer ptr, size_type count )
         : data_( ptr )
         , size_( count )
@@ -896,23 +918,36 @@ public:
             ( ptr != span_nullptr && detail::is_positive( count ) )
         );
     }
+#endif
 
-    span_constexpr_exp span( pointer firstElem, pointer lastElem )
-        : data_( firstElem )
-        , size_( to_size( std::distance( firstElem, lastElem ) ) )
+#if span_HAVE_ITERATOR_CTOR
+    template< typename It, typename End
+        span_REQUIRES_T(( ! std::is_convertible<End, std::size_t>::value ))
+     >
+    span_constexpr_exp span( It first, End last )
+        : data_( to_address( first ) )
+        , size_( to_size( last - first ) )
     {
         span_EXPECTS(
-            std::distance( firstElem, lastElem ) >= 0
+             last - first >= 0
         );
     }
+#else
+    span_constexpr_exp span( pointer first, pointer last )
+        : data_( first )
+        , size_( to_size( last - first ) )
+    {
+        span_EXPECTS(
+            last - first >= 0
+        );
+    }
+#endif
 
     template< std::size_t N
-#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         span_REQUIRES_T((
             (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
             && std::is_convertible< value_type(*)[], element_type(*)[] >::value
         ))
-#endif
     >
     span_constexpr span( element_type ( &arr )[ N ] ) span_noexcept
         : data_( span_ADDRESSOF( arr[0] ) )
@@ -922,12 +957,10 @@ public:
 #if span_HAVE( ARRAY )
 
     template< std::size_t N
-# if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         span_REQUIRES_T((
             (Extent == dynamic_extent || Extent == static_cast<extent_t>(N))
             && std::is_convertible< value_type(*)[], element_type(*)[] >::value
         ))
-# endif
     >
 # if span_FEATURE( CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE )
         span_constexpr span( std::array< element_type, N > & arr ) span_noexcept
@@ -1017,12 +1050,10 @@ public:
 #endif
 
     template< class OtherElementType, extent_type OtherExtent
-#if span_HAVE( DEFAULT_FUNCTION_TEMPLATE_ARG )
         span_REQUIRES_T((
             (Extent == dynamic_extent || Extent == OtherExtent)
             && std::is_convertible<OtherElementType(*)[], element_type(*)[]>::value
         ))
-#endif
     >
     span_constexpr_exp span( span<OtherElementType, OtherExtent> const & other ) span_noexcept
         : data_( reinterpret_cast<pointer>( other.data() ) )
@@ -1244,6 +1275,28 @@ public:
     span_constexpr const_reverse_iterator crend() const span_noexcept
     {
         return const_reverse_iterator( cbegin() );
+    }
+
+private:
+    #if span_HAVE( NULLPTR )
+    static inline span_constexpr pointer to_address( std::nullptr_t ) span_noexcept
+    {
+        return nullptr;
+    }
+    #endif
+
+    template< typename U >
+    static inline span_constexpr U * to_address( U * p ) span_noexcept
+    {
+        return p;
+    }
+
+    template< typename Ptr
+        span_REQUIRES_T(( ! std::is_pointer<Ptr>::value ))
+    >
+    static inline span_constexpr pointer to_address( Ptr const & it ) span_noexcept
+    {
+        return to_address( it.operator->() );
     }
 
 private:
@@ -1491,6 +1544,16 @@ using span_lite::ssize;
 
 #if span_FEATURE( MAKE_SPAN ) || span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
 
+#if span_USES_STD_SPAN
+# define  span_constexpr  constexpr
+# define  span_noexcept   noexcept
+# define  span_nullptr    nullptr
+# ifndef  span_CONFIG_EXTENT_TYPE
+#  define span_CONFIG_EXTENT_TYPE  std::size_t
+# endif
+using extent_t = span_CONFIG_EXTENT_TYPE;
+#endif  // span_USES_STD_SPAN
+
 namespace nonstd {
 namespace span_lite {
 
@@ -1533,7 +1596,23 @@ make_span( std::array< T, N > const & arr ) span_noexcept
 
 #endif // span_HAVE( ARRAY )
 
-#if span_USES_STD_SPAN || ( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO ) )
+#if span_USES_STD_SPAN
+
+template< class Container, class EP = decltype( std::data(std::declval<Container&>())) >
+inline span_constexpr auto
+make_span( Container & cont ) span_noexcept -> span< typename std::remove_pointer<EP>::type >
+{
+    return span< typename std::remove_pointer<EP>::type >( cont );
+}
+
+template< class Container, class EP = decltype( std::data(std::declval<Container&>())) >
+inline span_constexpr auto
+make_span( Container const & cont ) span_noexcept -> span< const typename std::remove_pointer<EP>::type >
+{
+    return span< const typename std::remove_pointer<EP>::type >( cont );
+}
+
+#elif span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) && span_HAVE( AUTO )
 
 template< class Container, class EP = decltype( std17::data(std::declval<Container&>())) >
 inline span_constexpr auto

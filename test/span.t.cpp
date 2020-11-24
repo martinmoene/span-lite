@@ -211,27 +211,29 @@ CASE( "span<>: Allows to construct from two pointers" )
     EXPECT( std::equal( w.begin(), w.end(), arr ) );
 }
 
-// TODO
 CASE( "span<>: Allows to construct from two iterators" )
 {
-#if span_USES_STD_SPAN
+#if span_HAVE_ITERATOR_CTOR
     std::vector<int> v( 5, 123 );
 
     span<int> s( v.begin(), v.end() );
 
     EXPECT( std::equal( s.begin(), s.end(), v.begin() ) );
+#else
+    EXPECT( !!"construction from iterator is not available (no C++11)" );
 #endif
 }
 
-// TODO
 CASE( "span<>: Allows to construct from an iterator and a size" )
 {
-#if span_USES_STD_SPAN
+#if span_HAVE_ITERATOR_CTOR
     std::vector<int> v( 5, 123 );
 
     span<int> s( v.begin(), v.size() );
 
     EXPECT( std::equal( s.begin(), s.end(), v.begin() ) );
+#else
+    EXPECT( !!"construction from iterator is not available (no C++11)" );
 #endif
 }
 
@@ -313,29 +315,27 @@ CASE( "span<>: Allows to construct from a pointer and a size via a deduction gui
 #endif
 }
 
-// TODO
 CASE( "span<>: Allows to construct from an iterator and a size via a deduction guide (C++17)" )
 {
 #if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) )
     std::vector<int> v( 5, 123 );
 
-    // span spn( v.begin(), v.size() );
+    span spn( v.begin(), v.size() );
 
-    // EXPECT( spn.size() == v.size() );
+    EXPECT( spn.size() == v.size() );
 #else
     EXPECT( !!"deduction guide is not available (no C++17)" );
 #endif
 }
 
-// TODO
 CASE( "span<>: Allows to construct from two iterators via a deduction guide (C++17)" )
 {
 #if span_STD_OR( span_HAVE( DEDUCTION_GUIDES ) )
     std::vector<int> v( 5, 123 );
 
-//    span spn( v.begin(), v.end() );
+   span spn( v.begin(), v.end() );
 
-//    EXPECT( spn.size() == v.size() );
+   EXPECT( spn.size() == v.size() );
 #else
     EXPECT( !!"deduction guide is not available (no C++17)" );
 #endif
