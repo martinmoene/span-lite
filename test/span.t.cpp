@@ -1868,6 +1868,25 @@ CASE( "[hide][issue-3: same()]" )
 #endif // span_FEATURE_TO_STD( MAKE_SPAN )
 }
 
+// issue #64
+
+#include <cstddef>
+#include <cstdint>
+
+namespace issue64 {
+
+    void foo(nonstd::span<std::uint8_t>) {}
+    void foo(nonstd::span<nonstd::span<std::uint8_t>>) {}
+}
+
+CASE( "[hide][issue-64: overly permissive constructor]" )
+{
+    using issue64::foo;
+    std::uint8_t u;
+
+    foo( {&u, 1u} );
+}
+
 CASE( "tweak header: reads tweak header if supported " "[tweak]" )
 {
 #if span_HAVE( TWEAK_HEADER )
