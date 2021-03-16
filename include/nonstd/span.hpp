@@ -902,7 +902,7 @@ public:
     }
 
 #if span_HAVE( ITERATOR_CTOR )
-    // Didn't yet succeed in combining the next to constructors:
+    // Didn't yet succeed in combining the next two constructors:
 
     span_constexpr_exp span( std::nullptr_t, size_type count )
         : data_( span_nullptr )
