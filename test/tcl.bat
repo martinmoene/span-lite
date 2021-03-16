@@ -14,9 +14,9 @@ if NOT "%1" == "" set std=%1 & shift
 set UCAP=%unit%
 call :toupper UCAP
 
-set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_DEFAULT
-::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_NONSTD
-::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_STD
+set unit_select=%unit%_%UCAP%_DEFAULT
+::set unit_select=%unit%_%UCAP%_NONSTD
+::set unit_select=%unit%_%UCAP%_STD
 if NOT "%1" == "" set unit_select=%1 & shift
 
 set args=%1 %2 %3 %4 %5 %6 %7 %8 %9
@@ -35,7 +35,7 @@ set unit_contract=^
 :: -Dspan_FEATURE_MAKE_SPAN=1      takes precedence over span_FEATURE_MAKE_SPAN_TO_STD
 
 set unit_config=^
-    -Djthread_CONFIG_SELECT_JTHREAD=%select_jthread%
+    -Dspan_CONFIG_SELECT_SPAN=%unit_select% ^
     -Dspan_FEATURE_CONSTRUCTION_FROM_STDARRAY_ELEMENT_TYPE=1 ^
     -Dspan_FEATURE_WITH_CONTAINER_TO_STD=99 ^
     -Dspan_FEATURE_MEMBER_CALL_OPERATOR=1 ^
@@ -62,7 +62,7 @@ rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Weverything -Wshadow -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-missing-noreturn -Wno-documentation-unknown-command -Wno-documentation-deprecated-sync -Wno-documentation -Wno-weak-vtables -Wno-missing-prototypes -Wno-missing-variable-declarations -Wno-exit-time-destructors -Wno-global-constructors -Wno-sign-conversion -Wno-sign-compare -Wno-implicit-int-conversion -Wno-deprecated-declarations
 
-"%clang%" -m32 -EHsc -std:%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% -fms-compatibility-version=19.00 /imsvc lest -I../include -I. -o %unit_file%-main.t.exe %unit_file%-main.t.cpp %unit_file%.t.cpp && %unit_file%-main.t.exe
+"%clang%" -m32 -EHsc -std:%std% %optflags% %warnflags% %unit_contract% %unit_config% -fms-compatibility-version=19.00 /imsvc lest -I../include -I. -o %unit_file%-main.t.exe %unit_file%-main.t.cpp %unit_file%.t.cpp && %unit_file%-main.t.exe
 ::cl -W3 -EHsc %std% %unit_select% %unit_contract% %unit_config% %msvc_defines% %byte_lite% -I"%CppCoreCheckInclude%" -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 endlocal & goto :EOF
 

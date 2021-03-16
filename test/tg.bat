@@ -16,9 +16,9 @@ if NOT "%1" == "" set std=%1 & shift
 set UCAP=%unit%
 call :toupper UCAP
 
-set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_DEFAULT
-::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_NONSTD
-::set unit_select=-D%unit%_CONFIG_SELECT_%UCAP%=%unit%_%UCAP%_STD
+set unit_select=%unit%_%UCAP%_DEFAULT
+::set unit_select==%unit%_%UCAP%_NONSTD
+::set unit_select=%unit%_%UCAP%_STD
 if NOT "%1" == "" set unit_select=%1 & shift
 
 set args=%1 %2 %3 %4 %5 %6 %7 %8 %9
@@ -29,6 +29,7 @@ call :CompilerVersion version
 echo %gpp% %version%: %std% %unit_select% %args%
 
 set unit_contract=^
+    -Dspan_CONFIG_SELECT_SPAN=%unit_select% ^
     -Dspan_CONFIG_CONTRACT_VIOLATION_TERMINATES=0 ^
     -Dspan_CONFIG_CONTRACT_VIOLATION_THROWS=1
 
@@ -56,7 +57,7 @@ rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-padded -Wno-missing-noreturn
 
-%gpp% -std=%std% %optflags% %warnflags% %unit_select% %unit_contract% %unit_config% %byte_lite% -o %unit%-main.t.exe -Ilest -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
+%gpp% -std=%std% %optflags% %warnflags% %unit_contract% %unit_config% %byte_lite% -o %unit%-main.t.exe -Ilest -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 
 endlocal & goto :EOF
 
