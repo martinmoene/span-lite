@@ -287,8 +287,9 @@ CASE( "span<>: Allows to construct from a temporary pointer to const and a size"
     EXPECT( std::equal( v.begin(), v.end(), &x ) );
 }
 
-CASE( "span<>: Allows to construct from any pointer and a zero size" )
+CASE( "span<>: Allows to construct from any pointer and a zero size (C++98)" )
 {
+#if !span_CPP11_OR_GREATER
     struct F {
         static void null() {
             int * p = span_nullptr; span<int> v( p, size_type( 0 ) );
@@ -300,6 +301,9 @@ CASE( "span<>: Allows to construct from any pointer and a zero size" )
 
     EXPECT_NO_THROW( F::null() );
     EXPECT_NO_THROW( F::nonnull() );
+#else
+    EXPECT( !!"Only with C++98" );
+#endif
 }
 
 CASE( "span<>: Allows to construct from a pointer and a size via a deduction guide (C++17)" )

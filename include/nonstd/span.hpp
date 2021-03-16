@@ -902,15 +902,25 @@ public:
     }
 
 #if span_HAVE( ITERATOR_CTOR )
-    template< typename It >
+    // Didn't yet succeed in combining the next to constructors:
+
+    span_constexpr_exp span( std::nullptr_t, size_type count )
+        : data_( span_nullptr )
+        , size_( count )
+    {
+        span_EXPECTS( data_ == span_nullptr && count == 0 );
+    }
+
+    template< typename It
+        span_REQUIRES_T((
+            std::is_convertible<decltype(*std::declval<It&>()), element_type>::value
+        ))
+    >
     span_constexpr_exp span( It first, size_type count )
         : data_( to_address( first ) )
         , size_( count )
     {
-        span_EXPECTS(
-            ( data_ == span_nullptr && count == 0 ) ||
-            ( data_ != span_nullptr && detail::is_positive( count ) )
-        );
+        span_EXPECTS( data_ != span_nullptr && detail::is_positive( count ) );
     }
 #else
     span_constexpr_exp span( pointer ptr, size_type count )
@@ -926,7 +936,10 @@ public:
 
 #if span_HAVE( ITERATOR_CTOR )
     template< typename It, typename End
-        span_REQUIRES_T(( ! std::is_convertible<End, std::size_t>::value ))
+        span_REQUIRES_T((
+            std::is_convertible<decltype(*std::declval<It&>()), element_type>::value
+            && ! std::is_convertible<End, std::size_t>::value
+        ))
      >
     span_constexpr_exp span( It first, End last )
         : data_( to_address( first ) )
@@ -1322,11 +1335,15 @@ span( std::array<T, N> & ) -> span<T, static_cast<extent_t>(N)>;
 template< class T, size_t N >
 span( std::array<T, N> const & ) -> span<const T, static_cast<extent_t>(N)>;
 
+#if span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
+
 template< class Container >
 span( Container& ) -> span<typename Container::value_type>;
 
 template< class Container >
 span( Container const & ) -> span<const typename Container::value_type>;
+
+#endif
 
 // iterator: constraints: It satisfies contiguous_­iterator.
 
@@ -1634,6 +1651,13 @@ make_span( Container const & cont ) span_noexcept -> span< const typename std::r
 }
 
 #else
+
+template< class T >
+inline span_constexpr span<T>
+make_span( span<T> spn ) span_noexcept
+{
+    return spn;
+}
 
 template< class T, class Allocator >
 inline span_constexpr span<T>
