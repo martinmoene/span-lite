@@ -1870,21 +1870,25 @@ CASE( "[hide][issue-3: same()]" )
 
 // issue #64
 
-#include <cstddef>
-#include <cstdint>
+#if span_CPP11_000
 
 namespace issue64 {
 
-    void foo(nonstd::span<std::uint8_t>) {}
-    void foo(nonstd::span<nonstd::span<std::uint8_t>>) {}
+    void foo(nonstd::span<unsigned>) {}
+    void foo(nonstd::span<nonstd::span<unsigned> >) {}
 }
+#endif
 
 CASE( "[hide][issue-64: overly permissive constructor]" )
 {
+#if span_CPP11_000
     using issue64::foo;
-    std::uint8_t u;
+    unsigned u;
 
     foo( {&u, 1u} );
+#else
+    EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
+#endif
 }
 
 CASE( "tweak header: reads tweak header if supported " "[tweak]" )
