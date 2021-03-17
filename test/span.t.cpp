@@ -289,7 +289,7 @@ CASE( "span<>: Allows to construct from a temporary pointer to const and a size"
 
 CASE( "span<>: Allows to construct from any pointer and a zero size (C++98)" )
 {
-#if !span_CPP11_OR_GREATER
+#if !span_HAVE_ITERATOR_CTOR
     struct F {
         static void null() {
             int * p = span_nullptr; span<int> v( p, size_type( 0 ) );
@@ -1874,22 +1874,22 @@ CASE( "[hide][issue-3: same()]" )
 
 // issue #64
 
-#if span_CPP11_000
+#if span_HAVE_ITERATOR_CTOR
 
 namespace issue64 {
 
-    void foo(nonstd::span<unsigned>) {}
-    void foo(nonstd::span<nonstd::span<unsigned> >) {}
+    void fun(nonstd::span<unsigned>) {}
+    void fun(nonstd::span<nonstd::span<unsigned> >) {}
 }
 #endif
 
 CASE( "[hide][issue-64: overly permissive constructor]" )
 {
-#if span_CPP11_000
-    using issue64::foo;
+#if span_HAVE_ITERATOR_CTOR
+    using issue64::fun;
     unsigned u;
 
-    foo( {&u, 1u} );
+    fun( {&u, 1u} );
 #else
     EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
 #endif
