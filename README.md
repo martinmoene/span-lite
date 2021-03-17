@@ -394,6 +394,10 @@ The version of *span lite* is available via tag `[.version]`. The following tags
 
 ### A.2 Span lite test specification
 
+<details>
+<summary>click to expand</summary>
+<p>
+
 ```Text
 span<>: Terminates construction from a nullptr and a non-zero size (C++11)
 span<>: Terminates construction from two pointers in the wrong order
@@ -503,3 +507,6 @@ tuple_element<>: Allows to obtain an element via std::tuple_element_t<> (C++11)
 get<I>(spn): Allows to access an element via std::get<>()
 tweak header: reads tweak header if supported [tweak]
 ```
+
+</p>
+</details>
