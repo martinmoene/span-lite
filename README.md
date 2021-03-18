@@ -412,7 +412,9 @@ span<>: Allows to default-construct
 span<>: Allows to construct from a nullptr and a zero size (C++11)
 span<>: Allows to construct from two pointers
 span<>: Allows to construct from two iterators
+span<>: Allows to construct from two iterators - empty range
 span<>: Allows to construct from an iterator and a size
+span<>: Allows to construct from an iterator and a size - empty range
 span<>: Allows to construct from two pointers to const
 span<>: Allows to construct from a non-null pointer and a size
 span<>: Allows to construct from a non-null pointer to const and a size

@@ -920,7 +920,10 @@ public:
         : data_( to_address( first ) )
         , size_( count )
     {
-        span_EXPECTS( data_ != span_nullptr && detail::is_positive( count ) );
+        span_EXPECTS(
+            ( data_ == span_nullptr && count == 0 ) ||
+            ( data_ != span_nullptr && detail::is_positive( count ) )
+        );
     }
 #else
     span_constexpr_exp span( pointer ptr, size_type count )
