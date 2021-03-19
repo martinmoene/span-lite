@@ -155,6 +155,18 @@ CASE( "Presence of C++ language features" "[.stdlanguage]" )
     span_ABSENT(  _CPPUNWIND );
 #endif
 
+#if defined(_DEBUG)
+    span_PRESENT( _DEBUG );
+#else
+    span_ABSENT(  _DEBUG );
+#endif
+
+#if defined(NDEBUG)
+    span_PRESENT( NDEBUG );
+#else
+    span_ABSENT(  NDEBUG );
+#endif
+
 #if span_USES_STD_SPAN
     std::cout << "(Presence of C++ language features not available: using std::span)\n";
 #else

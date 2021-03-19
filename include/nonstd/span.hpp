@@ -1299,6 +1299,8 @@ public:
 
 private:
 
+    // Note: C++20 has std::pointer_traits<Ptr>::to_address( it );
+
 #if span_HAVE( ITERATOR_CTOR )
     static inline span_constexpr pointer to_address( std::nullptr_t ) span_noexcept
     {
