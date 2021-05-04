@@ -1690,6 +1690,75 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset" )
 #endif
 }
 
+CASE( "first(): Allows to create a sub span from a span compatible container" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_CPP11_120
+    int arr[] = { 1, 2, 3, 4, 5, };
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    size_type count = 3;
+
+    span<      int> s = first( v, count );
+    span<const int> t = first( v, count );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+#else
+    EXPECT( !!"first() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+#endif
+}
+
+CASE( "last(): Allows to create a sub span from a span compatible container" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_CPP11_120
+    int arr[] = { 1, 2, 3, 4, 5, };
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    size_type count = 3;
+
+    span<      int> s = last( v, count );
+    span<const int> t = last( v, count );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+#else
+    EXPECT( !!"last() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+#endif
+}
+
+CASE( "subspan(): Allows to create a sub span from a span compatible container" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_CPP11_120
+    int arr[] = { 1, 2, 3, };
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    size_type offset = 1;
+
+    span<      int> s = subspan( v, offset );
+    span<const int> t = subspan( v, offset );
+
+    EXPECT( s.size() == v.size() - offset );
+    EXPECT( t.size() == v.size() - offset );
+    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+#else
+    EXPECT( !!"subspan() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+#endif
+}
+
 CASE( "size(): Allows to obtain the number of elements via size()" )
 {
     int a[] = { 1, 2, 3, };
