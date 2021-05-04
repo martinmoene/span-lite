@@ -1466,55 +1466,6 @@ as_writable_bytes( span<T,Extent> spn ) span_noexcept
 
 #endif // span_HAVE( BYTE ) || span_HAVE( NONSTD_BYTE )
 
-// extensions: non-member views:
-// this feature implies the presence of make_span()
-
-#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_CPP11_120
-
-template< extent_t Count, class T >
-span_constexpr auto
-first( T & t ) -> decltype( make_span(t).template first<Count>() )
-{
-    return make_span( t ).template first<Count>();
-}
-
-template< class T >
-span_constexpr auto
-first( T & t, size_t count ) -> decltype( make_span(t).first(count) )
-{
-    return make_span( t ).first( count );
-}
-
-template< extent_t Count, class T >
-span_constexpr auto
-last( T & t ) -> decltype( make_span(t).template last<Count>() )
-{
-    return make_span(t).template last<Count>();
-}
-
-template< class T >
-span_constexpr auto
-last( T & t, extent_t count ) -> decltype( make_span(t).last(count) )
-{
-    return make_span( t ).last( count );
-}
-
-template< size_t Offset, extent_t Count = dynamic_extent, class T >
-span_constexpr auto
-subspan( T & t ) -> decltype( make_span(t).template subspan<Offset, Count>() )
-{
-    return make_span( t ).template subspan<Offset, Count>();
-}
-
-template< class T >
-span_constexpr auto
-subspan( T & t, size_t offset, extent_t count = dynamic_extent ) -> decltype( make_span(t).subspan(offset, count) )
-{
-    return make_span( t ).subspan( offset, count );
-}
-
-#endif // span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
-
 // 27.8 Container and view access [iterator.container]
 
 template< class T, extent_t Extent /*= dynamic_extent*/ >
@@ -1698,6 +1649,54 @@ make_span( with_container_t, Container const & cont ) span_noexcept
 
 #endif // ! span_USES_STD_SPAN && span_FEATURE( WITH_CONTAINER )
 
+// extensions: non-member views:
+// this feature implies the presence of make_span()
+
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_CPP11_120
+
+template< extent_t Count, class T >
+span_constexpr auto
+first( T & t ) -> decltype( make_span(t).template first<Count>() )
+{
+    return make_span( t ).template first<Count>();
+}
+
+template< class T >
+span_constexpr auto
+first( T & t, size_t count ) -> decltype( make_span(t).first(count) )
+{
+    return make_span( t ).first( count );
+}
+
+template< extent_t Count, class T >
+span_constexpr auto
+last( T & t ) -> decltype( make_span(t).template last<Count>() )
+{
+    return make_span(t).template last<Count>();
+}
+
+template< class T >
+span_constexpr auto
+last( T & t, extent_t count ) -> decltype( make_span(t).last(count) )
+{
+    return make_span( t ).last( count );
+}
+
+template< size_t Offset, extent_t Count = dynamic_extent, class T >
+span_constexpr auto
+subspan( T & t ) -> decltype( make_span(t).template subspan<Offset, Count>() )
+{
+    return make_span( t ).template subspan<Offset, Count>();
+}
+
+template< class T >
+span_constexpr auto
+subspan( T & t, size_t offset, extent_t count = dynamic_extent ) -> decltype( make_span(t).subspan(offset, count) )
+{
+    return make_span( t ).subspan( offset, count );
+}
+
+#endif // span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
 
 }  // namespace span_lite
 }  // namespace nonstd
@@ -1706,6 +1705,14 @@ make_span( with_container_t, Container const & cont ) span_noexcept
 
 namespace nonstd {
 using span_lite::make_span;
+
+#if span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) && span_CPP11_120
+
+using span_lite::first;
+using span_lite::last;
+using span_lite::subspan;
+
+#endif // span_FEATURE( NON_MEMBER_FIRST_LAST_SUB )
 }  // namespace nonstd
 
 #endif // #if span_FEATURE_TO_STD( MAKE_SPAN )
