@@ -501,6 +501,9 @@ first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]
 first(): Allows to create a sub span of the first n elements
 last(): Allows to create a sub span of the last n elements
 subspan(): Allows to create a sub span starting at a given offset
+first(): Allows to create a sub span from a span compatible container
+last(): Allows to create a sub span from a span compatible container
+subspan(): Allows to create a sub span from a span compatible container
 size(): Allows to obtain the number of elements via size()
 ssize(): Allows to obtain the number of elements via ssize()
 tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++11)
