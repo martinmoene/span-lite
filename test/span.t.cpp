@@ -1621,12 +1621,73 @@ CASE( "first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]" )
     EXPECT( !!"(avoid warning)" );  // suppress: unused parameter 'lest_env' [-Wunused-parameter]
 }
 
-CASE( "first(): Allows to create a sub span of the first n elements" )
+CASE( "first(): Allows to create a sub span of the first n elements (span, template parameter)" )
 {
-#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_SPAN ) )
+    int arr[] = { 1, 2, 3, 4, 5, };
+    span<int> spn( arr );
+    const size_type count = 3;
+
+    span<      int, count> s = first<count>( spn );
+    span<const int, count> t = first<count>( spn );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+#else
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
+#endif
+}
+
+CASE( "first(): Allows to create a sub span of the first n elements (span, function parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_SPAN ) )
+    int arr[] = { 1, 2, 3, 4, 5, };
+    span<int> spn( arr );
+    size_type count = 3;
+
+    span<      int> s = first( spn, count );
+    span<const int> t = first( spn, count );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+#else
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
+#endif
+}
+
+CASE( "first(): Allows to create a sub span of the first n elements (compatible container, template parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
-    span<int> v( arr );
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    const size_type count = 3;
+
+    span<      int, count> s = first<count>( v );
+    span<const int, count> t = first<count>( v );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+#else
+    EXPECT( !!"first() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB_CONTAINER=0, or using std::span)" );
+#endif
+}
+
+CASE( "first(): Allows to create a sub span of the first n elements (compatible container, function parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
+#if span_CPP11_120
+    int arr[] = { 1, 2, 3, 4, 5, };
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
     size_type count = 3;
 
     span<      int> s = first( v, count );
@@ -1640,16 +1701,77 @@ CASE( "first(): Allows to create a sub span of the first n elements" )
     EXPECT( !!"first() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB_CONTAINER=0, or using std::span)" );
 #endif
 }
 
-CASE( "last(): Allows to create a sub span of the last n elements" )
+CASE( "last(): Allows to create a sub span of the last n elements (span, template parameter)" )
 {
-#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_SPAN ) )
+    int arr[] = { 1, 2, 3, 4, 5, };
+    span<int> spn( arr );
+    const size_type count = 3;
+
+    span<      int, count> s = last<count>( spn );
+    span<const int, count> t = last<count>( spn );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr + spn.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + spn.size() - count ) );
+#else
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
+#endif
+}
+
+CASE( "last(): Allows to create a sub span of the last n elements (span, function parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_SPAN ) )
+    int arr[] = { 1, 2, 3, 4, 5, };
+    span<int> spn( arr );
+    size_type count = 3;
+
+    span<      int> s = last( spn, count );
+    span<const int> t = last( spn, count );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr + spn.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + spn.size() - count ) );
+#else
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
+#endif
+}
+
+CASE( "last(): Allows to create a sub span of the last n elements (compatible container, template parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
-    span<int> v( arr );
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    const size_type count = 3;
+
+    span<      int, count> s = last<count>( v );
+    span<const int, count> t = last<count>( v );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+#else
+    EXPECT( !!"last() is not available (no C++11)" );
+#endif
+#else
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB_CONTAINER=0, or using std::span)" );
+#endif
+}
+
+CASE( "last(): Allows to create a sub span of the last n elements (compatible container, function parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
+#if span_CPP11_120
+    int arr[] = { 1, 2, 3, 4, 5, };
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
     size_type count = 3;
 
     span<      int> s = last( v, count );
@@ -1663,82 +1785,76 @@ CASE( "last(): Allows to create a sub span of the last n elements" )
     EXPECT( !!"last() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB_CONTAINER=0, or using std::span)" );
 #endif
 }
 
-CASE( "subspan(): Allows to create a sub span starting at a given offset" )
+CASE( "subspan(): Allows to create a sub span starting at a given offset (span, template parameter)" )
 {
-#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
-#if span_CPP11_120
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_SPAN ) )
     int arr[] = { 1, 2, 3, };
-    span<int> v( arr );
+    span<int> spn( arr );
+    const size_type offset = 1;
+    const size_type count  = DIMENSION_OF(arr) - offset;
+
+    span<      int, count> s = subspan<offset, count>( spn );
+    span<const int, count> t = subspan<offset, count>( spn );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
+    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+#else
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
+#endif
+}
+
+CASE( "subspan(): Allows to create a sub span starting at a given offset (span, function parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_SPAN ) )
+    int arr[] = { 1, 2, 3, };
+    span<int> spn( arr );
     size_type offset = 1;
 
-    span<      int> s = subspan( v, offset );
-    span<const int> t = subspan( v, offset );
+    span<      int> s = subspan( spn, offset );
+    span<const int> t = subspan( spn, offset );
 
-    EXPECT( s.size() == v.size() - offset );
-    EXPECT( t.size() == v.size() - offset );
+    EXPECT( s.size() == spn.size() - offset );
+    EXPECT( t.size() == spn.size() - offset );
+    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+#else
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
+#endif
+}
+
+CASE( "subspan(): Allows to create a sub span starting at a given offset (compatible container, template parameter)" )
+{
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
+#if span_CPP11_120
+    int arr[] = { 1, 2, 3, };
+    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    const size_type offset = 1;
+    const size_type count  = DIMENSION_OF(arr) - offset;
+
+    span<      int, count> s = subspan<offset, count>( v );
+    span<const int, count> t = subspan<offset, count>( v );
+
+    EXPECT( s.size() == count );
+    EXPECT( t.size() == count );
     EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
     EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
 #else
     EXPECT( !!"subspan() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB_CONTAINER=0, or using std::span)" );
 #endif
 }
 
-CASE( "first(): Allows to create a sub span from a span compatible container" )
+CASE( "subspan(): Allows to create a sub span starting at a given offset (compatible container, function parameter)" )
 {
-#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
-#if span_CPP11_120
-    int arr[] = { 1, 2, 3, 4, 5, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
-    size_type count = 3;
-
-    span<      int> s = first( v, count );
-    span<const int> t = first( v, count );
-
-    EXPECT( s.size() == count );
-    EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
-#else
-    EXPECT( !!"first() is not available (no C++11)" );
-#endif
-#else
-    EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
-#endif
-}
-
-CASE( "last(): Allows to create a sub span from a span compatible container" )
-{
-#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
-#if span_CPP11_120
-    int arr[] = { 1, 2, 3, 4, 5, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
-    size_type count = 3;
-
-    span<      int> s = last( v, count );
-    span<const int> t = last( v, count );
-
-    EXPECT( s.size() == count );
-    EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
-#else
-    EXPECT( !!"last() is not available (no C++11)" );
-#endif
-#else
-    EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
-#endif
-}
-
-CASE( "subspan(): Allows to create a sub span from a span compatible container" )
-{
-#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB ) )
+#if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, };
     std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
@@ -1755,7 +1871,7 @@ CASE( "subspan(): Allows to create a sub span from a span compatible container" 
     EXPECT( !!"subspan() is not available (no C++11)" );
 #endif
 #else
-    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB=0, or using std::span)" );
+    EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB_CONTAINER=0, or using std::span)" );
 #endif
 }
 

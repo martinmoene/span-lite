@@ -154,7 +154,17 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Free function**  |&nbsp;| macro **`span_FEATURE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Free functions** |&nbsp;| macro **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB`** |
+| **Free functions**<br><br> |&nbsp;| macros **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB`**,<br>**`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN`**,<br>**`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_CONTAINER`** |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Free functions** |&nbsp;| macro **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN`** |
+| &nbsp; | &nbsp;    | template&lt;extent_t Count, class T, extent_t Extent><br>constexpr span&lt;T,Count><br>**first**(span&lt;T,Extent> spn) |
+| &nbsp; | &nbsp;    | template&lt;class T, extent_t Extent ><br>constexpr span&lt;T><br>**first**(span&lt;T,Extent> spn, size_t count) |
+| &nbsp; | &nbsp;    | template&lt;extent_t Count, class T, extent_t Extent><br>constexpr span&lt;T,Count><br>**last**(span&lt;T,Extent> spn) |
+| &nbsp; | &nbsp;    | template&lt;class T, extent_t Extent ><br>constexpr span&lt;T><br>**last**(span&lt;T,Extent> spn, size_t count) |
+| &nbsp; | &nbsp;    | template&lt;size_t Offset, extent_t Count, class T, extent_t Extent><br>constexpr span&lt;T, Count><br>**subspan**(span&lt;T, Extent> spn) |
+| &nbsp; | &nbsp;    | template&lt;class T, extent_t Extent><br>constexpr span&lt;T><br>**subspan**( span&lt;T, Extent> spn, size_t offset, extent_t count = dynamic_extent) |
+| &nbsp;             |&nbsp;| &nbsp; |
+| **Free functions** |&nbsp;| macro **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_CONTAINER`** |
 | &nbsp; | >= C++11  | template&lt;extent_t Count, class T><br>constexpr auto<br>**first**(T & t) ->... |
 | &nbsp; | >= C++11  | template&lt;class T><br>constexpr auto<br>**first**(T & t, index_t count) ->... |
 | &nbsp; | >= C++11  | template&lt;extent_t Count, class T><br>constexpr auto<br>**last**(T & t) ->... |
@@ -258,7 +268,13 @@ Define this to 1 to provide function `same()` to test if two spans refer as iden
 ### Provide `first()`, `last()` and `subspan()` functions
 
 -D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB</b>=0  
-Define this to 1 to provide functions `first()`, `last()` and `subspan()`. This implies `span_FEATURE_MAKE_SPAN` to provide functions `make_span()` that are required for this feature. Default is undefined.
+Define this to 1 to enable both `span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN` and `span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_CONTAINER`. Default is undefined.
+
+-D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN</b>=0  
+Define this to 1 to provide functions `first()`, `last()` and `subspan()` that take a `span<>` (work with C++98). This implies `span_FEATURE_MAKE_SPAN` to provide functions `make_span()` that are required for this feature. Default is undefined.
+
+-D<b>span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_CONTAINER</b>=0  
+Define this to 1 to provide functions `first()`, `last()` and `subspan()` that take a compatible container (requires C++11). This implies `span_FEATURE_MAKE_SPAN` to provide functions `make_span()` that are required for this feature. Default is undefined.
 
 ### Provide `make_span()` functions
 
@@ -498,12 +514,18 @@ byte_span() [span_FEATURE_BYTE_SPAN=1]
 byte_span(): Allows building a span of std::byte from a single object (C++17, byte-lite)
 byte_span(): Allows building a span of const std::byte from a single const object (C++17, byte-lite)
 first(), last(), subspan() [span_FEATURE_NON_MEMBER_FIRST_LAST_SUB=1]
-first(): Allows to create a sub span of the first n elements
-last(): Allows to create a sub span of the last n elements
-subspan(): Allows to create a sub span starting at a given offset
-first(): Allows to create a sub span from a span compatible container
-last(): Allows to create a sub span from a span compatible container
-subspan(): Allows to create a sub span from a span compatible container
+first(): Allows to create a sub span of the first n elements (span, template parameter)
+first(): Allows to create a sub span of the first n elements (span, function parameter)
+first(): Allows to create a sub span of the first n elements (compatible container, template parameter)
+first(): Allows to create a sub span of the first n elements (compatible container, function parameter)
+last(): Allows to create a sub span of the last n elements (span, template parameter)
+last(): Allows to create a sub span of the last n elements (span, function parameter)
+last(): Allows to create a sub span of the last n elements (compatible container, template parameter)
+last(): Allows to create a sub span of the last n elements (compatible container, function parameter)
+subspan(): Allows to create a sub span starting at a given offset (span, template parameter)
+subspan(): Allows to create a sub span starting at a given offset (span, function parameter)
+subspan(): Allows to create a sub span starting at a given offset (compatible container, template parameter)
+subspan(): Allows to create a sub span starting at a given offset (compatible container, function parameter)
 size(): Allows to obtain the number of elements via size()
 ssize(): Allows to obtain the number of elements via ssize()
 tuple_size<>: Allows to obtain the number of elements via std::tuple_size<> (C++11)
