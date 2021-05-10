@@ -154,7 +154,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | **Free function**  |&nbsp;| macro **`span_FEATURE_SAME`** |
 | &nbsp;             |&nbsp;| template&lt;class T1, index_t E1, class T2, index_t E2><br>constexpr bool<br>**same**( span<T1,E1> const & l, span<T2,E2> const & r) noexcept |
 | &nbsp;             |&nbsp;| &nbsp; |
-| **Free functions**<br><br> |&nbsp;| macros **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB`**,<br>**`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN`**,<br>**`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_CONTAINER`** |
+| **Free functions**<br>&nbsp;<br>&nbsp; |&nbsp;| macros **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB`**,<br>**`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN`**,<br>**`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_CONTAINER`** |
 | &nbsp;             |&nbsp;| &nbsp; |
 | **Free functions** |&nbsp;| macro **`span_FEATURE_NON_MEMBER_FIRST_LAST_SUB_SPAN`** |
 | &nbsp; | &nbsp;    | template&lt;extent_t Count, class T, extent_t Extent><br>constexpr span&lt;T,Count><br>**first**(span&lt;T,Extent> spn) |
