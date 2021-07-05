@@ -53,7 +53,7 @@ set CppCoreCheckInclude=^
 set byte_lite=^
     -Dspan_BYTE_LITE_HEADER=\"../../byte-lite/include/nonstd/byte.hpp\"
 
-cl -W3 -EHsc %std% %unit_select% %unit_contract% %unit_config% %msvc_defines% %byte_lite% -I"%CppCoreCheckInclude%" /Ilest -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
+cl -nologo -W3 -EHsc %std% %unit_select% %unit_contract% %unit_config% %msvc_defines% %byte_lite% -I"%CppCoreCheckInclude%" -Ilest -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 endlocal & goto :EOF
 
 :: subroutines:

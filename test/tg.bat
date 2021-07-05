@@ -59,7 +59,7 @@ rem -flto / -fwhole-program
 set  optflags=-O2
 set warnflags=-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wno-padded -Wno-missing-noreturn
 
-%gpp% -std=%std% %optflags% %warnflags% %unit_contract% %unit_config% %byte_lite% -o %unit%-main.t.exe -Ilest -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
+%gpp% -std=%std% %optflags% %warnflags% %unit_contract% %unit_config% %byte_lite% -o %unit%-main.t.exe -isystem lest -I../include -I. %unit%-main.t.cpp %unit%.t.cpp && %unit%-main.t.exe
 
 endlocal & goto :EOF
 
