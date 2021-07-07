@@ -65,6 +65,7 @@
 # define span_FEATURE_WITH_CONTAINER  span_IN_STD( span_FEATURE_WITH_CONTAINER_TO_STD )
 #else
 # define span_FEATURE_WITH_CONTAINER  0
+# define span_FEATURE_WITH_CONTAINER_TO_STD  0
 #endif
 #endif
 
@@ -120,6 +121,7 @@
 # define span_FEATURE_MAKE_SPAN  span_IN_STD( span_FEATURE_MAKE_SPAN_TO_STD )
 #else
 # define span_FEATURE_MAKE_SPAN  0
+# define span_FEATURE_MAKE_SPAN_TO_STD  0
 #endif
 #endif
 
