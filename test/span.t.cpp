@@ -242,6 +242,19 @@ CASE( "span<>: Allows to construct from two iterators - empty range" )
 #endif
 }
 
+CASE( "span<>: Allows to construct from two iterators - move-only element" )
+{
+#if span_HAVE_ITERATOR_CTOR
+    std::vector<std::unique_ptr<int> > v(5);
+
+    nonstd::span<std::unique_ptr<int> > s{ v.begin(), v.end() };
+
+    EXPECT( s.size() == 5 );
+#else
+    EXPECT( !!"construction from iterator is not available (no C++11)" );
+#endif
+}
+
 CASE( "span<>: Allows to construct from an iterator and a size" )
 {
 #if span_HAVE_ITERATOR_CTOR
@@ -267,6 +280,19 @@ CASE( "span<>: Allows to construct from an iterator and a size - empty range" )
 #else
     EXPECT( !!"construction from empty range not available (MSVC Debug)" );
 #endif
+#else
+    EXPECT( !!"construction from iterator is not available (no C++11)" );
+#endif
+}
+
+CASE( "span<>: Allows to construct from an iterator and a size - move-only element" )
+{
+#if span_HAVE_ITERATOR_CTOR
+    std::vector<std::unique_ptr<int> > v(5);
+
+    nonstd::span<std::unique_ptr<int> > s{ v.begin(), v.size() };
+
+    EXPECT( s.size() == v.size() );
 #else
     EXPECT( !!"construction from iterator is not available (no C++11)" );
 #endif
