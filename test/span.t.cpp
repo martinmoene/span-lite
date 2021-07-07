@@ -168,7 +168,7 @@ CASE( "span<>: Throws  on access outside the span via at(): std::out_of_range [s
 
 CASE( "span<>: Termination throws std::logic_error-derived exception [span_CONFIG_CONTRACT_VIOLATION_THROWS=1]" )
 {
-#if span_NONSTD_AND( span_CONFIG( CONTRACT_VIOLATION_THROWS ) )
+#if span_NONSTD_AND( span_CONFIG( CONTRACT_VIOLATION_THROWS_V ) )
     struct F {
         static void blow() { int arr[] = { 1, }; span<int> v( arr ); (void) v[1]; }
     };
