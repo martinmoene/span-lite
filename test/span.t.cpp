@@ -10,6 +10,7 @@
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include <ciso646>
+#include <memory>   // std::unique_ptr
 #include "span-main.t.hpp"
 
 #define DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
