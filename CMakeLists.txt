@@ -37,7 +37,6 @@ endif()
 
 option( SPAN_LITE_OPT_BUILD_TESTS    "Build and perform span-lite tests" ${span_IS_TOPLEVEL_PROJECT} )
 option( SPAN_LITE_OPT_BUILD_EXAMPLES "Build span-lite examples" OFF )
-option( SPAN_LITE_EXPORT_PACKAGE     "Export span-lite package globally" ${span_IS_TOPLEVEL_PROJECT} )
 
 option( SPAN_LITE_COLOURISE_TEST     "Colourise test output" OFF )
 
@@ -115,6 +114,12 @@ install(
     FILES       "${CMAKE_CURRENT_BINARY_DIR}/${package_config}"
                 "${CMAKE_CURRENT_BINARY_DIR}/${package_config_version}"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${package_folder}"
+)
+
+export(
+    EXPORT ${package_target}
+    NAMESPACE ${package_name}::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${package_name}-targets.cmake"
 )
 
 install(
