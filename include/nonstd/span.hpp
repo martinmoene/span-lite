@@ -707,7 +707,7 @@ namespace detail {
 /*enum*/ struct enabler{};
 
 template< typename T >
-bool is_positive( T x )
+span_constexpr bool is_positive( T x )
 {
     return std11::is_signed<T>::value ? x >= 0 : true;
 }
