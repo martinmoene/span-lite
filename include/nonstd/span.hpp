@@ -3,7 +3,7 @@
 // Based on http://wg21.link/p0122r7
 // For more information see https://github.com/martinmoene/span-lite
 //
-// Copyright 2018-2020 Martin Moene
+// Copyright 2018-2021 Martin Moene
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -13,7 +13,7 @@
 
 #define span_lite_MAJOR  0
 #define span_lite_MINOR  10
-#define span_lite_PATCH  0
+#define span_lite_PATCH  1
 
 #define span_lite_VERSION  span_STRINGIFY(span_lite_MAJOR) "." span_STRINGIFY(span_lite_MINOR) "." span_STRINGIFY(span_lite_PATCH)
 
