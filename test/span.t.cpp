@@ -2137,7 +2137,24 @@ CASE( "[hide][issue-64: overly permissive constructor]" )
 
     fun( {&u, 1u} );
 #else
-    EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
+    EXPECT( !!"construction from iterator is not available (no C++11)" );
+#endif
+}
+
+CASE( "[hide][issue-69: constructor from iterators is not properly constrained]" )
+{
+#if span_HAVE_ITERATOR_CTOR
+    static_assert(
+        std::is_constructible<nonstd::span<float>, int*, int*>::value == false,
+        "span<float> should not be constructible from int"
+    );
+
+    static_assert(
+        std::is_constructible<nonstd::span<float const>, int*, int*>::value == false,
+        "span<const float> should not be constructible from int"
+    );
+#else
+    EXPECT( !!"construction from iterator is not available (no C++11)" );
 #endif
 }
 

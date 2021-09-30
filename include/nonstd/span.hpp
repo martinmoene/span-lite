@@ -953,7 +953,7 @@ public:
 #if span_HAVE( ITERATOR_CTOR )
     template< typename It, typename End
         span_REQUIRES_T((
-            std::is_convertible<decltype(*std::declval<It&>()), element_type &>::value
+            std::is_convertible<decltype(&*std::declval<It&>()), element_type *>::value
             && ! std::is_convertible<End, std::size_t>::value
         ))
      >
