@@ -816,7 +816,7 @@ struct is_compatible_container : std::true_type{};
 # pragma GCC   diagnostic ignored "-Wlong-long"
 #endif
 
-inline void throw_out_of_range( size_t idx, size_t size )
+span_noreturn inline void throw_out_of_range( size_t idx, size_t size )
 {
     const char fmt[] = "span::at(): index '%lli' is out of range [0..%lli)";
     char buffer[ 2 * 20 + sizeof fmt ];
@@ -827,7 +827,7 @@ inline void throw_out_of_range( size_t idx, size_t size )
 
 #else // MEMBER_AT
 
-inline void throw_out_of_range( size_t /*idx*/, size_t /*size*/ )
+span_noreturn inline void throw_out_of_range( size_t /*idx*/, size_t /*size*/ )
 {
     throw std::out_of_range( "span::at(): index outside span" );
 }
