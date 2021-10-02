@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
 class SpanLiteConan(ConanFile):
-    version = "0.10.2"
+    version = "0.10.3"
     name = "span-lite"
     description = "A C++20-like span for C++98, C++11 and later in a single-file header-only library"
     license = "Boost Software License - Version 1.0. http://www.boost.org/LICENSE_1_0.txt"
