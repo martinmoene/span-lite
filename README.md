@@ -394,6 +394,7 @@ All tests should pass, indicating your platform is supported and you are ready t
 - [p1089 - Sizes Should Only span Unsigned](http://wg21.link/p1089).
 - [p1227 - Signed size() functions](http://wg21.link/p1227).
 - [p1872 - span should have size_type, not index_type](http://wg21.link/p1872).
+- [p2447 - std::span and the missing constructor](https://wg21.link/p2447).
 - [lwg 3101 - span's Container constructors need another constraint](https://cplusplus.github.io/LWG/issue3101).
 - [Reddit - 2018-06 Rapperswil ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/8prqzm/2018_rapperswil_iso_c_committee_trip_report/)
 - [Reddit - 2018-11 San Diego ISO C++ Committee Trip Report](https://www.reddit.com/r/cpp/comments/9vwvbz/2018_san_diego_iso_c_committee_trip_report_ranges/).
