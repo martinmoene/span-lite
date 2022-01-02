@@ -499,6 +499,35 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 #endif
 }
 
+CASE( "span<>: Allows to construct from a std::initializer_list<> as a constant set of values (C++11, p2447)" )
+{
+#if span_HAVE( INITIALIZER_LIST )
+#if span_NONSTD_AND( span_FEATURE( WITH_INITIALIZER_LIST_P2447 ) )
+    {
+        std::initializer_list<int const> il = {};
+
+        auto f = [&]( span<const int> spn ) {
+            EXPECT( std::equal( spn.begin(), spn.end(), il.begin() ) );
+        };
+
+        f({});
+    }{
+        auto il = { 1, 2, 3, 4, 5, };
+
+        auto f = [&]( span<const int> spn ) {
+            EXPECT( std::equal( spn.begin(), spn.end(), il.begin() ) );
+        };
+
+        f({ 1, 2, 3, 4, 5, });
+    }
+#else
+    EXPECT( !!"construction from std::initializer_list is not available (span_FEATURE_WITH_INITIALIZER_LIST_P2447, or using std::span)" );
+#endif
+#else
+    EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
+#endif
+}
+
 CASE( "span<>: Allows to construct from a std::array<> (C++11)" )
 {
 #if span_STD_OR( span_HAVE( ARRAY ) )

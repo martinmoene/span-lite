@@ -60,6 +60,10 @@
 
 // span configuration (features):
 
+#ifndef  span_FEATURE_WITH_INITIALIZER_LIST_P2447
+# define span_FEATURE_WITH_INITIALIZER_LIST_P2447  1
+#endif
+
 #ifndef  span_FEATURE_WITH_CONTAINER
 #ifdef   span_FEATURE_WITH_CONTAINER_TO_STD
 # define span_FEATURE_WITH_CONTAINER  span_IN_STD( span_FEATURE_WITH_CONTAINER_TO_STD )
@@ -1042,6 +1046,31 @@ public:
     {}
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
+
+#if span_FEATURE( WITH_INITIALIZER_LIST_P2447 ) && span_HAVE( INITIALIZER_LIST )
+
+    // constexpr explicit(extent != dynamic_extent) span(std::initializer_list<value_type> il) noexcept;
+
+    template< extent_t U = Extent
+        span_REQUIRES_T((
+            U != dynamic_extent
+        ))
+    >
+    span_constexpr explicit span( std::initializer_list<value_type> il ) noexcept
+        : data_( il.begin() )
+        , size_( il.size()  )
+    {}
+
+    template< extent_t U = Extent
+        span_REQUIRES_T((
+            U == dynamic_extent
+        ))
+    >
+    span_constexpr /*explicit*/ span( std::initializer_list<value_type> il ) noexcept
+        : data_( il.begin() )
+        , size_( il.size()  )
+    {}
+#endif
 
 #if span_FEATURE( WITH_CONTAINER )
 

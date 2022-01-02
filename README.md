@@ -222,6 +222,11 @@ Define this to `std::ptrdiff_t` to use the signed type. The default is `std::siz
 -D<b>span_CONFIG_NO_EXCEPTIONS</b>=0  
 Define this to 1 if you want to compile without exceptions. If not defined, the header tries and detect if exceptions have been disabled (e.g. via `-fno-exceptions`). Disabling exceptions will force contract violation to use termination, see [contract violation macros](#contract-violation-response-macros). Default is undefined.
 
+### Provide construction from std::initializer_list (p2447)
+
+-D<b>span_FEATURE_WITH_INITIALIZER_LIST_P2447</b>=0  
+Define this to 1 to enable constructing a span from a std::initializer_list<> as a constant set of values. See proposal [p2447](https://wg21.link/p2447). Default is undefined.
+
 ### Provide construction using `with_container_t`
 
 -D<b>span_FEATURE_WITH_CONTAINER</b>=0  
@@ -449,6 +454,7 @@ span<>: Allows to construct from a const C-array
 span<>: Allows to construct from a C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a const C-array with size via decay to pointer (potentially dangerous)
 span<>: Allows to construct from a std::initializer_list<> (C++11)
+span<>: Allows to construct from a std::initializer_list<> as a constant set of values (C++11, p2447)
 span<>: Allows to construct from a std::array<> (C++11)
 span<>: Allows to construct from a std::array via a deduction guide (C++17)
 span<>: Allows to construct from a std::array<> with const data (C++11, span_FEATURE_CONSTR..._ELEMENT_TYPE=1)
