@@ -1051,22 +1051,25 @@ public:
 
     // constexpr explicit(extent != dynamic_extent) span(std::initializer_list<value_type> il) noexcept;
 
+#if !span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
+
     template< extent_t U = Extent
         span_REQUIRES_T((
             U != dynamic_extent
         ))
     >
-    span_constexpr explicit span( std::initializer_list<value_type> il ) noexcept
+    span_constexpr explicit span( std::initializer_list<value_type> il ) span_noexcept
         : data_( il.begin() )
         , size_( il.size()  )
     {}
+#endif // MSVC 120 (VS2013)
 
     template< extent_t U = Extent
         span_REQUIRES_T((
             U == dynamic_extent
         ))
     >
-    span_constexpr /*explicit*/ span( std::initializer_list<value_type> il ) noexcept
+    span_constexpr /*explicit*/ span( std::initializer_list<value_type> il ) span_noexcept
         : data_( il.begin() )
         , size_( il.size()  )
     {}
