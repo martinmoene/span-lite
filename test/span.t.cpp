@@ -544,7 +544,7 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> as a constant 
     EXPECT( !!"construction from std::initializer_list is not available (span_FEATURE_WITH_INITIALIZER_LIST_P2447, or using std::span)" );
 #endif
 #else
-    EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
+    EXPECT( !!"std::initializer_list<> is not available, or std::span<> (no C++11)" );
 #endif
 }
 
@@ -1570,21 +1570,25 @@ CASE( "make_span(): Allows building from a std::initializer_list<> as a constant
     SECTION("empty initializer list") {
         std::initializer_list<int const> il = {};
 
-    //  span<int const> v = make_span( {} );    // element type unknown
-        span<int const> v = make_span<int>( {} );
-
+        auto f = [&]( span<const int> v ){
 #if span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
-        EXPECT( v.size() == 0u );
+            EXPECT( v.size() == 0u );
 #else
-        EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+            EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
 #endif
+        };
+
+    //  f( make_span({}) );         // element type unknown
+        f( make_span<int>({}) );
     }
     SECTION("non-empty initializer list") {
         auto il = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-        span<int const> v = make_span( { 1, 2, 3, 4, 5, 6, 7, 8, 9, } );
+        auto f = [&]( span<const int> v ){
+            EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+        };
 
-        EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+        f( make_span({ 1, 2, 3, 4, 5, 6, 7, 8, 9, }) );
     }}
 #else
     EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
