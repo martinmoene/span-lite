@@ -486,7 +486,8 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 {
 #if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
 #if span_STD_OR( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) )
-    {
+    SETUP("")  {
+    SECTION("empty initializer list") {
         std::initializer_list<int const> il = {};
 
         span<int const> v( il );
@@ -496,13 +497,14 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 #else
         EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
 #endif
-    }{
+    }
+    SECTION("non-empty initializer list") {
         auto il = { 1, 2, 3, 4, 5, };
 
         span<int const> v( il );
 
         EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
-    }
+    }}
 #else
     EXPECT( !!"constrained construction from container is not available" );
 #endif
@@ -515,7 +517,8 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> as a constant 
 {
 #if span_HAVE( INITIALIZER_LIST )
 #if span_NONSTD_AND( span_FEATURE( WITH_INITIALIZER_LIST_P2447 ) )
-    {
+    SETUP("")  {
+    SECTION("empty initializer list") {
         std::initializer_list<int const> il = {};
 
         auto f = [&]( span<const int> spn ) {
@@ -527,7 +530,8 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> as a constant 
         };
 
         f({});
-    }{
+    }
+    SECTION("non-empty initializer list") {
         auto il = { 1, 2, 3, 4, 5, };
 
         auto f = [&]( span<const int> spn ) {
@@ -535,7 +539,7 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> as a constant 
         };
 
         f({ 1, 2, 3, 4, 5, });
-    }
+    }}
 #else
     EXPECT( !!"construction from std::initializer_list is not available (span_FEATURE_WITH_INITIALIZER_LIST_P2447, or using std::span)" );
 #endif
