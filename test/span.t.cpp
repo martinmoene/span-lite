@@ -1563,6 +1563,34 @@ CASE( "make_span(): Allows building from a std::initializer_list<> (C++11)" )
 #endif
 }
 
+CASE( "make_span(): Allows building from a std::initializer_list<> as a constant set of values (C++11)" )
+{
+#if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
+    SETUP("")  {
+    SECTION("empty initializer list") {
+        std::initializer_list<int const> il = {};
+
+    //  span<int const> v = make_span( {} );    // element type unknown
+        span<int const> v = make_span<int>( {} );
+
+#if span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
+        EXPECT( v.size() == 0u );
+#else
+        EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+#endif
+    }
+    SECTION("non-empty initializer list") {
+        auto il = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
+
+        span<int const> v = make_span( { 1, 2, 3, 4, 5, 6, 7, 8, 9, } );
+
+        EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+    }}
+#else
+    EXPECT( !!"std::initializer_list<> is not available (no C++11)" );
+#endif
+}
+
 CASE( "make_span(): Allows building from a std::array<> (C++11)" )
 {
 #if span_STD_OR( span_HAVE( ARRAY ) )

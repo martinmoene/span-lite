@@ -185,6 +185,7 @@ To construct a span from a container with compilers that cannot constrain such a
 | &nbsp; | &nbsp;    | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(T (&arr)[N]) noexcept |
 | &nbsp; | >= C++11  | template&lt;class T, size_t N><br>constexpr span&lt;T,N><br>**make_span**(std::array&lt;T,N> & arr) noexcept |
 | &nbsp; | >= C++11  | template&lt;class T, size_t N><br>constexpr span&lt;const T,N><br>**make_span**(std::array&lt;T,N > const & arr) noexcept |
+| &nbsp; | >= C++11  | template&lt;class T><br>constexpr span&lt;T><br>**make_span**(std::initializer_list&lt;T> il) noexcept |
 | &nbsp; | >= C++11  | template&lt;class Container><br>constexpr auto<br>**make_span**(Container & cont) -><br>&emsp;span&lt;typename Container::value_type> noexcept |
 | &nbsp; | >= C++11  | template&lt;class Container><br>constexpr auto<br>**make_span**(Container const & cont) -><br>&emsp;span&lt;const typename Container::value_type> noexcept |
 | &nbsp; | &nbsp;    | template&lt;class Container><br>span&lt;typename Container::value_type><br>**make_span**( with_container_t, Container & cont ) |
@@ -520,6 +521,7 @@ make_span(): Allows building from a non-null const pointer and a size
 make_span(): Allows building from a C-array
 make_span(): Allows building from a const C-array
 make_span(): Allows building from a std::initializer_list<> (C++11)
+make_span(): Allows building from a std::initializer_list<> as a constant set of values (C++11)
 make_span(): Allows building from a std::array<> (C++11)
 make_span(): Allows building from a const std::array<> (C++11)
 make_span(): Allows building from a container (std::vector<>)

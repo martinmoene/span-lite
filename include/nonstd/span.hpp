@@ -1619,6 +1619,17 @@ make_span( std::array< T, N > const & arr ) span_noexcept
 
 #endif // span_HAVE( ARRAY )
 
+#if span_USES_STD_SPAN || span_HAVE( INITIALIZER_LIST )
+
+template< class T >
+inline span_constexpr span< const T >
+make_span( std::initializer_list<T> il ) span_noexcept
+{
+    return span<const T>( il.begin(), il.size() );
+}
+
+#endif // span_HAVE( INITIALIZER_LIST )
+
 #if span_USES_STD_SPAN
 
 template< class Container, class EP = decltype( std::data(std::declval<Container&>())) >
