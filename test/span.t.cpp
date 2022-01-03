@@ -486,11 +486,23 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> (C++11)" )
 {
 #if span_STD_OR( span_HAVE( INITIALIZER_LIST ) )
 #if span_STD_OR( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) )
-    auto il = { 1, 2, 3, 4, 5, };
+    {
+        std::initializer_list<int const> il = {};
 
-    span<int const> v( il );
+        span<int const> v( il );
 
-    EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+#if span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
+        EXPECT( v.size() == 0u );
+#else
+        EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+#endif
+    }{
+        auto il = { 1, 2, 3, 4, 5, };
+
+        span<int const> v( il );
+
+        EXPECT( std::equal( v.begin(), v.end(), il.begin() ) );
+    }
 #else
     EXPECT( !!"constrained construction from container is not available" );
 #endif
@@ -507,7 +519,11 @@ CASE( "span<>: Allows to construct from a std::initializer_list<> as a constant 
         std::initializer_list<int const> il = {};
 
         auto f = [&]( span<const int> spn ) {
+#if span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
+            EXPECT( spn.size() == 0u );
+#else
             EXPECT( std::equal( spn.begin(), spn.end(), il.begin() ) );
+#endif
         };
 
         f({});
