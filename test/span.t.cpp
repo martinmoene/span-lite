@@ -206,11 +206,11 @@ CASE( "span<>: Allows to construct from two pointers" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<      int> v( arr, arr + DIMENSION_OF( arr ) );
-    span<const int> w( arr, arr + DIMENSION_OF( arr ) );
+    span<      int> v( &arr[0], &arr[0] + DIMENSION_OF( arr ) );
+    span<const int> w( &arr[0], &arr[0] + DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
-    EXPECT( std::equal( w.begin(), w.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to construct from two iterators" )
@@ -303,29 +303,29 @@ CASE( "span<>: Allows to construct from two pointers to const" )
 {
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<const int> v( arr, arr + DIMENSION_OF( arr ) );
+    span<const int> v( &arr[0], &arr[0] + DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to construct from a non-null pointer and a size" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<      int> v( arr, DIMENSION_OF( arr ) );
-    span<const int> w( arr, DIMENSION_OF( arr ) );
+    span<      int> v( &arr[0], DIMENSION_OF( arr ) );
+    span<const int> w( &arr[0], DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
-    EXPECT( std::equal( w.begin(), w.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to construct from a non-null pointer to const and a size" )
 {
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<const int> v( arr, DIMENSION_OF( arr ) );
+    span<const int> v( &arr[0], DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to construct from a temporary pointer and a size" )
@@ -373,7 +373,7 @@ CASE( "span<>: Allows to construct from a pointer and a size via a deduction gui
     char const * argv[] = { "prog", "arg1", "arg2" };
     int  const   argc   = DIMENSION_OF( argv );
 
-    span args( argv, argc );
+    span args( &argv[0], argc );
 
     EXPECT( args.size() == DIMENSION_OF( argv ) );
 #else
@@ -414,8 +414,8 @@ CASE( "span<>: Allows to construct from a C-array" )
     span<      int> v( arr );
     span<const int> w( arr );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
-    EXPECT( std::equal( w.begin(), w.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to construct from a C-array via a deduction guide (C++17)" )
@@ -425,7 +425,7 @@ CASE( "span<>: Allows to construct from a C-array via a deduction guide (C++17)"
 
     span v( arr );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 #else
     EXPECT( !!"deduction guide is not available (no C++17)" );
 #endif
@@ -437,7 +437,7 @@ CASE( "span<>: Allows to construct from a const C-array" )
 
     span<const int> v( arr );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to construct from a C-array with size via decay to pointer (potentially dangerous)" )
@@ -445,20 +445,20 @@ CASE( "span<>: Allows to construct from a C-array with size via decay to pointer
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     {
-    span<      int> v( arr, DIMENSION_OF(arr) );
-    span<const int> w( arr, DIMENSION_OF(arr) );
+    span<      int> v( &arr[0], DIMENSION_OF(arr) );
+    span<const int> w( &arr[0], DIMENSION_OF(arr) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
-    EXPECT( std::equal( w.begin(), w.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0] ) );
     }
 
 #if span_CPP14_OR_GREATER
     {
-    span<      int> v( arr, 3 );
-    span<const int> w( arr, 3 );
+    span<      int> v( &arr[0], 3 );
+    span<const int> w( &arr[0], 3 );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr, arr + 3 ) );
-    EXPECT( std::equal( w.begin(), w.end(), arr, arr + 3 ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0], &arr[0] + 3 ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0], &arr[0] + 3 ) );
     }
 #endif
 }
@@ -468,16 +468,16 @@ CASE( "span<>: Allows to construct from a const C-array with size via decay to p
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
     {
-    span<const int> v( arr, DIMENSION_OF(arr) );
+    span<const int> v( &arr[0], DIMENSION_OF(arr) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
     }
 
 #if span_CPP14_OR_GREATER
     {
-    span<const int> w( arr, 3 );
+    span<const int> w( &arr[0], 3 );
 
-    EXPECT( std::equal( w.begin(), w.end(), arr, arr + 3 ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0], &arr[0] + 3 ) );
     }
 #endif
 }
@@ -616,7 +616,7 @@ CASE( "span<>: Allows to construct from a container (std::vector<>)" )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 #else
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
-    std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> vec( arr, &arr[0] + DIMENSION_OF(arr) );
 #endif
 
 #if span_STD_OR( span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR ) )
@@ -650,7 +650,7 @@ CASE( "span<>: Allows to tag-construct from a container (std::vector<>)" )
     std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
-    std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> vec( arr, &arr[0] + DIMENSION_OF(arr) );
 # endif
     span<      int> v( with_container, vec );
     span<const int> w( with_container, vec );
@@ -669,7 +669,7 @@ CASE( "span<>: Allows to tag-construct from a const container (std::vector<>)" )
     const std::vector<int> vec = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 # else
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
-    const std::vector<int> vec( arr, arr + DIMENSION_OF(arr) );
+    const std::vector<int> vec( arr, &arr[0] + DIMENSION_OF(arr) );
 # endif
     span<      int> v( with_container, vec );
     span<const int> w( with_container, vec );
@@ -690,8 +690,8 @@ CASE( "span<>: Allows to copy-construct from another span of the same type" )
     span<      int> x( v );
     span<const int> y( w );
 
-    EXPECT( std::equal( x.begin(), x.end(), arr ) );
-    EXPECT( std::equal( y.begin(), y.end(), arr ) );
+    EXPECT( std::equal( x.begin(), x.end(), &arr[0] ) );
+    EXPECT( std::equal( y.begin(), y.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to copy-construct from another span of a compatible type" )
@@ -703,8 +703,8 @@ CASE( "span<>: Allows to copy-construct from another span of a compatible type" 
     span<const volatile int> x( v );
     span<const volatile int> y( v );
 #ifndef _LIBCPP_VERSION
-    EXPECT( std::equal( x.begin(), x.end(), arr ) );
-    EXPECT( std::equal( y.begin(), y.end(), arr ) );
+    EXPECT( std::equal( x.begin(), x.end(), &arr[0] ) );
+    EXPECT( std::equal( y.begin(), y.end(), &arr[0] ) );
 #else
     for(size_t i = 0; i < x.size(); ++i)
         EXPECT(x[i] == arr[i]);
@@ -722,9 +722,9 @@ CASE( "span<>: Allows to copy-construct from a temporary span of the same type (
     span<const int> x(( span<      int>( arr ) ));
     span<const int> y(( span<const int>( arr ) ));
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
-    EXPECT( std::equal( x.begin(), x.end(), arr ) );
-    EXPECT( std::equal( y.begin(), y.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
+    EXPECT( std::equal( x.begin(), x.end(), &arr[0] ) );
+    EXPECT( std::equal( y.begin(), y.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to copy-assign from another span of the same type" )
@@ -737,8 +737,8 @@ CASE( "span<>: Allows to copy-assign from another span of the same type" )
     s = v;
     t = v;
 
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to copy-assign from a temporary span of the same type (C++11)" )
@@ -750,8 +750,8 @@ CASE( "span<>: Allows to copy-assign from a temporary span of the same type (C++
     v = span<int>( arr );
     w = span<int>( arr );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
-    EXPECT( std::equal( w.begin(), w.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
+    EXPECT( std::equal( w.begin(), w.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to create a sub span of the first n elements" )
@@ -765,8 +765,8 @@ CASE( "span<>: Allows to create a sub span of the first n elements" )
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] ) );
 }
 
 CASE( "span<>: Allows to create a sub span of the last n elements" )
@@ -780,8 +780,8 @@ CASE( "span<>: Allows to create a sub span of the last n elements" )
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + v.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + v.size() - count ) );
 }
 
 CASE( "span<>: Allows to create a sub span starting at a given offset" )
@@ -795,8 +795,8 @@ CASE( "span<>: Allows to create a sub span starting at a given offset" )
 
     EXPECT( s.size() == v.size() - offset );
     EXPECT( t.size() == v.size() - offset );
-    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + offset ) );
 }
 
 CASE( "span<>: Allows to create a sub span starting at a given offset with a given length" )
@@ -811,8 +811,8 @@ CASE( "span<>: Allows to create a sub span starting at a given offset with a giv
 
     EXPECT( s.size() == length );
     EXPECT( t.size() == length );
-    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + offset ) );
 }
 
 //CASE( "span<>: Allows to create an empty sub span at full offset" )
@@ -1388,7 +1388,7 @@ CASE( "span<>: Allows to view the elements as read-only bytes" )
     byte be[] = { byte{0x12}, byte{0x34}, byte{0x56}, byte{0x78}, };
     byte le[] = { byte{0x78}, byte{0x56}, byte{0x34}, byte{0x12}, };
 
-    xstd::byte * b = is_little_endian() ? le : be;
+    xstd::byte * b = is_little_endian() ? &le[0] : &be[0];
 
     span<type> va( a );
     span<const xstd::byte> vb( as_bytes( va ) );
@@ -1496,36 +1496,36 @@ CASE( "make_span(): Allows building from two pointers" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<int> v = make_span( arr, arr + DIMENSION_OF( arr ) );
+    span<int> v = make_span( &arr[0], &arr[0] + DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "make_span(): Allows building from two const pointers" )
 {
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<const int> v = make_span( arr, arr + DIMENSION_OF( arr ) );
+    span<const int> v = make_span( &arr[0], &arr[0] + DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "make_span(): Allows building from a non-null pointer and a size" )
 {
     int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<int> v = make_span( arr, DIMENSION_OF( arr ) );
+    span<int> v = make_span( &arr[0], DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "make_span(): Allows building from a non-null const pointer and a size" )
 {
     const int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, };
 
-    span<const int> v = make_span( arr, DIMENSION_OF( arr ) );
+    span<const int> v = make_span( &arr[0], DIMENSION_OF( arr ) );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "make_span(): Allows building from a C-array" )
@@ -1534,7 +1534,7 @@ CASE( "make_span(): Allows building from a C-array" )
 
     span<int> v = make_span( arr );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "make_span(): Allows building from a const C-array" )
@@ -1543,7 +1543,7 @@ CASE( "make_span(): Allows building from a const C-array" )
 
     span<const int> v = make_span( arr );
 
-    EXPECT( std::equal( v.begin(), v.end(), arr ) );
+    EXPECT( std::equal( v.begin(), v.end(), &arr[0] ) );
 }
 
 CASE( "make_span(): Allows building from a std::initializer_list<> (C++11)" )
@@ -1741,8 +1741,8 @@ CASE( "first(): Allows to create a sub span of the first n elements (span, templ
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] ) );
 #else
     EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
 #endif
@@ -1760,8 +1760,8 @@ CASE( "first(): Allows to create a sub span of the first n elements (span, funct
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] ) );
 #else
     EXPECT( !!"first() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
 #endif
@@ -1772,7 +1772,7 @@ CASE( "first(): Allows to create a sub span of the first n elements (compatible 
 #if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> v( &arr[0], &arr[0] + DIMENSION_OF(arr) );
     const size_type count = 3;
 
     span<      int, count> s = first<count>( v );
@@ -1780,8 +1780,8 @@ CASE( "first(): Allows to create a sub span of the first n elements (compatible 
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] ) );
 #else
     EXPECT( !!"first() is not available (no C++11)" );
 #endif
@@ -1795,7 +1795,7 @@ CASE( "first(): Allows to create a sub span of the first n elements (compatible 
 #if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> v( &arr[0], &arr[0] + DIMENSION_OF(arr) );
     size_type count = 3;
 
     span<      int> s = first( v, count );
@@ -1803,8 +1803,8 @@ CASE( "first(): Allows to create a sub span of the first n elements (compatible 
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] ) );
 #else
     EXPECT( !!"first() is not available (no C++11)" );
 #endif
@@ -1825,8 +1825,8 @@ CASE( "last(): Allows to create a sub span of the last n elements (span, templat
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + spn.size() - count ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + spn.size() - count ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + spn.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + spn.size() - count ) );
 #else
     EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
 #endif
@@ -1844,8 +1844,8 @@ CASE( "last(): Allows to create a sub span of the last n elements (span, functio
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + spn.size() - count ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + spn.size() - count ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + spn.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + spn.size() - count ) );
 #else
     EXPECT( !!"last() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
 #endif
@@ -1856,7 +1856,7 @@ CASE( "last(): Allows to create a sub span of the last n elements (compatible co
 #if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> v( &arr[0], &arr[0] + DIMENSION_OF(arr) );
     const size_type count = 3;
 
     span<      int, count> s = last<count>( v );
@@ -1864,8 +1864,8 @@ CASE( "last(): Allows to create a sub span of the last n elements (compatible co
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + v.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + v.size() - count ) );
 #else
     EXPECT( !!"last() is not available (no C++11)" );
 #endif
@@ -1879,7 +1879,7 @@ CASE( "last(): Allows to create a sub span of the last n elements (compatible co
 #if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, 4, 5, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> v( &arr[0], &arr[0] + DIMENSION_OF(arr) );
     size_type count = 3;
 
     span<      int> s = last( v, count );
@@ -1887,8 +1887,8 @@ CASE( "last(): Allows to create a sub span of the last n elements (compatible co
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + v.size() - count ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + v.size() - count ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + v.size() - count ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + v.size() - count ) );
 #else
     EXPECT( !!"last() is not available (no C++11)" );
 #endif
@@ -1910,8 +1910,8 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset (span, 
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + offset ) );
 #else
     EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
 #endif
@@ -1929,8 +1929,8 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset (span, 
 
     EXPECT( s.size() == spn.size() - offset );
     EXPECT( t.size() == spn.size() - offset );
-    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + offset ) );
 #else
     EXPECT( !!"subspan() is not available (NON_MEMBER_FIRST_LAST_SUB_SPAN=0, or using std::span)" );
 #endif
@@ -1941,7 +1941,7 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset (compat
 #if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> v( &arr[0], &arr[0] + DIMENSION_OF(arr) );
     const size_type offset = 1;
     const size_type count  = DIMENSION_OF(arr) - offset;
 
@@ -1950,8 +1950,8 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset (compat
 
     EXPECT( s.size() == count );
     EXPECT( t.size() == count );
-    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + offset ) );
 #else
     EXPECT( !!"subspan() is not available (no C++11)" );
 #endif
@@ -1965,7 +1965,7 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset (compat
 #if span_NONSTD_AND( span_FEATURE( NON_MEMBER_FIRST_LAST_SUB_CONTAINER ) )
 #if span_CPP11_120
     int arr[] = { 1, 2, 3, };
-    std::vector<int> v( arr, arr + DIMENSION_OF(arr) );
+    std::vector<int> v( &arr[0], &arr[0] + DIMENSION_OF(arr) );
     size_type offset = 1;
 
     span<      int> s = subspan( v, offset );
@@ -1973,8 +1973,8 @@ CASE( "subspan(): Allows to create a sub span starting at a given offset (compat
 
     EXPECT( s.size() == v.size() - offset );
     EXPECT( t.size() == v.size() - offset );
-    EXPECT( std::equal( s.begin(), s.end(), arr + offset ) );
-    EXPECT( std::equal( t.begin(), t.end(), arr + offset ) );
+    EXPECT( std::equal( s.begin(), s.end(), &arr[0] + offset ) );
+    EXPECT( std::equal( t.begin(), t.end(), &arr[0] + offset ) );
 #else
     EXPECT( !!"subspan() is not available (no C++11)" );
 #endif
@@ -2151,7 +2151,7 @@ CASE( "[hide][issue-3: same()]" )
     assert(                    ! same( fspan1          ,  fspan2 )      );
 # endif
 
-    span<uint8_type const> bspan4 = make_span( data, 4 );
+    span<uint8_type const> bspan4 = make_span( &data[0], 4 );
 
     assert(        bspan4 == fspan1   );
     assert(        fspan1 == bspan4   );
