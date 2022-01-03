@@ -1047,6 +1047,21 @@ public:
 
 #endif // span_HAVE( CONSTRAINED_SPAN_CONTAINER_CTOR )
 
+#if span_FEATURE( WITH_CONTAINER )
+
+    template< class Container >
+    span_constexpr span( with_container_t, Container & cont )
+        : data_( cont.size() == 0 ? span_nullptr : span_ADDRESSOF( cont[0] ) )
+        , size_( to_size( cont.size() ) )
+    {}
+
+    template< class Container >
+    span_constexpr span( with_container_t, Container const & cont )
+        : data_( cont.size() == 0 ? span_nullptr : const_cast<pointer>( span_ADDRESSOF( cont[0] ) ) )
+        , size_( to_size( cont.size() ) )
+    {}
+#endif
+
 #if span_FEATURE( WITH_INITIALIZER_LIST_P2447 ) && span_HAVE( INITIALIZER_LIST )
 
     // constexpr explicit(extent != dynamic_extent) span(std::initializer_list<value_type> il) noexcept;
@@ -1072,21 +1087,6 @@ public:
     span_constexpr /*explicit*/ span( std::initializer_list<value_type> il ) span_noexcept
         : data_( il.begin() )
         , size_( il.size()  )
-    {}
-#endif
-
-#if span_FEATURE( WITH_CONTAINER )
-
-    template< class Container >
-    span_constexpr span( with_container_t, Container & cont )
-        : data_( cont.size() == 0 ? span_nullptr : span_ADDRESSOF( cont[0] ) )
-        , size_( to_size( cont.size() ) )
-    {}
-
-    template< class Container >
-    span_constexpr span( with_container_t, Container const & cont )
-        : data_( cont.size() == 0 ? span_nullptr : const_cast<pointer>( span_ADDRESSOF( cont[0] ) ) )
-        , size_( to_size( cont.size() ) )
     {}
 #endif
 
