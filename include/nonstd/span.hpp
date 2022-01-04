@@ -61,7 +61,7 @@
 // span configuration (features):
 
 #ifndef  span_FEATURE_WITH_INITIALIZER_LIST_P2447
-# define span_FEATURE_WITH_INITIALIZER_LIST_P2447  1
+# define span_FEATURE_WITH_INITIALIZER_LIST_P2447  0
 #endif
 
 #ifndef  span_FEATURE_WITH_CONTAINER
