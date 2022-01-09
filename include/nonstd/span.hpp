@@ -1068,6 +1068,10 @@ public:
 
 #if !span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
 
+#ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#endif
     template< extent_t U = Extent
         span_REQUIRES_T((
             U != dynamic_extent
@@ -1077,8 +1081,16 @@ public:
         : data_( il.begin() )
         , size_( il.size()  )
     {}
+#ifdef __GNUC__
+# pragma GCC diagnostic pop
+#endif
+
 #endif // MSVC 120 (VS2013)
 
+#ifdef __GNUC__
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#endif
     template< extent_t U = Extent
         span_REQUIRES_T((
             U == dynamic_extent
@@ -1088,7 +1100,11 @@ public:
         : data_( il.begin() )
         , size_( il.size()  )
     {}
+#ifdef __GNUC__
+# pragma GCC diagnostic pop
 #endif
+
+#endif // P2447
 
 #if span_HAVE( IS_DEFAULT )
     span_constexpr span( span const & other ) span_noexcept = default;
