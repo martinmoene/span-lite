@@ -1068,7 +1068,7 @@ public:
 
 #if !span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Winit-list-lifetime"
 #endif
@@ -1081,13 +1081,13 @@ public:
         : data_( il.begin() )
         , size_( il.size()  )
     {}
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 # pragma GCC diagnostic pop
 #endif
 
 #endif // MSVC 120 (VS2013)
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Winit-list-lifetime"
 #endif
@@ -1100,7 +1100,7 @@ public:
         : data_( il.begin() )
         , size_( il.size()  )
     {}
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 # pragma GCC diagnostic pop
 #endif
 
