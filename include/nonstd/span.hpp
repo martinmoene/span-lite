@@ -1068,40 +1068,42 @@ public:
 
 #if !span_BETWEEN( span_COMPILER_MSVC_VERSION, 120, 130 )
 
-#if span_COMPILER_GNUC_VERSION >= 900
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Winit-list-lifetime"
-#endif
     template< extent_t U = Extent
         span_REQUIRES_T((
             U != dynamic_extent
         ))
     >
+#if span_COMPILER_GNUC_VERSION >= 900   // prevent GCC's "-Winit-list-lifetime"
+    span_constexpr14 explicit span( std::initializer_list<value_type> il ) span_noexcept
+    {
+        data_ = il.begin();
+        size_ = il.size();
+    }
+#else
     span_constexpr explicit span( std::initializer_list<value_type> il ) span_noexcept
         : data_( il.begin() )
         , size_( il.size()  )
     {}
-#if span_COMPILER_GNUC_VERSION >= 900
-# pragma GCC diagnostic pop
 #endif
 
 #endif // MSVC 120 (VS2013)
 
-#if span_COMPILER_GNUC_VERSION >= 900
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Winit-list-lifetime"
-#endif
     template< extent_t U = Extent
         span_REQUIRES_T((
             U == dynamic_extent
         ))
     >
+#if span_COMPILER_GNUC_VERSION >= 900   // prevent GCC's "-Winit-list-lifetime"
+    span_constexpr14 /*explicit*/ span( std::initializer_list<value_type> il ) span_noexcept
+    {
+        data_ = il.begin();
+        size_ = il.size();
+    }
+#else
     span_constexpr /*explicit*/ span( std::initializer_list<value_type> il ) span_noexcept
         : data_( il.begin() )
         , size_( il.size()  )
     {}
-#if span_COMPILER_GNUC_VERSION >= 900
-# pragma GCC diagnostic pop
 #endif
 
 #endif // P2447
