@@ -175,7 +175,7 @@
 # error Please define none or one of span_CONFIG_CONTRACT_VIOLATION_THROWS and span_CONFIG_CONTRACT_VIOLATION_TERMINATES to 1, but not both.
 #endif
 
-// C++ language version detection (C++20 is speculative):
+// C++ language version detection (C++23 is speculative):
 // Note: VC14.0/1900 (VS2015) lacks too much from C++14.
 
 #ifndef   span_CPLUSPLUS
@@ -190,7 +190,8 @@
 #define span_CPP11_OR_GREATER  ( span_CPLUSPLUS >= 201103L )
 #define span_CPP14_OR_GREATER  ( span_CPLUSPLUS >= 201402L )
 #define span_CPP17_OR_GREATER  ( span_CPLUSPLUS >= 201703L )
-#define span_CPP20_OR_GREATER  ( span_CPLUSPLUS >= 202000L )
+#define span_CPP20_OR_GREATER  ( span_CPLUSPLUS >= 202002L )
+#define span_CPP23_OR_GREATER  ( span_CPLUSPLUS >= 202300L )
 
 // C++ language version (represent 98 as 3):
 
