@@ -75,7 +75,7 @@ function( make_target name no_exceptions )
     ternary( ne no_exceptions "-ne" "" )
 
     add_executable             ( ${PROGRAM}-${name}${ne} ${name}.cpp )
-    target_include_directories ( ${PROGRAM}-${name}${ne} PRIVATE ../../variant-lite/include )
+    target_include_directories ( ${PROGRAM}-${name}${ne} PRIVATE ../include )
     target_link_libraries      ( ${PROGRAM}-${name}${ne} PRIVATE ${PACKAGE} )
     if ( no_exceptions )
         target_compile_options ( ${PROGRAM}-${name}${ne} PRIVATE ${NO_EXCEPTIONS_OPTIONS} )
