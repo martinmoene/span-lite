@@ -11,7 +11,7 @@ endif()
 
 project( example LANGUAGES CXX )
 
-set( unit_name "span" )
+# unit_name provided by toplevel CMakeLists.txt
 set( PACKAGE   ${unit_name}-lite )
 set( PROGRAM   ${unit_name}-lite )
 
