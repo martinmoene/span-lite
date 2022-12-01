@@ -59,7 +59,7 @@ else()
     message( STATUS "Matched: nothing")
 endif()
 
-# Function to emulate ternary operaton `result = b ? x : y`:
+# Function to emulate ternary operation `result = b ? x : y`:
 
 macro( ternary var boolean value1 value2 )
     if( ${boolean} )
