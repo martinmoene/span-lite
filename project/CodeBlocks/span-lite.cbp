@@ -24,7 +24,6 @@ Stephan T. Lavavej <stl@microsoft.com>
 		</Build>
 		<Unit filename="../../.gitattributes" />
 		<Unit filename="../../.gitignore" />
-		<Unit filename="../../.travis.yml" />
 		<Unit filename="../../CMakeLists.txt" />
 		<Unit filename="../../LICENSE.txt" />
 		<Unit filename="../../README.md" />
