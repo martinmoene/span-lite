@@ -228,6 +228,7 @@
 namespace nonstd {
 
 using std::span;
+using std::dynamic_extent;
 
 // Note: C++20 does not provide comparison
 // using std::operator==;
