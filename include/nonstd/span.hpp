@@ -346,6 +346,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 #define span_HAVE_IS_DEFAULT                span_CPP11_140
 #define span_HAVE_IS_DELETE                 span_CPP11_140
 #define span_HAVE_NOEXCEPT                  span_CPP11_140
+#define span_HAVE_NORETURN                ( span_CPP11_140 && ! span_BETWEEN( span_COMPILER_GNUC_VERSION, 1, 480 ) )
 #define span_HAVE_NULLPTR                   span_CPP11_100
 #define span_HAVE_STATIC_ASSERT             span_CPP11_100
 
@@ -357,7 +358,6 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #define span_HAVE_DEPRECATED                span_CPP17_000
 #define span_HAVE_NODISCARD                 span_CPP17_000
-#define span_HAVE_NORETURN                  span_CPP17_000
 
 // MSVC: template parameter deduction guides since Visual Studio 2017 v15.7
 
