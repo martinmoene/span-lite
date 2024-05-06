@@ -1870,7 +1870,7 @@ using span_lite::byte_span;
 
 #endif // span_FEATURE( BYTE_SPAN )
 
-#if span_HAVE( STRUCT_BINDING )
+#if defined(span_HAVE_STRUCT_BINDING) && span_HAVE( STRUCT_BINDING )
 
 #if   span_CPP14_OR_GREATER
 # include <tuple>
