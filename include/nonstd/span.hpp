@@ -1870,7 +1870,7 @@ using span_lite::byte_span;
 
 #endif // span_FEATURE( BYTE_SPAN )
 
-#if span_HAVE( STRUCT_BINDING )
+#if !span_USES_STD_SPAN && span_HAVE( STRUCT_BINDING )
 
 #if   span_CPP14_OR_GREATER
 # include <tuple>
@@ -1938,7 +1938,7 @@ span_constexpr ElementType const & get( nonstd::span<ElementType, Extent> const 
 
 } // end namespace std
 
-#endif // span_HAVE( STRUCT_BINDING )
+#endif // !span_USES_STD_SPAN && span_HAVE( STRUCT_BINDING )
 
 #if ! span_USES_STD_SPAN
 span_RESTORE_WARNINGS()
