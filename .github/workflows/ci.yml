@@ -56,7 +56,8 @@ jobs:
             version: 11
           - os: ubuntu-22.04
             version: 12
-        
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
