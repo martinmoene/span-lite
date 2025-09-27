@@ -54,7 +54,7 @@ jobs:
             os: 'ubuntu-22.04'
           - version: 12
             os: 'ubuntu-22.04'
-          - version: 17
+          - version: 19
             os: 'ubuntu-24.04'
 
     runs-on: ${{ matrix.os }}
