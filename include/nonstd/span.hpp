@@ -494,7 +494,7 @@ span_DISABLE_MSVC_WARNINGS( 26439 26440 26472 26473 26481 26490 )
 
 #if ! span_CONFIG( NO_EXCEPTIONS )
 # include <stdexcept>
-#elif ! span_CONFIG_CONTRACT_VIOLATION_THROWS_V
+#elif ! span_CONFIG( CONTRACT_VIOLATION_THROWS_V )
 # include <exception>
 #endif
 
